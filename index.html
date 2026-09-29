@@ -1270,7 +1270,7 @@ function send(){
   if(sending)return;
   if(PREVIEW){showFb(true);return;}
   if(!SUPABASE_URL || SUPABASE_URL.indexOf('PASTE_YOUR_')===0 ||
-     !SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY.indexOf('PASTE_YOUR_')===0){
+   !SUPABASE_KEY || SUPABASE_KEY.indexOf('PASTE_YOUR_')===0){
     showFb(false,'Supabase is not configured');
     return;
   }
