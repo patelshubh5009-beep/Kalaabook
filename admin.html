@@ -182,7 +182,28 @@ placeholder="Example: 2">
 
 <label>Notes</label>
 <textarea id="artistNotes"></textarea>
+<label>Notes</label>
 
+<textarea id="artistNotes"></textarea>
+
+<label>Profile Photo</label>
+<input
+  id="artistProfilePhoto"
+  type="file"
+  accept="image/*"
+>
+
+<label>Portfolio Photos</label>
+<input
+  id="artistPortfolioPhotos"
+  type="file"
+  accept="image/*"
+  multiple
+>
+
+<p style="font-size:13px;color:#666;">
+  Profile photo: 1 image. Portfolio: up to 6 images.
+</p>
 <br>
 
 <button class="green" onclick="addArtist()">Add & Approve Artist</button>
