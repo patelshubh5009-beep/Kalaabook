@@ -1,10 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  </style>
+
+<script>
+  const SUPABASE_URL = 'https://pmerqsrmgmlqirznegeb.supabase.co';
+
+  const SUPABASE_KEY = 'sb_publishable_QreawwcE_0ebjswoBAHrig_IxzryR5p';
+
+  const supabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+</script>
+
+</head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KalaaBook Artist Portal</title>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body{
       margin:0;
@@ -106,13 +120,50 @@
         placeholder="Instagram username"
       >
 
-      <button type="button">
+      <button type="button" onclick="saveProfile()">
         Save Profile
       </button>
 
     </div>
 
   </div>
+<script>
+async function saveProfile(){
 
+  const name = document.getElementById('artistName').value.trim();
+  const bio = document.getElementById('artistBio').value.trim();
+  const servicesText = document.getElementById('artistServices').value.trim();
+  const instagram = document.getElementById('artistInstagram').value.trim();
+
+  if(!name){
+    alert('Please enter your artist name.');
+    return;
+  }
+
+  const services = servicesText
+    ? servicesText.split(',').map(function(service){
+        return service.trim();
+      }).filter(Boolean)
+    : [];
+
+  const { error } = await supabase
+    .from('artist_applications')
+    .update({
+      full_name: name,
+      notes: bio,
+      services: services,
+      portfolio: instagram
+    })
+    .eq('full_name', name);
+
+  if(error){
+    console.error(error);
+    alert('Could not save profile. Please try again.');
+    return;
+  }
+
+  alert('Profile saved successfully!');
+}
+</script>
 </body>
 </html>
