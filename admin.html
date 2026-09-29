@@ -1,288 +1,620 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KalaaBook Admin</title>
 
 <style>
 body{
-  margin:0;
   font-family:Arial,sans-serif;
   background:#f5f5f5;
+  margin:0;
+  padding:30px;
   color:#222;
 }
-header{
-  background:#111;
-  color:white;
-  padding:20px 30px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.container{
+  max-width:1100px;
+  margin:auto;
 }
-header h1{margin:0;font-size:22px}
+h1{
+  margin-bottom:5px;
+}
 button{
   border:0;
-  border-radius:8px;
   padding:10px 16px;
+  border-radius:8px;
   cursor:pointer;
   font-weight:bold;
 }
-.logout{background:white;color:#111}
-main{
-  max-width:1200px;
-  margin:30px auto;
-  padding:0 20px;
+.primary{
+  background:#111;
+  color:white;
+}
+.green{
+  background:#198754;
+  color:white;
+}
+.red{
+  background:#dc3545;
+  color:white;
+}
+.gray{
+  background:#ddd;
 }
 .card{
   background:white;
-  border-radius:12px;
-  padding:20px;
-  margin-bottom:20px;
-  box-shadow:0 2px 10px rgba(0,0,0,.06);
+  padding:25px;
+  border-radius:14px;
+  margin-top:20px;
+  box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+input,select,textarea{
+  width:100%;
+  box-sizing:border-box;
+  padding:11px;
+  margin-top:6px;
+  margin-bottom:14px;
+  border:1px solid #ccc;
+  border-radius:7px;
+}
+label{
+  font-weight:bold;
 }
 table{
   width:100%;
   border-collapse:collapse;
+  margin-top:15px;
 }
 th,td{
   padding:12px;
-  border-bottom:1px solid #eee;
+  border-bottom:1px solid #ddd;
   text-align:left;
-}
-th{background:#fafafa}
-.approve{
-  background:#111;
-  color:white;
-}
-.reject{
-  background:#eee;
-  color:#111;
+  vertical-align:top;
 }
 .status{
   font-weight:bold;
 }
-#login{
-  max-width:420px;
-  margin:100px auto;
+#dashboard{
+  display:none;
 }
-input{
-  width:100%;
-  box-sizing:border-box;
-  padding:12px;
-  margin:8px 0 14px;
-  border:1px solid #ccc;
-  border-radius:8px;
+#addArtist{
+  display:none;
 }
-#dashboard{display:none}
+.message{
+  margin-top:10px;
+  font-weight:bold;
+}
+.actions button{
+  margin-right:5px;
+  margin-bottom:5px;
+}
 </style>
 </head>
 
 <body>
 
-<div id="login" class="card">
-  <h2>KalaaBook Admin</h2>
-  <p>Sign in to manage artist applications.</p>
+<div class="container">
 
-  <label>Email</label>
-  <input id="email" type="email" placeholder="Admin email">
+<h1>KalaaBook Admin</h1>
+<p>Manage artist applications and artists.</p>
 
-  <label>Password</label>
-  <input id="password" type="password" placeholder="Password">
+<!-- LOGIN -->
+<div id="loginBox" class="card">
 
-  <button class="approve" onclick="login()">Login</button>
+<h2>Admin Login</h2>
 
-  <p id="loginMessage"></p>
+<label>Email</label>
+<input id="email" type="email" placeholder="Admin email">
+
+<label>Password</label>
+<input id="password" type="password" placeholder="Password">
+
+<button class="primary" onclick="login()">Login</button>
+
+<p id="loginMessage" class="message"></p>
+
 </div>
 
+
+<!-- DASHBOARD -->
 <div id="dashboard">
 
-<header>
-  <h1>KalaaBook Admin</h1>
-  <button class="logout" onclick="logout()">Logout</button>
-</header>
+<div style="margin-top:20px;">
+<button class="primary" onclick="showAddArtist()">+ Add Artist</button>
+<button class="gray" onclick="loadApplications()">Refresh</button>
+<button class="red" onclick="logout()">Logout</button>
+</div>
 
-<main>
 
+<!-- ADD ARTIST -->
+<div id="addArtist" class="card">
+
+<h2>Add Artist Manually</h2>
+
+<label>Full Name</label>
+<input id="artistName" type="text">
+
+<label>WhatsApp</label>
+<input id="artistWhatsapp" type="text">
+
+<label>City</label>
+<input id="artistCity" type="text">
+
+<label>Area</label>
+<input id="artistArea" type="text">
+
+<label>Category</label>
+<select id="artistCategory">
+<option value="">Select category</option>
+<option>Nail Art</option>
+<option>Mehendi</option>
+<option>Salon</option>
+</select>
+
+<label>Specialties</label>
+<input id="artistSpecialties" type="text"
+placeholder="Example: Bridal Mehendi, Arabic Mehendi">
+
+<label>Experience</label>
+<input id="artistExperience" type="text"
+placeholder="Example: 5 years">
+
+<label>Portfolio / Instagram</label>
+<input id="artistPortfolio" type="text"
+placeholder="Instagram or portfolio link">
+
+<label>Work Mode</label>
+<select id="artistWorkMode">
+<option value="">Select</option>
+<option>Home</option>
+<option>Studio</option>
+<option>Both</option>
+</select>
+
+<label>Booking Volume</label>
+<input id="artistBookings" type="text"
+placeholder="Example: 10-20 bookings/month">
+
+<label>Team Size</label>
+<input id="artistTeamSize" type="text"
+placeholder="Example: 2">
+
+<label>Notes</label>
+<textarea id="artistNotes"></textarea>
+
+<br>
+
+<button class="green" onclick="addArtist()">Add & Approve Artist</button>
+<button class="gray" onclick="hideAddArtist()">Cancel</button>
+
+<p id="addMessage" class="message"></p>
+
+</div>
+
+
+<!-- APPLICATIONS -->
 <div class="card">
-  <h2>Artist Applications</h2>
-  <p id="message">Loading...</p>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Category</th>
-        <th>City</th>
-        <th>WhatsApp</th>
-        <th>Experience</th>
-        <th>Status</th>
-        <th>Action</th>
-      </tr>
-    </thead>
+<h2>Artist Applications</h2>
 
-    <tbody id="applications"></tbody>
-  </table>
+<p id="loading">Loading applications...</p>
+
+<table id="applicationsTable">
+<thead>
+<tr>
+<th>Name</th>
+<th>Category</th>
+<th>City</th>
+<th>WhatsApp</th>
+<th>Status</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody id="applicationsBody"></tbody>
+
+</table>
+
 </div>
 
-</main>
 </div>
+
+</div>
+
 
 <script>
 
-const SUPABASE_URL='https://pmerqsrmgmlqirznegeb.supabase.co';
-const SUPABASE_KEY='sb_publishable_QreawwcE_0ebjswoBAHrig_IxzryR5p';
+/* SUPABASE SETTINGS */
 
-let accessToken='';
+const SUPABASE_URL = 'https://pmerqsrmgmlqirznegeb.supabase.co';
+
+/*
+IMPORTANT:
+Put your Supabase PUBLISHABLE KEY below.
+Do NOT use the Secret/service_role key.
+*/
+
+const SUPABASE_KEY = 'PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE';
+
+
+let accessToken = null;
+
+
+/* LOGIN */
 
 async function login(){
 
-  const email=document.getElementById('email').value;
-  const password=document.getElementById('password').value;
+  const email =
+    document.getElementById('email').value.trim();
 
-  const response=await fetch(
-    SUPABASE_URL+'/auth/v1/token?grant_type=password',
-    {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'apikey':SUPABASE_KEY
-      },
-      body:JSON.stringify({
-        email:email,
-        password:password
-      })
+  const password =
+    document.getElementById('password').value;
+
+  const msg =
+    document.getElementById('loginMessage');
+
+  msg.textContent = 'Logging in...';
+
+  try{
+
+    const response = await fetch(
+      SUPABASE_URL + '/auth/v1/token?grant_type=password',
+      {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'apikey':SUPABASE_KEY
+        },
+        body:JSON.stringify({
+          email:email,
+          password:password
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    if(!response.ok){
+      throw new Error(data.error_description || data.msg || 'Login failed');
     }
-  );
 
-  const data=await response.json();
+    accessToken = data.access_token;
 
-  if(!response.ok){
-    document.getElementById('loginMessage').textContent=
-      data.error_description || data.msg || 'Login failed.';
-    return;
+    document.getElementById('loginBox').style.display='none';
+    document.getElementById('dashboard').style.display='block';
+
+    loadApplications();
+
+  }catch(error){
+
+    msg.textContent = error.message;
+
   }
 
-  accessToken=data.access_token;
-
-  document.getElementById('login').style.display='none';
-  document.getElementById('dashboard').style.display='block';
-
-  loadApplications();
 }
+
+
+/* LOAD APPLICATIONS */
 
 async function loadApplications(){
 
-  const response=await fetch(
-    SUPABASE_URL+
-    '/rest/v1/artist_applications?select=*&order=created_at.desc',
-    {
-      headers:{
-        'apikey':SUPABASE_KEY,
-        'Authorization':'Bearer '+accessToken
-      }
-    }
-  );
+  const loading =
+    document.getElementById('loading');
 
-  const data=await response.json();
+  const body =
+    document.getElementById('applicationsBody');
 
-  if(!response.ok){
-    document.getElementById('message').textContent=
-      'Could not load applications.';
-    console.log(data);
-    return;
-  }
+  loading.textContent='Loading applications...';
 
-  document.getElementById('message').textContent=
-    data.length+' application(s)';
+  try{
 
-  const tbody=document.getElementById('applications');
-
-  tbody.innerHTML='';
-
-  data.forEach(app=>{
-
-    const row=document.createElement('tr');
-
-    row.innerHTML=`
-      <td>${escapeHtml(app.full_name || '')}</td>
-      <td>${escapeHtml(app.category || '')}</td>
-      <td>${escapeHtml(app.city || '')}</td>
-      <td>${escapeHtml(app.whatsapp || '')}</td>
-      <td>${escapeHtml(app.experience || '')}</td>
-      <td class="status">${escapeHtml(app.status || 'pending')}</td>
-      <td>
-        <button class="approve"
-          onclick="updateStatus(${app.id},'approved')">
-          Approve
-        </button>
-        <button class="reject"
-          onclick="updateStatus(${app.id},'rejected')">
-          Reject
-        </button>
-      </td>
-    `;
-
-    tbody.appendChild(row);
-  });
-}
-
-async function updateStatus(id,status){
-
-  const response=await fetch(
-    SUPABASE_URL+
-    '/rest/v1/artist_applications?id=eq.'+id,
-    {
-      method:'PATCH',
-      headers:{
-        'Content-Type':'application/json',
-        'apikey':SUPABASE_KEY,
-        'Authorization':'Bearer '+accessToken,
-        'Prefer':'return=minimal'
-      },
-      body:JSON.stringify({
-        status:status
-      })
-    }
-  );
-
-  if(!response.ok){
-    alert('Could not update application.');
-    return;
-  }
-
-  loadApplications();
-}
-
-async function logout(){
-
-  if(accessToken){
-
-    await fetch(
-      SUPABASE_URL+'/auth/v1/logout',
+    const response = await fetch(
+      SUPABASE_URL +
+      '/rest/v1/artist_applications?select=*&order=created_at.desc',
       {
-        method:'POST',
         headers:{
           'apikey':SUPABASE_KEY,
           'Authorization':'Bearer '+accessToken
         }
       }
     );
+
+    const data = await response.json();
+
+    if(!response.ok){
+      throw new Error(data.message || 'Could not load applications');
+    }
+
+    body.innerHTML='';
+
+    if(data.length===0){
+
+      body.innerHTML=
+        '<tr><td colspan="6">No applications yet.</td></tr>';
+
+    }else{
+
+      data.forEach(app => {
+
+        const row=document.createElement('tr');
+
+        row.innerHTML=`
+
+          <td>
+            <strong>${escapeHtml(app.full_name || '')}</strong>
+          </td>
+
+          <td>${escapeHtml(app.category || '')}</td>
+
+          <td>${escapeHtml(app.city || '')}</td>
+
+          <td>${escapeHtml(app.whatsapp || '')}</td>
+
+          <td class="status">
+            ${escapeHtml(app.status || 'pending')}
+          </td>
+
+          <td class="actions">
+
+            <button
+              class="green"
+              onclick="updateStatus(${app.id},'approved')">
+              Approve
+            </button>
+
+            <button
+              class="red"
+              onclick="updateStatus(${app.id},'rejected')">
+              Reject
+            </button>
+
+          </td>
+
+        `;
+
+        body.appendChild(row);
+
+      });
+
+    }
+
+    loading.textContent='';
+
+  }catch(error){
+
+    loading.textContent='Error: '+error.message;
+
   }
 
-  accessToken='';
-  document.getElementById('dashboard').style.display='none';
-  document.getElementById('login').style.display='block';
 }
+
+
+/* APPROVE / REJECT */
+
+async function updateStatus(id,status){
+
+  try{
+
+    const response = await fetch(
+      SUPABASE_URL +
+      '/rest/v1/artist_applications?id=eq.' +
+      id,
+      {
+        method:'PATCH',
+
+        headers:{
+          'apikey':SUPABASE_KEY,
+          'Authorization':'Bearer '+accessToken,
+          'Content-Type':'application/json',
+          'Prefer':'return=minimal'
+        },
+
+        body:JSON.stringify({
+          status:status
+        })
+      }
+    );
+
+    if(!response.ok){
+
+      const error=await response.json();
+
+      throw new Error(
+        error.message || 'Could not update status'
+      );
+
+    }
+
+    loadApplications();
+
+  }catch(error){
+
+    alert(error.message);
+
+  }
+
+}
+
+
+/* SHOW ADD ARTIST */
+
+function showAddArtist(){
+
+  document.getElementById('addArtist').style.display='block';
+
+  window.scrollTo({
+    top:document.getElementById('addArtist').offsetTop,
+    behavior:'smooth'
+  });
+
+}
+
+
+/* HIDE ADD ARTIST */
+
+function hideAddArtist(){
+
+  document.getElementById('addArtist').style.display='none';
+
+}
+
+
+/* ADD ARTIST MANUALLY */
+
+async function addArtist(){
+
+  const message =
+    document.getElementById('addMessage');
+
+  message.textContent='Adding artist...';
+
+
+  const artist = {
+
+    full_name:
+      document.getElementById('artistName').value.trim(),
+
+    whatsapp:
+      document.getElementById('artistWhatsapp').value.trim(),
+
+    city:
+      document.getElementById('artistCity').value.trim(),
+
+    area:
+      document.getElementById('artistArea').value.trim(),
+
+    category:
+      document.getElementById('artistCategory').value,
+
+    specialties:
+      document.getElementById('artistSpecialties').value.trim(),
+
+    experience:
+      document.getElementById('artistExperience').value.trim(),
+
+    portfolio:
+      document.getElementById('artistPortfolio').value.trim(),
+
+    work_mode:
+      document.getElementById('artistWorkMode').value,
+
+    bookings:
+      document.getElementById('artistBookings').value.trim(),
+
+    team_size:
+      document.getElementById('artistTeamSize').value.trim(),
+
+    notes:
+      document.getElementById('artistNotes').value.trim(),
+
+    consent:true,
+
+    updates:false,
+
+    status:'approved'
+
+  };
+
+
+  if(!artist.full_name){
+
+    message.textContent='Please enter the artist name.';
+
+    return;
+
+  }
+
+
+  try{
+
+    const response = await fetch(
+      SUPABASE_URL +
+      '/rest/v1/artist_applications',
+      {
+        method:'POST',
+
+        headers:{
+          'apikey':SUPABASE_KEY,
+          'Authorization':'Bearer '+accessToken,
+          'Content-Type':'application/json',
+          'Prefer':'return=minimal'
+        },
+
+        body:JSON.stringify(artist)
+      }
+    );
+
+
+    if(!response.ok){
+
+      const error=await response.json();
+
+      throw new Error(
+        error.message || 'Could not add artist'
+      );
+
+    }
+
+
+    message.textContent='Artist added successfully!';
+
+    clearArtistForm();
+
+    loadApplications();
+
+  }catch(error){
+
+    message.textContent='Error: '+error.message;
+
+  }
+
+}
+
+
+/* CLEAR FORM */
+
+function clearArtistForm(){
+
+  document.getElementById('artistName').value='';
+  document.getElementById('artistWhatsapp').value='';
+  document.getElementById('artistCity').value='';
+  document.getElementById('artistArea').value='';
+  document.getElementById('artistCategory').value='';
+  document.getElementById('artistSpecialties').value='';
+  document.getElementById('artistExperience').value='';
+  document.getElementById('artistPortfolio').value='';
+  document.getElementById('artistWorkMode').value='';
+  document.getElementById('artistBookings').value='';
+  document.getElementById('artistTeamSize').value='';
+  document.getElementById('artistNotes').value='';
+
+}
+
+
+/* LOGOUT */
+
+function logout(){
+
+  accessToken=null;
+
+  document.getElementById('dashboard').style.display='none';
+  document.getElementById('loginBox').style.display='block';
+
+}
+
+
+/* SECURITY */
 
 function escapeHtml(value){
 
   return String(value)
-    .replaceAll('&','&amp;')
-    .replaceAll('<','&lt;')
-    .replaceAll('>','&gt;')
-    .replaceAll('"','&quot;')
-    .replaceAll("'","&#039;");
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+
 }
 
 </script>
