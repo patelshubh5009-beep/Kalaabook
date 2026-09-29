@@ -1393,11 +1393,19 @@ var ARTISTS=[
    tags:['Makeup','Styling','Bridal'],insta:'',art:['swirl','mirror','sparkle','swirl','mirror','sparkle']}
 ];
 function safeUrl(u){
-  u=String(u||'').trim();if(!u)return '';
-  if(u.charAt(0)==='@')return 'https://instagram.com/'+encodeURIComponent(u.slice(1));
-  if(/^https?:\/\//i.test(u))return u;
-  if(/^(www\.)?instagram\.com\//i.test(u))return 'https://'+u;
-  return '';
+  u=String(u||'').trim();
+  if(!u)return '';
+
+  if(u.charAt(0)==='@')
+    return 'https://instagram.com/'+encodeURIComponent(u.slice(1));
+
+  if(/^https?:\/\//i.test(u))
+    return u;
+
+  if(/^(www\.)?instagram\.com\//i.test(u))
+    return 'https://'+u;
+
+  return 'https://instagram.com/'+encodeURIComponent(u);
 }
 function isImg(s){return /^(data:image\/(png|jpe?g|webp);base64,|https?:\/\/)/i.test(String(s||''));}
 function cel(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;return e;}
