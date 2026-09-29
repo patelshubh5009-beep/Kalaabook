@@ -1725,7 +1725,7 @@ if(!PREVIEW){
         }).filter(Boolean).slice(0,3)
       : [CATL[c] || a.category || 'Artist'],
     insta: a.portfolio || '',
-    photos: [],
+    photos: a.portfolio_photos || [],
     art: []
   };
 });
