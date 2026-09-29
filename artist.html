@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KalaaBook Artist Portal</title>
+
+  <style>
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:#12091a;
+      color:#fff;
+    }
+
+    .portal{
+      max-width:700px;
+      margin:0 auto;
+      padding:40px 20px;
+    }
+
+    h1{
+      font-size:30px;
+      margin-bottom:8px;
+    }
+
+    .subtitle{
+      color:#b9aabd;
+      margin-bottom:30px;
+    }
+
+    .card{
+      background:#1c1026;
+      border:1px solid rgba(227,178,78,.25);
+      border-radius:18px;
+      padding:24px;
+      margin-bottom:20px;
+    }
+
+    label{
+      display:block;
+      margin-bottom:8px;
+      font-weight:600;
+    }
+
+    input, textarea{
+      width:100%;
+      box-sizing:border-box;
+      padding:12px;
+      margin-bottom:18px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.2);
+      background:#261631;
+      color:#fff;
+      font-size:14px;
+    }
+
+    textarea{
+      min-height:100px;
+      resize:vertical;
+    }
+
+    button{
+      width:100%;
+      padding:14px;
+      border:0;
+      border-radius:12px;
+      background:#E3B24E;
+      color:#160b1d;
+      font-weight:700;
+      cursor:pointer;
+      font-size:15px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="portal">
+
+    <h1>KalaaBook Artist Portal</h1>
+
+    <p class="subtitle">
+      Complete your artist profile.
+    </p>
+
+    <div class="card">
+
+      <label>Artist Name</label>
+      <input id="artistName" type="text" placeholder="Your name">
+
+      <label>Bio</label>
+      <textarea id="artistBio" placeholder="Tell customers about your work"></textarea>
+
+      <label>Services</label>
+      <input
+        id="artistServices"
+        type="text"
+        placeholder="Example: Nail Extension, Gel Nails, Nail Art"
+      >
+
+      <label>Instagram</label>
+      <input
+        id="artistInstagram"
+        type="text"
+        placeholder="Instagram username"
+      >
+
+      <button type="button">
+        Save Profile
+      </button>
+
+    </div>
+
+  </div>
+
+</body>
+</html>
