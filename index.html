@@ -1697,24 +1697,30 @@ if(!PREVIEW){
     return r.json();
   })
   .then(function(rows){
-    var real = rows.map(function(a){
-      var c = (a.category || '').toLowerCase().trim();
+   var real = rows.map(function(a){
+  var c = (a.category || '').toLowerCase().trim();
 
-      if(c === 'nail art') c = 'nail';
+  if(c.indexOf('nail') !== -1) c = 'nail';
+  else if(c.indexOf('mehendi') !== -1 || c.indexOf('mehndi') !== -1 || c.indexOf('henna') !== -1) c = 'mehendi';
+  else if(c.indexOf('salon') !== -1 || c.indexOf('beauty') !== -1) c = 'salon';
 
-      return {
-        name: a.full_name || 'Artist',
-        cat: c,
-        city: a.city || '',
-        label: a.category || '',
-        svc: a.specialties
-          ? a.specialties.split(',').map(function(x){ return x.trim(); })
-          : [],
-        bio: a.notes || '',
-        ig: a.portfolio || '',
-        art: []
-      };
-    });
+  return {
+    slug: slugify(a.full_name || 'artist') + '-' + (a.id || ''),
+    sample: false,
+    name: a.full_name || 'Artist',
+    cat: c,
+    city: a.city || '',
+    bio: a.notes || '',
+    tags: a.specialties
+      ? a.specialties.split(',').map(function(x){
+          return x.trim().slice(0,24);
+        }).filter(Boolean).slice(0,3)
+      : [CATL[c] || a.category || 'Artist'],
+    insta: a.portfolio || '',
+    photos: [],
+    art: []
+  };
+});
 
     if(!real.length) return;
 
