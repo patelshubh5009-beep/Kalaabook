@@ -1684,14 +1684,63 @@ function fromSheet(csv){
   }
   return out;
 }
-if(SHEET_URL&&!PREVIEW){
-  fetch(SHEET_URL,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('sheet');return r.text();}).then(function(txt){
-    var real=fromSheet(txt);if(!real.length)return;
-    ARTISTS=ARTISTS.concat(real);
-    var cats=['nail','mehendi','salon'],first=curCat;
-    if(!tabTouched){for(var i=0;i<cats.length;i++){if(real.some(function(a){return a.cat===cats[i];})){first=cats[i];break;}}}
-    renderCities();renderCat(first,false);tryHash();
-  }).catch(function(){/* keep the samples: the page must never break */});
+if(!PREVIEW){
+  fetch(SUPABASE_URL + '/rest/v1/artist_applications?select=*&status=eq.approved&order=created_at.desc',{
+    cache:'no-store',
+    headers:{
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY
+    }
+  })
+  .then(function(r){
+    if(!r.ok) throw new Error('supabase');
+    return r.json();
+  })
+  .then(function(rows){
+    var real = rows.map(function(a){
+      var c = (a.category || '').toLowerCase().trim();
+
+      if(c === 'nail art') c = 'nail';
+
+      return {
+        name: a.full_name || 'Artist',
+        cat: c,
+        city: a.city || '',
+        label: a.category || '',
+        svc: a.specialties
+          ? a.specialties.split(',').map(function(x){ return x.trim(); })
+          : [],
+        bio: a.notes || '',
+        ig: a.portfolio || '',
+        art: []
+      };
+    });
+
+    if(!real.length) return;
+
+    ARTISTS = ARTISTS.concat(real);
+
+    var cats = ['nail','mehendi','salon'];
+    var first = curCat;
+
+    if(!tabTouched){
+      for(var i=0;i<cats.length;i++){
+        if(real.some(function(a){
+          return a.cat === cats[i];
+        })){
+          first = cats[i];
+          break;
+        }
+      }
+    }
+
+    renderCities();
+    renderCat(first,false);
+    tryHash();
+  })
+  .catch(function(){
+    /* keep the samples: the page must never break */
+  });
 }
 
 /* ---------- gentle reveal on scroll (content is visible if this cannot run) ---------- */
