@@ -1,0 +1,14 @@
+KALAA BOOK — SUPABASE SETUP
+
+1. Open index.html in Notepad.
+2. Find: PASTE_YOUR_SUPABASE_PROJECT_URL_HERE
+3. Replace ONLY that text with your Supabase Project URL.
+4. Find: PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE
+5. Replace ONLY that text with your Supabase Publishable key.
+6. Save index.html.
+7. Never put the Supabase Secret key in this file.
+
+The Artist Application form now sends to:
+public.artist_applications
+
+The existing client waitlist remains unchanged.
