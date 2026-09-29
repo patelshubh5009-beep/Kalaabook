@@ -4,7 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KalaaBook Admin</title>
+<script>
+  const SUPABASE_URL = 'https://pmerqsrmgmlqirznegeb.supabase.co';
 
+  const SUPABASE_KEY = 'sb_publishable_QreawwcE_0ebjswoBAHrig_IxzryR5p
+';
+</script>
 <style>
 body{
   font-family:Arial,sans-serif;
@@ -318,28 +323,63 @@ async function login(){
 
 /* LOAD APPLICATIONS */
 
-async function loadApplications(){
+<script>
+async function saveProfile(){
 
-  const loading =
-    document.getElementById('loading');
+  const name = document.getElementById('artistName').value.trim();
+  const bio = document.getElementById('artistBio').value.trim();
+  const servicesText = document.getElementById('artistServices').value.trim();
+  const instagram = document.getElementById('artistInstagram').value.trim();
 
-  const body =
-    document.getElementById('applicationsBody');
+  if(!name){
+    alert('Please enter your artist name.');
+    return;
+  }
 
-  loading.textContent='Loading applications...';
+  const services = servicesText
+    ? servicesText.split(',').map(function(service){
+        return service.trim();
+      }).filter(Boolean)
+    : [];
 
-  try{
+  try {
 
     const response = await fetch(
       SUPABASE_URL +
-      '/rest/v1/artist_applications?select=*&order=created_at.desc',
+      '/rest/v1/artist_applications?full_name=eq.' +
+      encodeURIComponent(name),
       {
-        headers:{
-          'apikey':SUPABASE_KEY,
-          'Authorization':'Bearer '+accessToken
-        }
+        method: 'PATCH',
+
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+
+        body: JSON.stringify({
+          notes: bio,
+          services: services,
+          portfolio: instagram
+        })
       }
     );
+
+    if(!response.ok){
+      throw new Error('Save failed');
+    }
+
+    alert('Profile saved successfully!');
+
+  } catch(error) {
+
+    console.error(error);
+    alert('Could not save profile. Please try again.');
+
+  }
+}
+</script>
 
     const data = await response.json();
 
