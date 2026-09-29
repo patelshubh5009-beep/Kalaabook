@@ -490,7 +490,19 @@ async function addArtist(){
 
   message.textContent='Adding artist...';
 
+// Get selected photos
+const profilePhoto =
+  document.getElementById('artistProfilePhoto').files[0];
 
+const portfolioPhotos =
+  document.getElementById('artistPortfolioPhotos').files;
+
+// Maximum 6 portfolio photos
+if (portfolioPhotos.length > 6) {
+  message.textContent =
+    'Please select a maximum of 6 portfolio photos.';
+  return;
+}
   const artist = {
 
     full_name:
