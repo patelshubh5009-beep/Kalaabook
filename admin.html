@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KalaaBook Admin</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f5f5f5;
+  color:#222;
+}
+header{
+  background:#111;
+  color:white;
+  padding:20px 30px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+header h1{margin:0;font-size:22px}
+button{
+  border:0;
+  border-radius:8px;
+  padding:10px 16px;
+  cursor:pointer;
+  font-weight:bold;
+}
+.logout{background:white;color:#111}
+main{
+  max-width:1200px;
+  margin:30px auto;
+  padding:0 20px;
+}
+.card{
+  background:white;
+  border-radius:12px;
+  padding:20px;
+  margin-bottom:20px;
+  box-shadow:0 2px 10px rgba(0,0,0,.06);
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+th,td{
+  padding:12px;
+  border-bottom:1px solid #eee;
+  text-align:left;
+}
+th{background:#fafafa}
+.approve{
+  background:#111;
+  color:white;
+}
+.reject{
+  background:#eee;
+  color:#111;
+}
+.status{
+  font-weight:bold;
+}
+#login{
+  max-width:420px;
+  margin:100px auto;
+}
+input{
+  width:100%;
+  box-sizing:border-box;
+  padding:12px;
+  margin:8px 0 14px;
+  border:1px solid #ccc;
+  border-radius:8px;
+}
+#dashboard{display:none}
+</style>
+</head>
+
+<body>
+
+<div id="login" class="card">
+  <h2>KalaaBook Admin</h2>
+  <p>Sign in to manage artist applications.</p>
+
+  <label>Email</label>
+  <input id="email" type="email" placeholder="Admin email">
+
+  <label>Password</label>
+  <input id="password" type="password" placeholder="Password">
+
+  <button class="approve" onclick="login()">Login</button>
+
+  <p id="loginMessage"></p>
+</div>
+
+<div id="dashboard">
+
+<header>
+  <h1>KalaaBook Admin</h1>
+  <button class="logout" onclick="logout()">Logout</button>
+</header>
+
+<main>
+
+<div class="card">
+  <h2>Artist Applications</h2>
+  <p id="message">Loading...</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Category</th>
+        <th>City</th>
+        <th>WhatsApp</th>
+        <th>Experience</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody id="applications"></tbody>
+  </table>
+</div>
+
+</main>
+</div>
+
+<script>
+
+const SUPABASE_URL='https://pmerqsrmgmlqirznegeb.supabase.co';
+const SUPABASE_KEY='sb_publishable_QreawwcE_0ebjswoBAHrig_IxzryR5p';
+
+let accessToken='';
+
+async function login(){
+
+  const email=document.getElementById('email').value;
+  const password=document.getElementById('password').value;
+
+  const response=await fetch(
+    SUPABASE_URL+'/auth/v1/token?grant_type=password',
+    {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'apikey':SUPABASE_KEY
+      },
+      body:JSON.stringify({
+        email:email,
+        password:password
+      })
+    }
+  );
+
+  const data=await response.json();
+
+  if(!response.ok){
+    document.getElementById('loginMessage').textContent=
+      data.error_description || data.msg || 'Login failed.';
+    return;
+  }
+
+  accessToken=data.access_token;
+
+  document.getElementById('login').style.display='none';
+  document.getElementById('dashboard').style.display='block';
+
+  loadApplications();
+}
+
+async function loadApplications(){
+
+  const response=await fetch(
+    SUPABASE_URL+
+    '/rest/v1/artist_applications?select=*&order=created_at.desc',
+    {
+      headers:{
+        'apikey':SUPABASE_KEY,
+        'Authorization':'Bearer '+accessToken
+      }
+    }
+  );
+
+  const data=await response.json();
+
+  if(!response.ok){
+    document.getElementById('message').textContent=
+      'Could not load applications.';
+    console.log(data);
+    return;
+  }
+
+  document.getElementById('message').textContent=
+    data.length+' application(s)';
+
+  const tbody=document.getElementById('applications');
+
+  tbody.innerHTML='';
+
+  data.forEach(app=>{
+
+    const row=document.createElement('tr');
+
+    row.innerHTML=`
+      <td>${escapeHtml(app.full_name || '')}</td>
+      <td>${escapeHtml(app.category || '')}</td>
+      <td>${escapeHtml(app.city || '')}</td>
+      <td>${escapeHtml(app.whatsapp || '')}</td>
+      <td>${escapeHtml(app.experience || '')}</td>
+      <td class="status">${escapeHtml(app.status || 'pending')}</td>
+      <td>
+        <button class="approve"
+          onclick="updateStatus(${app.id},'approved')">
+          Approve
+        </button>
+        <button class="reject"
+          onclick="updateStatus(${app.id},'rejected')">
+          Reject
+        </button>
+      </td>
+    `;
+
+    tbody.appendChild(row);
+  });
+}
+
+async function updateStatus(id,status){
+
+  const response=await fetch(
+    SUPABASE_URL+
+    '/rest/v1/artist_applications?id=eq.'+id,
+    {
+      method:'PATCH',
+      headers:{
+        'Content-Type':'application/json',
+        'apikey':SUPABASE_KEY,
+        'Authorization':'Bearer '+accessToken,
+        'Prefer':'return=minimal'
+      },
+      body:JSON.stringify({
+        status:status
+      })
+    }
+  );
+
+  if(!response.ok){
+    alert('Could not update application.');
+    return;
+  }
+
+  loadApplications();
+}
+
+async function logout(){
+
+  if(accessToken){
+
+    await fetch(
+      SUPABASE_URL+'/auth/v1/logout',
+      {
+        method:'POST',
+        headers:{
+          'apikey':SUPABASE_KEY,
+          'Authorization':'Bearer '+accessToken
+        }
+      }
+    );
+  }
+
+  accessToken='';
+  document.getElementById('dashboard').style.display='none';
+  document.getElementById('login').style.display='block';
+}
+
+function escapeHtml(value){
+
+  return String(value)
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'","&#039;");
+}
+
+</script>
+
+</body>
+</html>
