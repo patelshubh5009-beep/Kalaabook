@@ -303,9 +303,9 @@ if(!uploadToken){
         const response = await fetch(
 
           SUPABASE_URL +
-          '/rest/v1/artist_applications?id=eq.' +
-          encodeURIComponent(artistId) +
-          '&select=*',
+         '/rest/v1/artist_applications?upload_token=eq.' +
+encodeURIComponent(uploadToken) +
+'&select=*',
 
           {
 
@@ -758,7 +758,8 @@ if(!uploadToken){
           await fetch(
 
             SUPABASE_URL +
-            '/rest/v1/artist_applications?id=eq.' +
+            '/rest/v1/artist_applications?upload_token=eq.' +
+encodeURIComponent(uploadToken),
             encodeURIComponent(artistId),
 
             {
