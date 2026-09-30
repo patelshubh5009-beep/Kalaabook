@@ -1,41 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="robots" content="noindex, nofollow">
+
 <meta charset="UTF-8">
+
+<meta name="robots" content="noindex, nofollow">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>KalaaBook Admin</title>
 
 <style>
+
+*{
+  box-sizing:border-box;
+}
+
 body{
-  font-family:Arial,sans-serif;
-  background:#f5f5f5;
   margin:0;
-  padding:30px;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f5f5f5;
   color:#222;
 }
 
-.container{
-  max-width:1100px;
-  margin:auto;
+header{
+  background:#111;
+  color:white;
+  padding:18px 24px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
-h1{
-  margin-bottom:5px;
+header h1{
+  margin:0;
+  font-size:22px;
 }
 
 button{
   border:0;
-  padding:10px 16px;
-  border-radius:8px;
+  border-radius:7px;
+  padding:10px 14px;
   cursor:pointer;
-  font-weight:bold;
-}
-
-.primary{
-  background:#111;
-  color:white;
+  font-weight:600;
+  margin:3px;
 }
 
 .green{
@@ -48,250 +56,358 @@ button{
   color:white;
 }
 
+.primary{
+  background:#2563eb;
+  color:white;
+}
+
 .gray{
-  background:#ddd;
+  background:#777;
+  color:white;
 }
 
 .card{
   background:white;
-  padding:25px;
-  border-radius:14px;
-  margin-top:20px;
+  margin:20px auto;
+  padding:20px;
+  border-radius:12px;
+  max-width:1400px;
   box-shadow:0 2px 10px rgba(0,0,0,.08);
 }
 
-input,select,textarea{
+.login{
+  max-width:420px;
+  margin:80px auto;
+}
+
+input,
+textarea,
+select{
   width:100%;
-  box-sizing:border-box;
   padding:11px;
-  margin-top:6px;
-  margin-bottom:14px;
+  margin:6px 0 12px;
   border:1px solid #ccc;
   border-radius:7px;
+  font-size:14px;
+}
+
+textarea{
+  min-height:100px;
+  resize:vertical;
 }
 
 label{
-  font-weight:bold;
+  font-weight:600;
+  display:block;
+  margin-top:8px;
+}
+
+.message{
+  margin-top:10px;
+  font-weight:600;
+}
+
+.hidden{
+  display:none;
+}
+
+.table-wrap{
+  overflow-x:auto;
 }
 
 table{
   width:100%;
   border-collapse:collapse;
-  margin-top:15px;
+  min-width:1100px;
 }
 
-th,td{
-  padding:12px;
+th,
+td{
+  padding:12px 10px;
   border-bottom:1px solid #ddd;
   text-align:left;
   vertical-align:top;
+}
+
+th{
+  background:#f1f1f1;
 }
 
 .status{
   font-weight:bold;
 }
 
-#dashboard{
+.status.approved{
+  color:#198754;
+}
+
+.status.rejected{
+  color:#dc3545;
+}
+
+.status.pending{
+  color:#d97706;
+}
+
+.actions{
+  min-width:260px;
+}
+
+.small{
+  font-size:12px;
+  color:#666;
+}
+
+.photo-input{
+  margin-top:8px;
+  width:220px;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
   display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:1000;
 }
 
-#addArtist{
-  display:none;
+.modal.open{
+  display:flex;
 }
 
-.message{
-  margin-top:10px;
-  font-weight:bold;
+.modal-box{
+  background:white;
+  width:100%;
+  max-width:650px;
+  max-height:90vh;
+  overflow:auto;
+  border-radius:12px;
+  padding:24px;
 }
 
-.actions button{
-  margin-right:5px;
-  margin-bottom:5px;
+.modal-box h2{
+  margin-top:0;
 }
+
+.preview-img{
+  width:80px;
+  height:80px;
+  object-fit:cover;
+  border-radius:8px;
+  margin:4px;
+}
+
 </style>
 
 </head>
 
 <body>
 
-<div class="container">
-
-<h1>KalaaBook Admin</h1>
-
-<p>Manage artist applications and artists.</p>
-
-
 <!-- LOGIN -->
 
-<div id="loginBox" class="card">
+<div id="loginPage">
 
-<h2>Admin Login</h2>
+  <div class="card login">
 
-<label>Email</label>
-<input id="email" type="email" placeholder="Admin email">
+    <h2>KalaaBook Admin</h2>
 
-<label>Password</label>
-<input id="password" type="password" placeholder="Password">
+    <p>Admin Login</p>
 
-<button class="primary" onclick="login()">Login</button>
+    <label>Email</label>
 
-<p id="loginMessage" class="message"></p>
+    <input
+      type="email"
+      id="loginEmail"
+      placeholder="Admin email"
+    >
+
+    <label>Password</label>
+
+    <input
+      type="password"
+      id="loginPassword"
+      placeholder="Password"
+    >
+
+    <button
+      class="primary"
+      onclick="login()">
+      Login
+    </button>
+
+    <p
+      id="loginMessage"
+      class="message">
+    </p>
+
+  </div>
 
 </div>
 
 
-<!-- DASHBOARD -->
+<!-- ADMIN -->
 
-<div id="dashboard">
+<div id="adminPage" class="hidden">
 
-<div style="margin-top:20px;">
+<header>
 
-<button class="primary" onclick="showAddArtist()">
-+ Add Artist
-</button>
+  <h1>KalaaBook Admin Dashboard</h1>
 
-<button class="gray" onclick="loadApplications()">
-Refresh
-</button>
+  <button
+    class="red"
+    onclick="logout()">
+    Logout
+  </button>
 
-<button class="red" onclick="logout()">
-Logout
-</button>
-
-</div>
+</header>
 
 
 <!-- ADD ARTIST -->
 
-<div id="addArtist" class="card">
+<div class="card">
 
-<h2>Add Artist Manually</h2>
+  <h2>Add Artist</h2>
 
-<label>Full Name</label>
-<input id="artistName" type="text">
+  <p class="small">
+    Add an artist manually and approve them immediately.
+  </p>
 
-<label>WhatsApp</label>
-<input id="artistWhatsapp" type="text">
+  <button
+    class="green"
+    onclick="showAddArtist()">
+    Add & Approve Artist
+  </button>
 
-<label>City</label>
-<input id="artistCity" type="text">
-
-<label>Area</label>
-<input id="artistArea" type="text">
-
-<label>Category</label>
-
-<select id="artistCategory">
-
-<option value="">Select category</option>
-<option>Nail Art</option>
-<option>Mehendi</option>
-<option>Salon</option>
-
-</select>
+</div>
 
 
-<label>Specialties</label>
+<!-- ADD ARTIST FORM -->
 
-<input
-id="artistSpecialties"
-type="text"
-placeholder="Example: Bridal Mehendi, Arabic Mehendi"
->
+<div
+  id="addArtistBox"
+  class="card hidden">
 
+  <h2>Add & Approve Artist</h2>
 
-<label>Experience</label>
+  <label>Full Name</label>
 
-<input
-id="artistExperience"
-type="text"
-placeholder="Example: 5 years"
->
+  <input
+    id="addName"
+    placeholder="Artist name"
+  >
 
+  <label>WhatsApp</label>
 
-<label>Portfolio / Instagram</label>
+  <input
+    id="addWhatsapp"
+    placeholder="+91..."
+  >
 
-<input
-id="artistPortfolio"
-type="text"
-placeholder="Instagram username or link"
->
+  <label>City</label>
 
+  <input
+    id="addCity"
+    placeholder="City"
+  >
 
-<label>Work Mode</label>
+  <label>Area</label>
 
-<select id="artistWorkMode">
+  <input
+    id="addArea"
+    placeholder="Area"
+  >
 
-<option value="">Select</option>
-<option>Home</option>
-<option>Studio</option>
-<option>Both</option>
+  <label>Category</label>
 
-</select>
+  <select id="addCategory">
 
+    <option value="Nail Art">
+      Nail Art
+    </option>
 
-<label>Booking Volume</label>
+    <option value="Mehendi">
+      Mehendi
+    </option>
 
-<input
-id="artistBookings"
-type="text"
-placeholder="Example: 10-20 bookings/month"
->
+    <option value="Salon">
+      Salon
+    </option>
 
+  </select>
 
-<label>Team Size</label>
+  <label>Specialties</label>
 
-<input
-id="artistTeamSize"
-type="text"
-placeholder="Example: 2"
->
+  <input
+    id="addSpecialties"
+    placeholder="Nail Extension, Gel Nails, Nail Art"
+  >
 
+  <label>Experience</label>
 
-<label>Notes</label>
+  <input
+    id="addExperience"
+    placeholder="Example: 3 years"
+  >
 
-<textarea id="artistNotes"></textarea>
+  <label>Bio / Notes</label>
 
+  <textarea
+    id="addNotes"
+    placeholder="Artist bio">
+  </textarea>
 
-<label>Profile Photo</label>
+  <label>Instagram</label>
 
-<input
-id="artistProfilePhoto"
-type="file"
-accept="image/*"
->
+  <input
+    id="addInstagram"
+    placeholder="@username or Instagram URL"
+  >
 
+  <label>Services</label>
 
-<label>Portfolio Photos</label>
+  <input
+    id="addServices"
+    placeholder="Nail Extension, Gel Nails, Nail Art"
+  >
 
-<input
-id="artistPortfolioPhotos"
-type="file"
-accept="image/*"
-multiple
->
+  <label>Profile Photo</label>
 
+  <input
+    type="file"
+    id="addProfilePhoto"
+    accept="image/*"
+  >
 
-<p style="font-size:13px;color:#666;">
-Profile photo: 1 image. Portfolio: up to 6 images.
-</p>
+  <label>Portfolio Photos — maximum 6</label>
 
-<br>
+  <input
+    type="file"
+    id="addPortfolioPhotos"
+    accept="image/*"
+    multiple
+  >
 
+  <br>
 
-<button class="green" onclick="addArtist()">
-Add & Approve Artist
-</button>
+  <button
+    class="green"
+    onclick="addArtist()">
+    Add & Approve Artist
+  </button>
 
-class="primary"
-onclick="editArtist(${app.id})">
-Edit Artist
+  <button
+    class="gray"
+    onclick="hideAddArtist()">
+    Cancel
+  </button>
 
-<button class="gray" onclick="hideAddArtist()">
-Cancel
-</button>
-
-<p id="addMessage" class="message"></p>
+  <p
+    id="addMessage"
+    class="message">
+  </p>
 
 </div>
 
@@ -300,1016 +416,1511 @@ Cancel
 
 <div class="card">
 
-<h2>Artist Applications</h2>
+  <h2>Artist Applications</h2>
 
-<p id="loading">
-Loading applications...
-</p>
+  <button
+    class="primary"
+    onclick="loadApplications()">
+    Refresh
+  </button>
 
-<table id="applicationsTable">
+  <div class="table-wrap">
 
-<thead>
+    <table>
 
-<tr>
-<th>Name</th>
-<th>Category</th>
-<th>City</th>
-<th>WhatsApp</th>
-<th>Status</th>
-<th>Actions</th>
-</tr>
+      <thead>
 
-</thead>
+        <tr>
 
-<tbody id="applicationsBody"></tbody>
+          <th>ID</th>
+          <th>Date</th>
+          <th>Name</th>
+          <th>WhatsApp</th>
+          <th>Location</th>
+          <th>Category</th>
+          <th>Specialties</th>
+          <th>Experience</th>
+          <th>Status</th>
+          <th>Actions</th>
 
-</table>
+        </tr>
+
+      </thead>
+
+      <tbody id="applicationsBody">
+
+        <tr>
+
+          <td colspan="10">
+            Loading...
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
 
 </div>
 
 </div>
+
+
+<!-- EDIT MODAL -->
+
+<div
+  id="editModal"
+  class="modal">
+
+  <div class="modal-box">
+
+    <h2>Edit Artist</h2>
+
+    <input
+      type="hidden"
+      id="editId"
+    >
+
+    <label>Full Name</label>
+
+    <input
+      id="editName"
+    >
+
+    <label>WhatsApp</label>
+
+    <input
+      id="editWhatsapp"
+    >
+
+    <label>City</label>
+
+    <input
+      id="editCity"
+    >
+
+    <label>Area</label>
+
+    <input
+      id="editArea"
+    >
+
+    <label>Category</label>
+
+    <select id="editCategory">
+
+      <option value="Nail Art">
+        Nail Art
+      </option>
+
+      <option value="Mehendi">
+        Mehendi
+      </option>
+
+      <option value="Salon">
+        Salon
+      </option>
+
+    </select>
+
+    <label>Specialties</label>
+
+    <input
+      id="editSpecialties"
+    >
+
+    <label>Experience</label>
+
+    <input
+      id="editExperience"
+    >
+
+    <label>Bio / Notes</label>
+
+    <textarea
+      id="editNotes">
+    </textarea>
+
+    <label>Instagram</label>
+
+    <input
+      id="editInstagram"
+    >
+
+    <label>Services</label>
+
+    <input
+      id="editServices"
+      placeholder="Nail Extension, Gel Nails, Nail Art"
+    >
+
+    <p
+      id="editMessage"
+      class="message">
+    </p>
+
+    <button
+      class="green"
+      onclick="saveEdit()">
+      Save Changes
+    </button>
+
+    <button
+      class="gray"
+      onclick="closeEdit()">
+      Cancel
+    </button>
+
+  </div>
 
 </div>
 
 
 <script>
 
-/* SUPABASE SETTINGS */
+/* =========================
+   SUPABASE
+========================= */
 
 const SUPABASE_URL =
 'https://pmerqsrmgmlqirznegeb.supabase.co';
 
 const SUPABASE_KEY =
-'sb_publishable_QreawwcE_0ebjswoBAHrig_IxzryR5p';
+'YOUR_EXISTING_PUBLISHABLE_KEY';
 
 
-let accessToken = null;
+let ACCESS_TOKEN = '';
+
+let CURRENT_ARTIST = null;
 
 
-/* LOGIN */
+/* =========================
+   LOGIN
+========================= */
 
 async function login(){
 
-const email =
-document.getElementById('email').value.trim();
+  const email =
+    document.getElementById('loginEmail').value.trim();
 
-const password =
-document.getElementById('password').value;
+  const password =
+    document.getElementById('loginPassword').value;
 
-const msg =
-document.getElementById('loginMessage');
+  const msg =
+    document.getElementById('loginMessage');
 
-msg.textContent='Logging in...';
+  msg.textContent = 'Logging in...';
 
-try{
+  try{
 
-const response = await fetch(
-SUPABASE_URL +
-'/auth/v1/token?grant_type=password',
-{
-method:'POST',
+    const response = await fetch(
+      SUPABASE_URL +
+      '/auth/v1/token?grant_type=password',
+      {
+        method:'POST',
 
-headers:{
-'Content-Type':'application/json',
-'apikey':SUPABASE_KEY
-},
+        headers:{
+          'apikey':SUPABASE_KEY,
+          'Content-Type':'application/json'
+        },
 
-body:JSON.stringify({
-email:email,
-password:password
-})
-}
-);
+        body:JSON.stringify({
+          email:email,
+          password:password
+        })
+      }
+    );
 
-const data = await response.json();
+    const data = await response.json();
 
-if(!response.ok){
+    if(!response.ok){
 
-throw new Error(
-data.error_description ||
-data.msg ||
-'Login failed'
-);
+      msg.textContent =
+        data.error_description ||
+        data.msg ||
+        'Login failed';
 
-}
+      return;
+    }
 
-accessToken = data.access_token;
+    ACCESS_TOKEN =
+      data.access_token;
 
-document.getElementById('loginBox')
-.style.display='none';
+    sessionStorage.setItem(
+      'kalaa_admin_token',
+      ACCESS_TOKEN
+    );
 
-document.getElementById('dashboard')
-.style.display='block';
+    document
+      .getElementById('loginPage')
+      .classList.add('hidden');
 
-loadApplications();
+    document
+      .getElementById('adminPage')
+      .classList.remove('hidden');
 
-}catch(error){
+    loadApplications();
 
-msg.textContent=error.message;
+  }catch(error){
 
-}
+    msg.textContent =
+      'Login error: ' + error.message;
 
-}
-
-
-/* LOAD APPLICATIONS */
-
-async function loadApplications(){
-
-const loading =
-document.getElementById('loading');
-
-const body =
-document.getElementById('applicationsBody');
-
-loading.textContent='Loading applications...';
-
-try{
-
-const response = await fetch(
-
-SUPABASE_URL +
-'/rest/v1/artist_applications?select=*&order=created_at.desc',
-
-{
-headers:{
-'apikey':SUPABASE_KEY,
-'Authorization':'Bearer '+accessToken
-}
-}
-
-);
-
-const data = await response.json();
-
-if(!response.ok){
-
-throw new Error(
-data.message ||
-'Could not load applications'
-);
+  }
 
 }
 
-body.innerHTML='';
 
-if(data.length===0){
+/* =========================
+   AUTO LOGIN
+========================= */
 
-body.innerHTML=
-'<tr><td colspan="6">No applications yet.</td></tr>';
+window.addEventListener('load',function(){
 
-}else{
+  const saved =
+    sessionStorage.getItem(
+      'kalaa_admin_token'
+    );
 
-data.forEach(app => {
+  if(saved){
 
-const row =
-document.createElement('tr');
+    ACCESS_TOKEN = saved;
 
-row.innerHTML=`
+    document
+      .getElementById('loginPage')
+      .classList.add('hidden');
 
-<td>
-<strong>
-${escapeHtml(app.full_name || '')}
-</strong>
-</td>
+    document
+      .getElementById('adminPage')
+      .classList.remove('hidden');
 
-<td>
-${escapeHtml(app.category || '')}
-</td>
+    loadApplications();
 
-<td>
-${escapeHtml(app.city || '')}
-</td>
-
-<td>
-${escapeHtml(app.whatsapp || '')}
-</td>
-
-<td class="status">
-${escapeHtml(app.status || 'pending')}
-</td>
-
-<td class="actions">
-
-<button
-class="green"
-onclick="updateStatus(${app.id},'approved')">
-Approve
-</button>
-
-<button
-class="red"
-onclick="updateStatus(${app.id},'rejected')">
-Reject
-</button>
-
-<br>
-
-<input
-type="file"
-id="profile-${app.id}"
-accept="image/*"
-style="margin-top:8px;width:220px;"
->
-
-<button
-class="primary"
-onclick="uploadProfilePhoto(${app.id})">
-Upload Profile Photo
-</button>
-
-<br>
-
-<input
-type="file"
-id="portfolio-${app.id}"
-accept="image/*"
-multiple
-style="margin-top:8px;width:220px;"
->
-
-<button
-class="primary"
-onclick="uploadPortfolioPhotos(${app.id})">
-Upload Portfolio Photos
-</button>
-
-<p style="font-size:12px;color:#666;">
-Profile: 1 photo<br>
-Portfolio: maximum 6 photos
-</p>
-
-</td>
-
-`;
-
-body.appendChild(row);
+  }
 
 });
 
-}
 
-loading.textContent='';
-
-}catch(error){
-
-loading.textContent=
-'Error: '+error.message;
-
-}
-
-}
-
-
-/* APPROVE / REJECT */
-
-async function updateStatus(id,status){
-
-try{
-
-const response = await fetch(
-
-SUPABASE_URL +
-'/rest/v1/artist_applications?id=eq.' +
-id,
-
-{
-method:'PATCH',
-
-headers:{
-'apikey':SUPABASE_KEY,
-'Authorization':'Bearer '+accessToken,
-'Content-Type':'application/json',
-'Prefer':'return=minimal'
-},
-
-body:JSON.stringify({
-status:status
-})
-
-}
-
-);
-
-if(!response.ok){
-
-const error =
-await response.json();
-
-throw new Error(
-error.message ||
-'Could not update status'
-);
-
-}
-
-loadApplications();
-
-}catch(error){
-
-alert(error.message);
-
-}
-
-}
-
-
-/* SHOW ADD ARTIST */
-
-function showAddArtist(){
-
-document.getElementById('addArtist')
-.style.display='block';
-
-window.scrollTo({
-top:document.getElementById('addArtist')
-.offsetTop,
-behavior:'smooth'
-});
-
-}
-
-
-/* HIDE ADD ARTIST */
-
-function hideAddArtist(){
-
-document.getElementById('addArtist')
-.style.display='none';
-
-}
-
-
-/* ADD ARTIST */
-
-async function addArtist(){
-
-const message =
-document.getElementById('addMessage');
-
-message.textContent='Adding artist...';
-
-
-const profilePhoto =
-document.getElementById(
-'artistProfilePhoto'
-).files[0];
-
-
-const portfolioPhotos =
-document.getElementById(
-'artistPortfolioPhotos'
-).files;
-
-
-if(portfolioPhotos.length > 6){
-
-message.textContent=
-'Please select a maximum of 6 portfolio photos.';
-
-return;
-
-}
-
-
-const artist={
-
-full_name:
-document.getElementById(
-'artistName'
-).value.trim(),
-
-whatsapp:
-document.getElementById(
-'artistWhatsapp'
-).value.trim(),
-
-city:
-document.getElementById(
-'artistCity'
-).value.trim(),
-
-area:
-document.getElementById(
-'artistArea'
-).value.trim(),
-
-category:
-document.getElementById(
-'artistCategory'
-).value,
-
-specialties:
-document.getElementById(
-'artistSpecialties'
-).value.trim(),
-
-experience:
-document.getElementById(
-'artistExperience'
-).value.trim(),
-
-portfolio:
-document.getElementById(
-'artistPortfolio'
-).value.trim(),
-
-work_mode:
-document.getElementById(
-'artistWorkMode'
-).value,
-
-bookings:
-document.getElementById(
-'artistBookings'
-).value.trim(),
-
-team_size:
-document.getElementById(
-'artistTeamSize'
-).value.trim(),
-
-notes:
-document.getElementById(
-'artistNotes'
-).value.trim(),
-
-consent:true,
-
-updates:false,
-
-status:'approved',
-
-services:[]
-
-};
-
-
-if(!artist.full_name){
-
-message.textContent=
-'Please enter the artist name.';
-
-return;
-
-}
-
-
-try{
-
-let profilePhotoUrl='';
-
-let portfolioPhotoUrls=[];
-
-
-/* PROFILE PHOTO */
-
-if(profilePhoto){
-
-const profilePath=
-'artists/' +
-Date.now() +
-'-profile-' +
-profilePhoto.name.replace(
-/[^a-zA-Z0-9._-]/g,
-'_'
-);
-
-
-const upload =
-await fetch(
-
-SUPABASE_URL +
-'/storage/v1/object/artist-photos/' +
-profilePath,
-
-{
-method:'POST',
-
-headers:{
-'apikey':SUPABASE_KEY,
-'Authorization':
-'Bearer '+accessToken,
-'Content-Type':
-profilePhoto.type
-},
-
-body:profilePhoto
-
-}
-
-);
-
-
-if(!upload.ok){
-
-const error =
-await upload.json();
-
-throw new Error(
-error.message ||
-'Profile photo upload failed'
-);
-
-}
-
-
-profilePhotoUrl=
-
-SUPABASE_URL +
-'/storage/v1/object/public/artist-photos/' +
-profilePath;
-
-}
-
-
-/* PORTFOLIO PHOTOS */
-
-for(
-let i=0;
-i<portfolioPhotos.length;
-i++
-){
-
-const photo =
-portfolioPhotos[i];
-
-const photoPath=
-'artists/' +
-Date.now() +
-'-portfolio-' +
-i +
-'-' +
-photo.name.replace(
-/[^a-zA-Z0-9._-]/g,
-'_'
-);
-
-
-const upload =
-await fetch(
-
-SUPABASE_URL +
-'/storage/v1/object/artist-photos/' +
-photoPath,
-
-{
-method:'POST',
-
-headers:{
-'apikey':SUPABASE_KEY,
-'Authorization':
-'Bearer '+accessToken,
-'Content-Type':
-photo.type
-},
-
-body:photo
-
-}
-
-);
-
-
-if(!upload.ok){
-
-const error =
-await upload.json();
-
-throw new Error(
-error.message ||
-'Portfolio photo upload failed'
-);
-
-}
-
-
-portfolioPhotoUrls.push(
-
-SUPABASE_URL +
-'/storage/v1/object/public/artist-photos/' +
-photoPath
-
-);
-
-}
-
-
-/* PHOTO URLS */
-
-artist.profile_photo =
-profilePhotoUrl;
-
-artist.portfolio_photos =
-portfolioPhotoUrls;
-
-
-/* INSERT ARTIST */
-
-const response =
-await fetch(
-
-SUPABASE_URL +
-'/rest/v1/artist_applications',
-
-{
-method:'POST',
-
-headers:{
-'apikey':SUPABASE_KEY,
-'Authorization':
-'Bearer '+accessToken,
-'Content-Type':
-'application/json',
-'Prefer':'return=minimal'
-},
-
-body:JSON.stringify(artist)
-
-}
-
-);
-
-
-if(!response.ok){
-
-const error =
-await response.json();
-
-throw new Error(
-error.message ||
-'Could not add artist'
-);
-
-}
-
-
-message.textContent=
-'Artist added successfully!';
-
-
-clearArtistForm();
-
-loadApplications();
-
-
-}catch(error){
-
-message.textContent=
-'Error: '+error.message;
-
-}
-
-}
-
-
-/* CLEAR FORM */
-
-function clearArtistForm(){
-
-document.getElementById(
-'artistName'
-).value='';
-
-document.getElementById(
-'artistWhatsapp'
-).value='';
-
-document.getElementById(
-'artistCity'
-).value='';
-
-document.getElementById(
-'artistArea'
-).value='';
-
-document.getElementById(
-'artistCategory'
-).value='';
-
-document.getElementById(
-'artistSpecialties'
-).value='';
-
-document.getElementById(
-'artistExperience'
-).value='';
-
-document.getElementById(
-'artistPortfolio'
-).value='';
-
-document.getElementById(
-'artistWorkMode'
-).value='';
-
-document.getElementById(
-'artistBookings'
-).value='';
-
-document.getElementById(
-'artistTeamSize'
-).value='';
-
-document.getElementById(
-'artistNotes'
-).value='';
-
-document.getElementById(
-'artistProfilePhoto'
-).value='';
-
-document.getElementById(
-'artistPortfolioPhotos'
-).value='';
-
-}
-
-/* UPLOAD PROFILE PHOTO */
-
-async function uploadProfilePhoto(id){
-
-const input =
-document.getElementById('profile-' + id);
-
-if(!input.files.length){
-alert('Please select a profile photo first.');
-return;
-}
-
-const photo = input.files[0];
-
-try{
-
-const path =
-'artists/' +
-id +
-'-profile-' +
-Date.now() +
-'-' +
-photo.name.replace(
-/[^a-zA-Z0-9._-]/g,
-'_'
-);
-
-const upload =
-await fetch(
-SUPABASE_URL +
-'/storage/v1/object/artist-photos/' +
-path,
-{
-method:'POST',
-headers:{
-'apikey':SUPABASE_KEY,
-'Authorization':'Bearer ' + accessToken,
-'Content-Type':photo.type
-},
-body:photo
-}
-);
-
-if(!upload.ok){
-const error = await upload.json();
-throw new Error(
-error.message ||
-'Profile photo upload failed'
-);
-}
-
-const photoUrl =
-SUPABASE_URL +
-'/storage/v1/object/public/artist-photos/' +
-path;
-
-const update =
-await fetch(
-SUPABASE_URL +
-'/rest/v1/artist_applications?id=eq.' +
-id,
-{
-method:'PATCH',
-headers:{
-'apikey':SUPABASE_KEY,
-'Authorization':'Bearer ' + accessToken,
-'Content-Type':'application/json',
-'Prefer':'return=minimal'
-},
-body:JSON.stringify({
-profile_photo:photoUrl
-})
-}
-);
-
-if(!update.ok){
-const error = await update.json();
-throw new Error(
-error.message ||
-'Could not save profile photo'
-);
-}
-
-alert('Profile photo uploaded successfully.');
-
-input.value='';
-
-loadApplications();
-
-}catch(error){
-
-alert(error.message);
-
-}
-
-}
-
-
-/* UPLOAD PORTFOLIO PHOTOS */
-
-async function uploadPortfolioPhotos(id){
-
-const input =
-document.getElementById('portfolio-' + id);
-
-if(!input.files.length){
-alert('Please select portfolio photos first.');
-return;
-}
-
-if(input.files.length > 6){
-alert('Please select a maximum of 6 photos.');
-return;
-}
-
-try{
-
-const photoUrls=[];
-
-for(let i=0;i<input.files.length;i++){
-
-const photo=input.files[i];
-
-const path =
-'artists/' +
-id +
-'-portfolio-' +
-Date.now() +
-'-' +
-i +
-'-' +
-photo.name.replace(
-/[^a-zA-Z0-9._-]/g,
-'_'
-);
-
-const upload =
-await fetch(
-SUPABASE_URL +
-'/storage/v1/object/artist-photos/' +
-path,
-{
-method:'POST',
-headers:{
-'apikey':SUPABASE_KEY,
-'Authorization':'Bearer ' + accessToken,
-'Content-Type':photo.type
-},
-body:photo
-}
-);
-
-if(!upload.ok){
-const error=await upload.json();
-throw new Error(
-error.message ||
-'Portfolio photo upload failed'
-);
-}
-
-photoUrls.push(
-SUPABASE_URL +
-'/storage/v1/object/public/artist-photos/' +
-path
-);
-
-}
-
-
-/* GET CURRENT PORTFOLIO */
-
-const current =
-await fetch(
-SUPABASE_URL +
-'/rest/v1/artist_applications?id=eq.' +
-id +
-'&select=portfolio_photos',
-{
-headers:{
-'apikey':SUPABASE_KEY,
-'Authorization':'Bearer ' + accessToken
-}
-}
-);
-
-if(!current.ok){
-throw new Error(
-'Could not read current portfolio.'
-);
-}
-
-const currentData =
-await current.json();
-
-const existing =
-currentData[0] &&
-Array.isArray(currentData[0].portfolio_photos)
-? currentData[0].portfolio_photos
-: [];
-
-const combined =
-existing.concat(photoUrls);
-
-if(combined.length > 6){
-alert(
-'This artist already has ' +
-existing.length +
-' portfolio photos. Maximum is 6.'
-);
-return;
-}
-
-
-/* SAVE PORTFOLIO */
-
-const update =
-await fetch(
-SUPABASE_URL +
-'/rest/v1/artist_applications?id=eq.' +
-id,
-{
-method:'PATCH',
-headers:{
-'apikey':SUPABASE_KEY,
-'Authorization':'Bearer ' + accessToken,
-'Content-Type':'application/json',
-'Prefer':'return=minimal'
-},
-body:JSON.stringify({
-portfolio_photos:combined
-})
-}
-);
-
-if(!update.ok){
-const error=await update.json();
-throw new Error(
-error.message ||
-'Could not save portfolio photos'
-);
-}
-
-alert(
-photoUrls.length +
-' portfolio photo(s) uploaded successfully.'
-);
-
-input.value='';
-
-loadApplications();
-
-}catch(error){
-
-alert(error.message);
-
-}
-
-}
-/* LOGOUT */
+/* =========================
+   LOGOUT
+========================= */
 
 function logout(){
 
-accessToken=null;
+  ACCESS_TOKEN = '';
 
-document.getElementById(
-'dashboard'
-).style.display='none';
+  sessionStorage.removeItem(
+    'kalaa_admin_token'
+  );
 
-document.getElementById(
-'loginBox'
-).style.display='block';
+  location.reload();
 
 }
 
 
-/* SECURITY */
+/* =========================
+   SUPABASE HEADERS
+========================= */
+
+function authHeaders(){
+
+  return {
+
+    'apikey':SUPABASE_KEY,
+
+    'Authorization':
+      'Bearer ' + ACCESS_TOKEN,
+
+    'Content-Type':
+      'application/json'
+
+  };
+
+}
+
+
+/* =========================
+   LOAD APPLICATIONS
+========================= */
+
+async function loadApplications(){
+
+  const body =
+    document.getElementById(
+      'applicationsBody'
+    );
+
+  body.innerHTML =
+    '<tr><td colspan="10">Loading...</td></tr>';
+
+  try{
+
+    const response = await fetch(
+
+      SUPABASE_URL +
+      '/rest/v1/artist_applications' +
+      '?select=*' +
+      '&order=created_at.desc',
+
+      {
+        headers:authHeaders()
+      }
+
+    );
+
+    if(!response.ok){
+
+      const error =
+        await response.text();
+
+      body.innerHTML =
+        '<tr><td colspan="10">Error loading applications.</td></tr>';
+
+      console.error(error);
+
+      return;
+    }
+
+    const apps =
+      await response.json();
+
+    if(!apps.length){
+
+      body.innerHTML =
+        '<tr><td colspan="10">No applications yet.</td></tr>';
+
+      return;
+    }
+
+    body.innerHTML = '';
+
+    apps.forEach(function(app){
+
+      const tr =
+        document.createElement('tr');
+
+      const date =
+        app.created_at
+          ? new Date(
+              app.created_at
+            ).toLocaleString()
+          : '';
+
+      const status =
+        app.status || 'pending';
+
+      tr.innerHTML = `
+
+        <td>${escapeHtml(app.id)}</td>
+
+        <td>${escapeHtml(date)}</td>
+
+        <td>
+          <strong>
+            ${escapeHtml(app.full_name || '')}
+          </strong>
+        </td>
+
+        <td>
+          ${escapeHtml(app.whatsapp || '')}
+        </td>
+
+        <td>
+          ${escapeHtml(app.city || '')}
+          ${app.area ? '<br>' + escapeHtml(app.area) : ''}
+        </td>
+
+        <td>
+          ${escapeHtml(app.category || '')}
+        </td>
+
+        <td>
+          ${escapeHtml(app.specialties || '')}
+        </td>
+
+        <td>
+          ${escapeHtml(app.experience || '')}
+        </td>
+
+        <td>
+          <span class="status ${status}">
+            ${escapeHtml(status)}
+          </span>
+        </td>
+
+        <td class="actions">
+
+          <button
+            class="green"
+            onclick="updateStatus(${app.id},'approved')">
+            Approve
+          </button>
+
+          <button
+            class="red"
+            onclick="updateStatus(${app.id},'rejected')">
+            Reject
+          </button>
+
+          <br>
+
+          <button
+            class="primary"
+            onclick="openEdit(${app.id})">
+            Edit Artist
+          </button>
+
+          <br>
+
+          <input
+            type="file"
+            id="profile-${app.id}"
+            accept="image/*"
+            class="photo-input"
+          >
+
+          <button
+            class="primary"
+            onclick="uploadProfilePhoto(${app.id})">
+            Upload Profile Photo
+          </button>
+
+          <br>
+
+          <input
+            type="file"
+            id="portfolio-${app.id}"
+            accept="image/*"
+            multiple
+            class="photo-input"
+          >
+
+          <button
+            class="primary"
+            onclick="uploadPortfolioPhotos(${app.id})">
+            Upload Portfolio Photos
+          </button>
+
+          <p class="small">
+            Profile: 1 photo<br>
+            Portfolio: maximum 6 photos
+          </p>
+
+        </td>
+
+      `;
+
+      body.appendChild(tr);
+
+    });
+
+  }catch(error){
+
+    console.error(error);
+
+    body.innerHTML =
+      '<tr><td colspan="10">Connection error.</td></tr>';
+
+  }
+
+}
+
+
+/* =========================
+   UPDATE STATUS
+========================= */
+
+async function updateStatus(id,status){
+
+  const message =
+    status === 'approved'
+      ? 'Approve this artist?'
+      : 'Reject this artist?';
+
+  if(!confirm(message)) return;
+
+  try{
+
+    const response =
+      await fetch(
+
+        SUPABASE_URL +
+        '/rest/v1/artist_applications?id=eq.' +
+        encodeURIComponent(id),
+
+        {
+          method:'PATCH',
+
+          headers:{
+            ...authHeaders(),
+            'Prefer':'return=minimal'
+          },
+
+          body:JSON.stringify({
+            status:status
+          })
+
+        }
+
+      );
+
+    if(!response.ok){
+
+      const error =
+        await response.text();
+
+      alert(
+        'Could not update status.\n' +
+        error
+      );
+
+      return;
+    }
+
+    alert(
+      status === 'approved'
+        ? 'Artist approved!'
+        : 'Artist rejected!'
+    );
+
+    loadApplications();
+
+  }catch(error){
+
+    alert(
+      'Error: ' + error.message
+    );
+
+  }
+
+}
+
+
+/* =========================
+   ADD ARTIST UI
+========================= */
+
+function showAddArtist(){
+
+  document
+    .getElementById('addArtistBox')
+    .classList.remove('hidden');
+
+}
+
+function hideAddArtist(){
+
+  document
+    .getElementById('addArtistBox')
+    .classList.add('hidden');
+
+}
+
+
+/* =========================
+   ADD ARTIST
+========================= */
+
+async function addArtist(){
+
+  const msg =
+    document.getElementById(
+      'addMessage'
+    );
+
+  const name =
+    document.getElementById(
+      'addName'
+    ).value.trim();
+
+  if(!name){
+
+    msg.textContent =
+      'Artist name is required.';
+
+    return;
+  }
+
+  msg.textContent =
+    'Adding artist...';
+
+  const servicesText =
+    document.getElementById(
+      'addServices'
+    ).value.trim();
+
+  const services =
+    servicesText
+      ? servicesText
+          .split(',')
+          .map(function(x){
+            return x.trim();
+          })
+          .filter(Boolean)
+      : [];
+
+  try{
+
+    const response =
+      await fetch(
+
+        SUPABASE_URL +
+        '/rest/v1/artist_applications',
+
+        {
+          method:'POST',
+
+          headers:{
+            ...authHeaders(),
+            'Prefer':
+              'return=representation'
+          },
+
+          body:JSON.stringify({
+
+            full_name:name,
+
+            whatsapp:
+              document.getElementById(
+                'addWhatsapp'
+              ).value.trim(),
+
+            city:
+              document.getElementById(
+                'addCity'
+              ).value.trim(),
+
+            area:
+              document.getElementById(
+                'addArea'
+              ).value.trim(),
+
+            category:
+              document.getElementById(
+                'addCategory'
+              ).value,
+
+            specialties:
+              document.getElementById(
+                'addSpecialties'
+              ).value.trim(),
+
+            experience:
+              document.getElementById(
+                'addExperience'
+              ).value.trim(),
+
+            notes:
+              document.getElementById(
+                'addNotes'
+              ).value.trim(),
+
+            portfolio:
+              document.getElementById(
+                'addInstagram'
+              ).value.trim(),
+
+            services:services,
+
+            status:'approved',
+
+            consent:true
+
+          })
+
+        }
+
+      );
+
+    if(!response.ok){
+
+      const error =
+        await response.text();
+
+      msg.textContent =
+        'Could not add artist: ' +
+        error;
+
+      return;
+    }
+
+    const created =
+      await response.json();
+
+    const artist =
+      created[0];
+
+    const id =
+      artist.id;
+
+    /* PROFILE PHOTO */
+
+    const profileInput =
+      document.getElementById(
+        'addProfilePhoto'
+      );
+
+    if(
+      profileInput.files &&
+      profileInput.files.length
+    ){
+
+      await uploadFileToArtist(
+        id,
+        profileInput.files[0],
+        'profile'
+      );
+
+    }
+
+
+    /* PORTFOLIO */
+
+    const portfolioInput =
+      document.getElementById(
+        'addPortfolioPhotos'
+      );
+
+    const files =
+      Array.from(
+        portfolioInput.files || []
+      ).slice(0,6);
+
+    const urls = [];
+
+    for(
+      let i=0;
+      i<files.length;
+      i++
+    ){
+
+      const url =
+        await uploadFileToArtist(
+          id,
+          files[i],
+          'portfolio',
+          i
+        );
+
+      if(url) urls.push(url);
+
+    }
+
+    if(urls.length){
+
+      await fetch(
+
+        SUPABASE_URL +
+        '/rest/v1/artist_applications?id=eq.' +
+        id,
+
+        {
+          method:'PATCH',
+
+          headers:{
+            ...authHeaders(),
+            'Prefer':
+              'return=minimal'
+          },
+
+          body:JSON.stringify({
+            portfolio_photos:urls
+          })
+
+        }
+
+      );
+
+    }
+
+    alert(
+      'Artist added and approved successfully!'
+    );
+
+    hideAddArtist();
+
+    clearAddForm();
+
+    loadApplications();
+
+  }catch(error){
+
+    msg.textContent =
+      'Error: ' + error.message;
+
+  }
+
+}
+
+
+/* =========================
+   CLEAR ADD FORM
+========================= */
+
+function clearAddForm(){
+
+  const ids = [
+
+    'addName',
+    'addWhatsapp',
+    'addCity',
+    'addArea',
+    'addSpecialties',
+    'addExperience',
+    'addNotes',
+    'addInstagram',
+    'addServices'
+
+  ];
+
+  ids.forEach(function(id){
+
+    document.getElementById(
+      id
+    ).value = '';
+
+  });
+
+  document.getElementById(
+    'addProfilePhoto'
+  ).value = '';
+
+  document.getElementById(
+    'addPortfolioPhotos'
+  ).value = '';
+
+}
+
+
+/* =========================
+   UPLOAD FILE
+========================= */
+
+async function uploadFileToArtist(
+  id,
+  file,
+  type,
+  index
+){
+
+  if(!file) return '';
+
+  const safeName =
+    file.name
+      .replace(/[^a-zA-Z0-9._-]/g,'-');
+
+  const timestamp =
+    Date.now();
+
+  let filename;
+
+  if(type === 'profile'){
+
+    filename =
+      'artists/' +
+      id +
+      '-profile-' +
+      timestamp +
+      '-' +
+      safeName;
+
+  }else{
+
+    filename =
+      'artists/' +
+      id +
+      '-portfolio-' +
+      timestamp +
+      '-' +
+      index +
+      '-' +
+      safeName;
+
+  }
+
+  const upload =
+    await fetch(
+
+      SUPABASE_URL +
+      '/storage/v1/object/artist-photos/' +
+      filename,
+
+      {
+        method:'POST',
+
+        headers:{
+          'apikey':SUPABASE_KEY,
+          'Authorization':
+            'Bearer ' + ACCESS_TOKEN,
+          'Content-Type':
+            file.type || 'application/octet-stream'
+        },
+
+        body:file
+
+      }
+
+    );
+
+  if(!upload.ok){
+
+    const error =
+      await upload.text();
+
+    throw new Error(
+      'Photo upload failed: ' +
+      error
+    );
+
+  }
+
+  return (
+    SUPABASE_URL +
+    '/storage/v1/object/public/artist-photos/' +
+    filename
+  );
+
+}
+
+
+/* =========================
+   PROFILE PHOTO
+========================= */
+
+async function uploadProfilePhoto(id){
+
+  const input =
+    document.getElementById(
+      'profile-' + id
+    );
+
+  if(
+    !input ||
+    !input.files ||
+    !input.files.length
+  ){
+
+    alert(
+      'Please select a profile photo first.'
+    );
+
+    return;
+  }
+
+  try{
+
+    const file =
+      input.files[0];
+
+    const url =
+      await uploadFileToArtist(
+        id,
+        file,
+        'profile',
+        0
+      );
+
+    const response =
+      await fetch(
+
+        SUPABASE_URL +
+        '/rest/v1/artist_applications?id=eq.' +
+        id,
+
+        {
+          method:'PATCH',
+
+          headers:{
+            ...authHeaders(),
+            'Prefer':
+              'return=minimal'
+          },
+
+          body:JSON.stringify({
+            profile_photo:url
+          })
+
+        }
+
+      );
+
+    if(!response.ok){
+
+      const error =
+        await response.text();
+
+      alert(
+        'Could not save profile photo.\n' +
+        error
+      );
+
+      return;
+    }
+
+    alert(
+      'Profile photo uploaded successfully!'
+    );
+
+    input.value = '';
+
+    loadApplications();
+
+  }catch(error){
+
+    alert(
+      'Upload error: ' +
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================
+   PORTFOLIO PHOTOS
+========================= */
+
+async function uploadPortfolioPhotos(id){
+
+  const input =
+    document.getElementById(
+      'portfolio-' + id
+    );
+
+  if(
+    !input ||
+    !input.files ||
+    !input.files.length
+  ){
+
+    alert(
+      'Please select portfolio photos first.'
+    );
+
+    return;
+  }
+
+  const files =
+    Array.from(
+      input.files
+    ).slice(0,6);
+
+  if(input.files.length > 6){
+
+    alert(
+      'Maximum 6 photos can be selected.'
+    );
+
+  }
+
+  try{
+
+    const getResponse =
+      await fetch(
+
+        SUPABASE_URL +
+        '/rest/v1/artist_applications?id=eq.' +
+        id +
+        '&select=portfolio_photos',
+
+        {
+          headers:authHeaders()
+        }
+
+      );
+
+    const existingData =
+      await getResponse.json();
+
+    const existing =
+      Array.isArray(
+        existingData[0]?.portfolio_photos
+      )
+        ? existingData[0].portfolio_photos
+        : [];
+
+    if(
+      existing.length +
+      files.length > 6
+    ){
+
+      alert(
+        'This artist already has ' +
+        existing.length +
+        ' portfolio photos. Maximum is 6.'
+      );
+
+      return;
+
+    }
+
+    const newUrls = [];
+
+    for(
+      let i=0;
+      i<files.length;
+      i++
+    ){
+
+      const url =
+        await uploadFileToArtist(
+          id,
+          files[i],
+          'portfolio',
+          i
+        );
+
+      if(url){
+        newUrls.push(url);
+      }
+
+    }
+
+    const combined =
+      existing.concat(newUrls);
+
+    const response =
+      await fetch(
+
+        SUPABASE_URL +
+        '/rest/v1/artist_applications?id=eq.' +
+        id,
+
+        {
+          method:'PATCH',
+
+          headers:{
+            ...authHeaders(),
+            'Prefer':
+              'return=minimal'
+          },
+
+          body:JSON.stringify({
+            portfolio_photos:combined
+          })
+
+        }
+
+      );
+
+    if(!response.ok){
+
+      const error =
+        await response.text();
+
+      alert(
+        'Could not save portfolio photos.\n' +
+        error
+      );
+
+      return;
+    }
+
+    alert(
+      'Portfolio photos uploaded successfully!'
+    );
+
+    input.value = '';
+
+    loadApplications();
+
+  }catch(error){
+
+    alert(
+      'Upload error: ' +
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================
+   OPEN EDIT
+========================= */
+
+async function openEdit(id){
+
+  try{
+
+    const response =
+      await fetch(
+
+        SUPABASE_URL +
+        '/rest/v1/artist_applications?id=eq.' +
+        id +
+        '&select=*',
+
+        {
+          headers:authHeaders()
+        }
+
+      );
+
+    const data =
+      await response.json();
+
+    if(
+      !response.ok ||
+      !data.length
+    ){
+
+      alert(
+        'Artist not found.'
+      );
+
+      return;
+    }
+
+    const a =
+      data[0];
+
+    CURRENT_ARTIST = a;
+
+    document.getElementById(
+      'editId'
+    ).value = a.id;
+
+    document.getElementById(
+      'editName'
+    ).value = a.full_name || '';
+
+    document.getElementById(
+      'editWhatsapp'
+    ).value = a.whatsapp || '';
+
+    document.getElementById(
+      'editCity'
+    ).value = a.city || '';
+
+    document.getElementById(
+      'editArea'
+    ).value = a.area || '';
+
+    document.getElementById(
+      'editCategory'
+    ).value = a.category || 'Nail Art';
+
+    document.getElementById(
+      'editSpecialties'
+    ).value = a.specialties || '';
+
+    document.getElementById(
+      'editExperience'
+    ).value = a.experience || '';
+
+    document.getElementById(
+      'editNotes'
+    ).value = a.notes || '';
+
+    document.getElementById(
+      'editInstagram'
+    ).value = a.portfolio || '';
+
+    let services = '';
+
+    if(
+      Array.isArray(a.services)
+    ){
+
+      services =
+        a.services.join(', ');
+
+    }
+
+    document.getElementById(
+      'editServices'
+    ).value = services;
+
+    document.getElementById(
+      'editMessage'
+    ).textContent = '';
+
+    document.getElementById(
+      'editModal'
+    ).classList.add('open');
+
+  }catch(error){
+
+    alert(
+      'Error loading artist: ' +
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================
+   SAVE EDIT
+========================= */
+
+async function saveEdit(){
+
+  const id =
+    document.getElementById(
+      'editId'
+    ).value;
+
+  const msg =
+    document.getElementById(
+      'editMessage'
+    );
+
+  const servicesText =
+    document.getElementById(
+      'editServices'
+    ).value.trim();
+
+  const services =
+    servicesText
+      ? servicesText
+          .split(',')
+          .map(function(x){
+            return x.trim();
+          })
+          .filter(Boolean)
+      : [];
+
+  msg.textContent =
+    'Saving...';
+
+  try{
+
+    const response =
+      await fetch(
+
+        SUPABASE_URL +
+        '/rest/v1/artist_applications?id=eq.' +
+        encodeURIComponent(id),
+
+        {
+          method:'PATCH',
+
+          headers:{
+            ...authHeaders(),
+            'Prefer':
+              'return=minimal'
+          },
+
+          body:JSON.stringify({
+
+            full_name:
+              document.getElementById(
+                'editName'
+              ).value.trim(),
+
+            whatsapp:
+              document.getElementById(
+                'editWhatsapp'
+              ).value.trim(),
+
+            city:
+              document.getElementById(
+                'editCity'
+              ).value.trim(),
+
+            area:
+              document.getElementById(
+                'editArea'
+              ).value.trim(),
+
+            category:
+              document.getElementById(
+                'editCategory'
+              ).value,
+
+            specialties:
+              document.getElementById(
+                'editSpecialties'
+              ).value.trim(),
+
+            experience:
+              document.getElementById(
+                'editExperience'
+              ).value.trim(),
+
+            notes:
+              document.getElementById(
+                'editNotes'
+              ).value.trim(),
+
+            portfolio:
+              document.getElementById(
+                'editInstagram'
+              ).value.trim(),
+
+            services:services
+
+          })
+
+        }
+
+      );
+
+    if(!response.ok){
+
+      const error =
+        await response.text();
+
+      msg.textContent =
+        'Could not save: ' +
+        error;
+
+      return;
+    }
+
+    alert(
+      'Artist updated successfully!'
+    );
+
+    closeEdit();
+
+    loadApplications();
+
+  }catch(error){
+
+    msg.textContent =
+      'Error: ' +
+      error.message;
+
+  }
+
+}
+
+
+/* =========================
+   CLOSE EDIT
+========================= */
+
+function closeEdit(){
+
+  document
+    .getElementById('editModal')
+    .classList.remove('open');
+
+  CURRENT_ARTIST = null;
+
+}
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
 
 function escapeHtml(value){
 
-return String(value)
-.replace(/&/g,'&amp;')
-.replace(/</g,'&lt;')
-.replace(/>/g,'&gt;')
-.replace(/"/g,'&quot;')
-.replace(/'/g,'&#039;');
+  return String(value ?? '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
 
 }
 
