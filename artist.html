@@ -70,6 +70,19 @@
       resize:vertical;
     }
 
+    input[type="file"]{
+      padding:10px;
+      background:#261631;
+      cursor:pointer;
+    }
+
+    .upload-info{
+      color:#b9aabd;
+      font-size:12px;
+      margin-top:-10px;
+      margin-bottom:18px;
+    }
+
     button{
       width:100%;
       padding:14px;
@@ -93,6 +106,23 @@
       display:none;
     }
 
+    .artist-info{
+      padding:14px;
+      background:#261631;
+      border-radius:12px;
+      margin-bottom:20px;
+      color:#ddd;
+      line-height:1.6;
+    }
+
+    .success{
+      color:#7ee787;
+    }
+
+    .error{
+      color:#ff8a8a;
+    }
+
   </style>
 
 </head>
@@ -104,10 +134,17 @@
     <h1>KalaaBook Artist Portal</h1>
 
     <p class="subtitle">
-      Complete your artist profile.
+      Complete your artist profile and upload your portfolio.
     </p>
 
     <div class="card">
+
+      <div
+        id="artistInfo"
+        class="artist-info"
+        style="display:none;"
+      ></div>
+
 
       <label for="artistName">
         Artist Name
@@ -119,6 +156,38 @@
         placeholder="Your name"
       >
 
+
+      <label for="profilePhoto">
+        Profile Photo
+      </label>
+
+      <input
+        id="profilePhoto"
+        type="file"
+        accept="image/*"
+      >
+
+      <div class="upload-info">
+        Please upload 1 clear photo of yourself.
+      </div>
+
+
+      <label for="portfolioPhotos">
+        Portfolio Photos
+      </label>
+
+      <input
+        id="portfolioPhotos"
+        type="file"
+        accept="image/*"
+        multiple
+      >
+
+      <div class="upload-info">
+        Upload up to 6 of your best work photos.
+      </div>
+
+
       <label for="artistBio">
         Bio
       </label>
@@ -127,6 +196,7 @@
         id="artistBio"
         placeholder="Tell customers about your work"
       ></textarea>
+
 
       <label for="artistServices">
         Services
@@ -138,6 +208,7 @@
         placeholder="Example: Nail Extension, Gel Nails, Nail Art"
       >
 
+
       <label for="artistInstagram">
         Instagram
       </label>
@@ -148,12 +219,14 @@
         placeholder="Instagram username"
       >
 
+
       <button
         type="button"
         onclick="saveProfile()"
       >
-        Save Profile
+        Submit Profile
       </button>
+
 
       <div
         id="message"
@@ -167,48 +240,60 @@
 
   <script>
 
-    async function saveProfile(){
-
-      const name =
-        document.getElementById('artistName').value.trim();
-
-      const bio =
-        document.getElementById('artistBio').value.trim();
-
-      const servicesText =
-        document.getElementById('artistServices').value.trim();
-
-      const instagram =
-        document.getElementById('artistInstagram').value.trim();
-
-      const message =
-        document.getElementById('message');
+    let artistId = null;
 
 
-      if(!name){
+    /*
+      Get artist ID from URL.
 
-        alert('Please enter your artist name.');
+      Example:
+      artist.html?id=123
+    */
+
+    function getArtistId(){
+
+      const params =
+        new URLSearchParams(
+          window.location.search
+        );
+
+      return params.get('id');
+
+    }
+
+
+    /*
+      Escape text before displaying it.
+    */
+
+    function escapeHtml(text){
+
+      return String(text || '')
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#039;');
+
+    }
+
+
+    /*
+      Load the artist information.
+    */
+
+    async function loadArtist(){
+
+      artistId = getArtistId();
+
+
+      if(!artistId){
+
+        document.getElementById('artistInfo').style.display='none';
 
         return;
 
       }
-
-
-      const services = servicesText
-        ? servicesText
-            .split(',')
-            .map(function(service){
-
-              return service.trim();
-
-            })
-            .filter(Boolean)
-
-        : [];
-
-
-      message.style.display = 'block';
-      message.textContent = 'Saving profile...';
 
 
       try{
@@ -216,12 +301,117 @@
         const response = await fetch(
 
           SUPABASE_URL +
-          '/rest/v1/artist_applications?full_name=eq.' +
-          encodeURIComponent(name),
+          '/rest/v1/artist_applications?id=eq.' +
+          encodeURIComponent(artistId) +
+          '&select=*',
 
           {
 
-            method:'PATCH',
+            headers:{
+              'apikey':SUPABASE_KEY,
+              'Authorization':
+                'Bearer ' + SUPABASE_KEY
+            }
+
+          }
+
+        );
+
+
+        if(!response.ok){
+
+          throw new Error(
+            'Could not load artist.'
+          );
+
+        }
+
+
+        const artists =
+          await response.json();
+
+
+        if(!artists.length){
+
+          throw new Error(
+            'Artist not found.'
+          );
+
+        }
+
+
+        const artist = artists[0];
+
+
+        document.getElementById('artistName').value =
+          artist.full_name || '';
+
+
+        document.getElementById('artistBio').value =
+          artist.notes || '';
+
+
+        document.getElementById('artistInstagram').value =
+          artist.portfolio || '';
+
+
+        if(
+          artist.services &&
+          Array.isArray(artist.services)
+        ){
+
+          document.getElementById('artistServices').value =
+            artist.services.join(', ');
+
+        }
+
+
+        const info =
+          document.getElementById('artistInfo');
+
+
+        info.innerHTML =
+          '<strong>Welcome, ' +
+          escapeHtml(artist.full_name) +
+          '!</strong><br>' +
+          'Category: ' +
+          escapeHtml(artist.category || 'Artist') +
+          '<br>' +
+          'Please complete your profile below.';
+
+
+        info.style.display='block';
+
+
+      }catch(error){
+
+        console.error(error);
+
+        alert(
+          'We could not load your artist profile.'
+        );
+
+      }
+
+    }
+
+
+    /*
+      Upload one image to Supabase Storage.
+    */
+
+    async function uploadImage(file, path){
+
+      const uploadResponse =
+        await fetch(
+
+          SUPABASE_URL +
+          '/storage/v1/object/artist-photos/' +
+          path,
+
+          {
+
+            method:'POST',
 
             headers:{
 
@@ -231,26 +421,371 @@
                 'Bearer ' + SUPABASE_KEY,
 
               'Content-Type':
-                'application/json',
-
-              'Prefer':
-                'return=minimal'
+                file.type
 
             },
 
-            body:JSON.stringify({
-
-              notes:bio,
-
-              services:services,
-
-              portfolio:instagram
-
-            })
+            body:file
 
           }
 
         );
+
+
+      if(!uploadResponse.ok){
+
+        const errorText =
+          await uploadResponse.text();
+
+        console.error(
+          'Upload error:',
+          errorText
+        );
+
+        throw new Error(
+          'Photo upload failed.'
+        );
+
+      }
+
+
+      return (
+
+        SUPABASE_URL +
+        '/storage/v1/object/public/artist-photos/' +
+        path
+
+      );
+
+    }
+
+
+    /*
+      Save the artist profile.
+    */
+
+    async function saveProfile(){
+
+      const name =
+        document.getElementById('artistName').value.trim();
+
+
+      const bio =
+        document.getElementById('artistBio').value.trim();
+
+
+      const servicesText =
+        document.getElementById('artistServices').value.trim();
+
+
+      const instagram =
+        document.getElementById('artistInstagram').value.trim();
+
+
+      const profileInput =
+        document.getElementById('profilePhoto');
+
+
+      const portfolioInput =
+        document.getElementById('portfolioPhotos');
+
+
+      const message =
+        document.getElementById('message');
+
+
+      if(!artistId){
+
+        alert(
+          'This artist link is missing the artist ID.'
+        );
+
+        return;
+
+      }
+
+
+      if(!name){
+
+        alert(
+          'Please enter your artist name.'
+        );
+
+        return;
+
+      }
+
+
+      const profileFile =
+        profileInput.files[0];
+
+
+      const portfolioFiles =
+        Array.from(
+          portfolioInput.files
+        );
+
+
+      if(portfolioFiles.length > 6){
+
+        alert(
+          'Please upload a maximum of 6 portfolio photos.'
+        );
+
+        return;
+
+      }
+
+
+      const services = servicesText
+
+        ? servicesText
+            .split(',')
+            .map(function(service){
+              return service.trim();
+            })
+            .filter(Boolean)
+
+        : [];
+
+
+      message.style.display='block';
+      message.className='message';
+      message.textContent=
+        'Uploading your profile...';
+
+
+      try{
+
+        let profilePhotoUrl = null;
+
+
+        /*
+          Upload profile photo
+        */
+
+        if(profileFile){
+
+          const safeName =
+            profileFile.name
+              .replace(/[^a-zA-Z0-9._-]/g,'-');
+
+
+          const path =
+            'artists/' +
+            artistId +
+            '/profile-' +
+            Date.now() +
+            '-' +
+            safeName;
+
+
+          profilePhotoUrl =
+            await uploadImage(
+              profileFile,
+              path
+            );
+
+        }
+
+
+        /*
+          Upload portfolio photos
+        */
+
+        const portfolioUrls=[];
+
+
+        for(
+          let i=0;
+          i<portfolioFiles.length;
+          i++
+        ){
+
+          message.textContent =
+            'Uploading portfolio photo ' +
+            (i+1) +
+            ' of ' +
+            portfolioFiles.length +
+            '...';
+
+
+          const file =
+            portfolioFiles[i];
+
+
+          const safeName =
+            file.name
+              .replace(/[^a-zA-Z0-9._-]/g,'-');
+
+
+          const path =
+            'artists/' +
+            artistId +
+            '/portfolio-' +
+            Date.now() +
+            '-' +
+            i +
+            '-' +
+            safeName;
+
+
+          const url =
+            await uploadImage(
+              file,
+              path
+            );
+
+
+          portfolioUrls.push(url);
+
+        }
+
+
+        /*
+          Get existing portfolio photos.
+        */
+
+        let existingPhotos=[];
+
+
+        const existingResponse =
+          await fetch(
+
+            SUPABASE_URL +
+            '/rest/v1/artist_applications?id=eq.' +
+            encodeURIComponent(artistId) +
+            '&select=portfolio_photos',
+
+            {
+
+              headers:{
+                'apikey':SUPABASE_KEY,
+                'Authorization':
+                  'Bearer ' + SUPABASE_KEY
+              }
+
+            }
+
+          );
+
+
+        if(existingResponse.ok){
+
+          const existingData =
+            await existingResponse.json();
+
+
+          if(
+            existingData.length &&
+            Array.isArray(
+              existingData[0].portfolio_photos
+            )
+          ){
+
+            existingPhotos =
+              existingData[0].portfolio_photos;
+
+          }
+
+        }
+
+
+        /*
+          Combine old and new portfolio photos.
+        */
+
+        const combinedPhotos =
+          existingPhotos
+            .concat(portfolioUrls);
+
+
+        /*
+          Maximum 6 total portfolio photos.
+        */
+
+        if(combinedPhotos.length > 6){
+
+          throw new Error(
+            'You can have a maximum of 6 portfolio photos.'
+          );
+
+        }
+
+
+        /*
+          Prepare database update.
+        */
+
+        const updateData={
+
+          notes:bio,
+
+          services:services,
+
+          portfolio:instagram
+
+        };
+
+
+        if(profilePhotoUrl){
+
+          updateData.profile_photo =
+            profilePhotoUrl;
+
+        }
+
+
+        if(portfolioUrls.length){
+
+          updateData.portfolio_photos =
+            combinedPhotos;
+
+        }
+
+
+        message.textContent =
+          'Saving your profile...';
+
+
+        /*
+          Update Supabase.
+        */
+
+        const response =
+          await fetch(
+
+            SUPABASE_URL +
+            '/rest/v1/artist_applications?id=eq.' +
+            encodeURIComponent(artistId),
+
+            {
+
+              method:'PATCH',
+
+              headers:{
+
+                'apikey':SUPABASE_KEY,
+
+                'Authorization':
+                  'Bearer ' + SUPABASE_KEY,
+
+                'Content-Type':
+                  'application/json',
+
+                'Prefer':
+                  'return=minimal'
+
+              },
+
+              body:
+                JSON.stringify(
+                  updateData
+                )
+
+            }
+
+          );
 
 
         if(!response.ok){
@@ -270,28 +805,55 @@
         }
 
 
+        message.className =
+          'message success';
+
         message.textContent =
-          'Profile saved successfully!';
+          'Profile submitted successfully!';
+
 
         alert(
-          'Profile saved successfully!'
+          'Profile submitted successfully!'
         );
+
+
+        /*
+          Clear uploaded file inputs.
+        */
+
+        profileInput.value='';
+
+        portfolioInput.value='';
 
 
       }catch(error){
 
         console.error(error);
 
+
+        message.className =
+          'message error';
+
         message.textContent =
+          error.message ||
           'Could not save profile. Please try again.';
 
+
         alert(
+          error.message ||
           'Could not save profile. Please try again.'
         );
 
       }
 
     }
+
+
+    /*
+      Load artist when page opens.
+    */
+
+    loadArtist();
 
   </script>
 
