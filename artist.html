@@ -1,22 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  </style>
 
-<script>
-  const SUPABASE_URL = 'https://pmerqsrmgmlqirznegeb.supabase.co';
-
-  const SUPABASE_KEY = 'sb_publishable_QreawwcE_0ebjswoBAHrig_IxzryR5p';
-
-  
-</script>
-
-</head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>KalaaBook Artist Portal</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL = 'https://pmerqsrmgmlqirznegeb.supabase.co';
+
+    const SUPABASE_KEY = 'YOUR_EXISTING_PUBLISHABLE_KEY';
+  </script>
+
   <style>
+
     body{
       margin:0;
       font-family:Arial,sans-serif;
@@ -54,7 +52,8 @@
       font-weight:600;
     }
 
-    input, textarea{
+    input,
+    textarea{
       width:100%;
       box-sizing:border-box;
       padding:12px;
@@ -82,7 +81,20 @@
       cursor:pointer;
       font-size:15px;
     }
+
+    button:hover{
+      opacity:.9;
+    }
+
+    .message{
+      margin-top:15px;
+      text-align:center;
+      font-size:14px;
+      display:none;
+    }
+
   </style>
+
 </head>
 
 <body>
@@ -97,70 +109,191 @@
 
     <div class="card">
 
-      <label>Artist Name</label>
-      <input id="artistName" type="text" placeholder="Your name">
+      <label for="artistName">
+        Artist Name
+      </label>
 
-      <label>Bio</label>
-      <textarea id="artistBio" placeholder="Tell customers about your work"></textarea>
+      <input
+        id="artistName"
+        type="text"
+        placeholder="Your name"
+      >
 
-      <label>Services</label>
+      <label for="artistBio">
+        Bio
+      </label>
+
+      <textarea
+        id="artistBio"
+        placeholder="Tell customers about your work"
+      ></textarea>
+
+      <label for="artistServices">
+        Services
+      </label>
+
       <input
         id="artistServices"
         type="text"
         placeholder="Example: Nail Extension, Gel Nails, Nail Art"
       >
 
-      <label>Instagram</label>
+      <label for="artistInstagram">
+        Instagram
+      </label>
+
       <input
         id="artistInstagram"
         type="text"
         placeholder="Instagram username"
       >
 
-      <button type="button" onclick="saveProfile()">
+      <button
+        type="button"
+        onclick="saveProfile()"
+      >
         Save Profile
       </button>
+
+      <div
+        id="message"
+        class="message"
+      ></div>
 
     </div>
 
   </div>
-<script>
-async function saveProfile(){
 
-  const name = document.getElementById('artistName').value.trim();
-  const bio = document.getElementById('artistBio').value.trim();
-  const servicesText = document.getElementById('artistServices').value.trim();
-  const instagram = document.getElementById('artistInstagram').value.trim();
 
-  if(!name){
-    alert('Please enter your artist name.');
-    return;
-  }
+  <script>
 
-  const services = servicesText
-    ? servicesText.split(',').map(function(service){
-        return service.trim();
-      }).filter(Boolean)
-    : [];
+    async function saveProfile(){
 
-  const { error } = await supabase
-    .from('artist_applications')
-    .update({
-      full_name: name,
-      notes: bio,
-      services: services,
-      portfolio: instagram
-    })
-    .eq('full_name', name);
+      const name =
+        document.getElementById('artistName').value.trim();
 
-  if(error){
-    console.error(error);
-    alert('Could not save profile. Please try again.');
-    return;
-  }
+      const bio =
+        document.getElementById('artistBio').value.trim();
 
-  alert('Profile saved successfully!');
-}
-</script>
+      const servicesText =
+        document.getElementById('artistServices').value.trim();
+
+      const instagram =
+        document.getElementById('artistInstagram').value.trim();
+
+      const message =
+        document.getElementById('message');
+
+
+      if(!name){
+
+        alert('Please enter your artist name.');
+
+        return;
+
+      }
+
+
+      const services = servicesText
+        ? servicesText
+            .split(',')
+            .map(function(service){
+
+              return service.trim();
+
+            })
+            .filter(Boolean)
+
+        : [];
+
+
+      message.style.display = 'block';
+      message.textContent = 'Saving profile...';
+
+
+      try{
+
+        const response = await fetch(
+
+          SUPABASE_URL +
+          '/rest/v1/artist_applications?full_name=eq.' +
+          encodeURIComponent(name),
+
+          {
+
+            method:'PATCH',
+
+            headers:{
+
+              'apikey':SUPABASE_KEY,
+
+              'Authorization':
+                'Bearer ' + SUPABASE_KEY,
+
+              'Content-Type':
+                'application/json',
+
+              'Prefer':
+                'return=minimal'
+
+            },
+
+            body:JSON.stringify({
+
+              notes:bio,
+
+              services:services,
+
+              portfolio:instagram
+
+            })
+
+          }
+
+        );
+
+
+        if(!response.ok){
+
+          const errorText =
+            await response.text();
+
+          console.error(
+            'Supabase error:',
+            errorText
+          );
+
+          throw new Error(
+            'Profile could not be saved.'
+          );
+
+        }
+
+
+        message.textContent =
+          'Profile saved successfully!';
+
+        alert(
+          'Profile saved successfully!'
+        );
+
+
+      }catch(error){
+
+        console.error(error);
+
+        message.textContent =
+          'Could not save profile. Please try again.';
+
+        alert(
+          'Could not save profile. Please try again.'
+        );
+
+      }
+
+    }
+
+  </script>
+
 </body>
 </html>
