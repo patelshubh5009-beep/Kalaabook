@@ -496,16 +496,15 @@ encodeURIComponent(uploadToken) +
         document.getElementById('message');
 
 
-      if(!artistId){
+     if(!uploadToken){
 
-        alert(
-          'This artist link is missing the artist ID.'
-        );
+  alert(
+    'This artist upload link is invalid or incomplete.'
+  );
 
-        return;
+  return;
 
-      }
-
+}
 
       if(!name){
 
