@@ -499,6 +499,42 @@ onclick="updateStatus(${app.id},'rejected')">
 Reject
 </button>
 
+<br>
+
+<input
+type="file"
+id="profile-${app.id}"
+accept="image/*"
+style="margin-top:8px;width:220px;"
+>
+
+<button
+class="primary"
+onclick="uploadProfilePhoto(${app.id})">
+Upload Profile Photo
+</button>
+
+<br>
+
+<input
+type="file"
+id="portfolio-${app.id}"
+accept="image/*"
+multiple
+style="margin-top:8px;width:220px;"
+>
+
+<button
+class="primary"
+onclick="uploadPortfolioPhotos(${app.id})">
+Upload Portfolio Photos
+</button>
+
+<p style="font-size:12px;color:#666;">
+Profile: 1 photo<br>
+Portfolio: maximum 6 photos
+</p>
+
 </td>
 
 `;
@@ -985,7 +1021,264 @@ document.getElementById(
 
 }
 
+/* UPLOAD PROFILE PHOTO */
 
+async function uploadProfilePhoto(id){
+
+const input =
+document.getElementById('profile-' + id);
+
+if(!input.files.length){
+alert('Please select a profile photo first.');
+return;
+}
+
+const photo = input.files[0];
+
+try{
+
+const path =
+'artists/' +
+id +
+'-profile-' +
+Date.now() +
+'-' +
+photo.name.replace(
+/[^a-zA-Z0-9._-]/g,
+'_'
+);
+
+const upload =
+await fetch(
+SUPABASE_URL +
+'/storage/v1/object/artist-photos/' +
+path,
+{
+method:'POST',
+headers:{
+'apikey':SUPABASE_KEY,
+'Authorization':'Bearer ' + accessToken,
+'Content-Type':photo.type
+},
+body:photo
+}
+);
+
+if(!upload.ok){
+const error = await upload.json();
+throw new Error(
+error.message ||
+'Profile photo upload failed'
+);
+}
+
+const photoUrl =
+SUPABASE_URL +
+'/storage/v1/object/public/artist-photos/' +
+path;
+
+const update =
+await fetch(
+SUPABASE_URL +
+'/rest/v1/artist_applications?id=eq.' +
+id,
+{
+method:'PATCH',
+headers:{
+'apikey':SUPABASE_KEY,
+'Authorization':'Bearer ' + accessToken,
+'Content-Type':'application/json',
+'Prefer':'return=minimal'
+},
+body:JSON.stringify({
+profile_photo:photoUrl
+})
+}
+);
+
+if(!update.ok){
+const error = await update.json();
+throw new Error(
+error.message ||
+'Could not save profile photo'
+);
+}
+
+alert('Profile photo uploaded successfully.');
+
+input.value='';
+
+loadApplications();
+
+}catch(error){
+
+alert(error.message);
+
+}
+
+}
+
+
+/* UPLOAD PORTFOLIO PHOTOS */
+
+async function uploadPortfolioPhotos(id){
+
+const input =
+document.getElementById('portfolio-' + id);
+
+if(!input.files.length){
+alert('Please select portfolio photos first.');
+return;
+}
+
+if(input.files.length > 6){
+alert('Please select a maximum of 6 photos.');
+return;
+}
+
+try{
+
+const photoUrls=[];
+
+for(let i=0;i<input.files.length;i++){
+
+const photo=input.files[i];
+
+const path =
+'artists/' +
+id +
+'-portfolio-' +
+Date.now() +
+'-' +
+i +
+'-' +
+photo.name.replace(
+/[^a-zA-Z0-9._-]/g,
+'_'
+);
+
+const upload =
+await fetch(
+SUPABASE_URL +
+'/storage/v1/object/artist-photos/' +
+path,
+{
+method:'POST',
+headers:{
+'apikey':SUPABASE_KEY,
+'Authorization':'Bearer ' + accessToken,
+'Content-Type':photo.type
+},
+body:photo
+}
+);
+
+if(!upload.ok){
+const error=await upload.json();
+throw new Error(
+error.message ||
+'Portfolio photo upload failed'
+);
+}
+
+photoUrls.push(
+SUPABASE_URL +
+'/storage/v1/object/public/artist-photos/' +
+path
+);
+
+}
+
+
+/* GET CURRENT PORTFOLIO */
+
+const current =
+await fetch(
+SUPABASE_URL +
+'/rest/v1/artist_applications?id=eq.' +
+id +
+'&select=portfolio_photos',
+{
+headers:{
+'apikey':SUPABASE_KEY,
+'Authorization':'Bearer ' + accessToken
+}
+}
+);
+
+if(!current.ok){
+throw new Error(
+'Could not read current portfolio.'
+);
+}
+
+const currentData =
+await current.json();
+
+const existing =
+currentData[0] &&
+Array.isArray(currentData[0].portfolio_photos)
+? currentData[0].portfolio_photos
+: [];
+
+const combined =
+existing.concat(photoUrls);
+
+if(combined.length > 6){
+alert(
+'This artist already has ' +
+existing.length +
+' portfolio photos. Maximum is 6.'
+);
+return;
+}
+
+
+/* SAVE PORTFOLIO */
+
+const update =
+await fetch(
+SUPABASE_URL +
+'/rest/v1/artist_applications?id=eq.' +
+id,
+{
+method:'PATCH',
+headers:{
+'apikey':SUPABASE_KEY,
+'Authorization':'Bearer ' + accessToken,
+'Content-Type':'application/json',
+'Prefer':'return=minimal'
+},
+body:JSON.stringify({
+portfolio_photos:combined
+})
+}
+);
+
+if(!update.ok){
+const error=await update.json();
+throw new Error(
+error.message ||
+'Could not save portfolio photos'
+);
+}
+
+alert(
+photoUrls.length +
+' portfolio photo(s) uploaded successfully.'
+);
+
+input.value='';
+
+loadApplications();
+
+}catch(error){
+
+alert(error.message);
+
+}
+
+}
 /* LOGOUT */
 
 function logout(){
