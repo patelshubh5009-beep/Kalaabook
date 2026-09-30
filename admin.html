@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KalaaBook Admin</title>
-<script>
-  const SUPABASE_URL = 'https://pmerqsrmgmlqirznegeb.supabase.co';
 
-  const SUPABASE_KEY = 'sb_publishable_QreawwcE_0ebjswoBAHrig_IxzryR5p
-';
-</script>
+<title>KalaaBook Admin</title>
+
 <style>
 body{
   font-family:Arial,sans-serif;
@@ -18,13 +15,16 @@ body{
   padding:30px;
   color:#222;
 }
+
 .container{
   max-width:1100px;
   margin:auto;
 }
+
 h1{
   margin-bottom:5px;
 }
+
 button{
   border:0;
   padding:10px 16px;
@@ -32,21 +32,26 @@ button{
   cursor:pointer;
   font-weight:bold;
 }
+
 .primary{
   background:#111;
   color:white;
 }
+
 .green{
   background:#198754;
   color:white;
 }
+
 .red{
   background:#dc3545;
   color:white;
 }
+
 .gray{
   background:#ddd;
 }
+
 .card{
   background:white;
   padding:25px;
@@ -54,6 +59,7 @@ button{
   margin-top:20px;
   box-shadow:0 2px 10px rgba(0,0,0,.08);
 }
+
 input,select,textarea{
   width:100%;
   box-sizing:border-box;
@@ -63,38 +69,47 @@ input,select,textarea{
   border:1px solid #ccc;
   border-radius:7px;
 }
+
 label{
   font-weight:bold;
 }
+
 table{
   width:100%;
   border-collapse:collapse;
   margin-top:15px;
 }
+
 th,td{
   padding:12px;
   border-bottom:1px solid #ddd;
   text-align:left;
   vertical-align:top;
 }
+
 .status{
   font-weight:bold;
 }
+
 #dashboard{
   display:none;
 }
+
 #addArtist{
   display:none;
 }
+
 .message{
   margin-top:10px;
   font-weight:bold;
 }
+
 .actions button{
   margin-right:5px;
   margin-bottom:5px;
 }
 </style>
+
 </head>
 
 <body>
@@ -102,9 +117,12 @@ th,td{
 <div class="container">
 
 <h1>KalaaBook Admin</h1>
+
 <p>Manage artist applications and artists.</p>
 
+
 <!-- LOGIN -->
+
 <div id="loginBox" class="card">
 
 <h2>Admin Login</h2>
@@ -123,16 +141,28 @@ th,td{
 
 
 <!-- DASHBOARD -->
+
 <div id="dashboard">
 
 <div style="margin-top:20px;">
-<button class="primary" onclick="showAddArtist()">+ Add Artist</button>
-<button class="gray" onclick="loadApplications()">Refresh</button>
-<button class="red" onclick="logout()">Logout</button>
+
+<button class="primary" onclick="showAddArtist()">
++ Add Artist
+</button>
+
+<button class="gray" onclick="loadApplications()">
+Refresh
+</button>
+
+<button class="red" onclick="logout()">
+Logout
+</button>
+
 </div>
 
 
 <!-- ADD ARTIST -->
+
 <div id="addArtist" class="card">
 
 <h2>Add Artist Manually</h2>
@@ -150,69 +180,112 @@ th,td{
 <input id="artistArea" type="text">
 
 <label>Category</label>
+
 <select id="artistCategory">
+
 <option value="">Select category</option>
 <option>Nail Art</option>
 <option>Mehendi</option>
 <option>Salon</option>
+
 </select>
 
+
 <label>Specialties</label>
-<input id="artistSpecialties" type="text"
-placeholder="Example: Bridal Mehendi, Arabic Mehendi">
+
+<input
+id="artistSpecialties"
+type="text"
+placeholder="Example: Bridal Mehendi, Arabic Mehendi"
+>
+
 
 <label>Experience</label>
-<input id="artistExperience" type="text"
-placeholder="Example: 5 years">
+
+<input
+id="artistExperience"
+type="text"
+placeholder="Example: 5 years"
+>
+
 
 <label>Portfolio / Instagram</label>
-<input id="artistPortfolio" type="text"
-placeholder="Instagram or portfolio link">
+
+<input
+id="artistPortfolio"
+type="text"
+placeholder="Instagram username or link"
+>
+
 
 <label>Work Mode</label>
+
 <select id="artistWorkMode">
+
 <option value="">Select</option>
 <option>Home</option>
 <option>Studio</option>
 <option>Both</option>
+
 </select>
 
+
 <label>Booking Volume</label>
-<input id="artistBookings" type="text"
-placeholder="Example: 10-20 bookings/month">
+
+<input
+id="artistBookings"
+type="text"
+placeholder="Example: 10-20 bookings/month"
+>
+
 
 <label>Team Size</label>
-<input id="artistTeamSize" type="text"
-placeholder="Example: 2">
+
+<input
+id="artistTeamSize"
+type="text"
+placeholder="Example: 2"
+>
+
 
 <label>Notes</label>
-<textarea id="artistNotes"></textarea>
-<label>Notes</label>
 
 <textarea id="artistNotes"></textarea>
+
 
 <label>Profile Photo</label>
+
 <input
-  id="artistProfilePhoto"
-  type="file"
-  accept="image/*"
+id="artistProfilePhoto"
+type="file"
+accept="image/*"
 >
+
 
 <label>Portfolio Photos</label>
+
 <input
-  id="artistPortfolioPhotos"
-  type="file"
-  accept="image/*"
-  multiple
+id="artistPortfolioPhotos"
+type="file"
+accept="image/*"
+multiple
 >
 
+
 <p style="font-size:13px;color:#666;">
-  Profile photo: 1 image. Portfolio: up to 6 images.
+Profile photo: 1 image. Portfolio: up to 6 images.
 </p>
+
 <br>
 
-<button class="green" onclick="addArtist()">Add & Approve Artist</button>
-<button class="gray" onclick="hideAddArtist()">Cancel</button>
+
+<button class="green" onclick="addArtist()">
+Add & Approve Artist
+</button>
+
+<button class="gray" onclick="hideAddArtist()">
+Cancel
+</button>
 
 <p id="addMessage" class="message"></p>
 
@@ -220,14 +293,19 @@ placeholder="Example: 2">
 
 
 <!-- APPLICATIONS -->
+
 <div class="card">
 
 <h2>Artist Applications</h2>
 
-<p id="loading">Loading applications...</p>
+<p id="loading">
+Loading applications...
+</p>
 
 <table id="applicationsTable">
+
 <thead>
+
 <tr>
 <th>Name</th>
 <th>Category</th>
@@ -236,6 +314,7 @@ placeholder="Example: 2">
 <th>Status</th>
 <th>Actions</th>
 </tr>
+
 </thead>
 
 <tbody id="applicationsBody"></tbody>
@@ -253,15 +332,11 @@ placeholder="Example: 2">
 
 /* SUPABASE SETTINGS */
 
-const SUPABASE_URL = 'https://pmerqsrmgmlqirznegeb.supabase.co';
+const SUPABASE_URL =
+'https://pmerqsrmgmlqirznegeb.supabase.co';
 
-/*
-IMPORTANT:
-Put your Supabase PUBLISHABLE KEY below.
-Do NOT use the Secret/service_role key.
-*/
-
-const SUPABASE_KEY = 'sb_publishable_QreawwcE_0ebjswoBAHrig_IxzryR5p';
+const SUPABASE_KEY =
+'YOUR_PUBLISHABLE_KEY';
 
 
 let accessToken = null;
@@ -271,182 +346,177 @@ let accessToken = null;
 
 async function login(){
 
-  const email =
-    document.getElementById('email').value.trim();
+const email =
+document.getElementById('email').value.trim();
 
-  const password =
-    document.getElementById('password').value;
+const password =
+document.getElementById('password').value;
 
-  const msg =
-    document.getElementById('loginMessage');
+const msg =
+document.getElementById('loginMessage');
 
-  msg.textContent = 'Logging in...';
+msg.textContent='Logging in...';
 
-  try{
+try{
 
-    const response = await fetch(
-      SUPABASE_URL + '/auth/v1/token?grant_type=password',
-      {
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json',
-          'apikey':SUPABASE_KEY
-        },
-        body:JSON.stringify({
-          email:email,
-          password:password
-        })
-      }
-    );
+const response = await fetch(
+SUPABASE_URL +
+'/auth/v1/token?grant_type=password',
+{
+method:'POST',
 
-    const data = await response.json();
+headers:{
+'Content-Type':'application/json',
+'apikey':SUPABASE_KEY
+},
 
-    if(!response.ok){
-      throw new Error(data.error_description || data.msg || 'Login failed');
-    }
+body:JSON.stringify({
+email:email,
+password:password
+})
+}
+);
 
-    accessToken = data.access_token;
+const data = await response.json();
 
-    document.getElementById('loginBox').style.display='none';
-    document.getElementById('dashboard').style.display='block';
+if(!response.ok){
 
-    loadApplications();
+throw new Error(
+data.error_description ||
+data.msg ||
+'Login failed'
+);
 
-  }catch(error){
+}
 
-    msg.textContent = error.message;
+accessToken = data.access_token;
 
-  }
+document.getElementById('loginBox')
+.style.display='none';
+
+document.getElementById('dashboard')
+.style.display='block';
+
+loadApplications();
+
+}catch(error){
+
+msg.textContent=error.message;
+
+}
 
 }
 
 
 /* LOAD APPLICATIONS */
 
-<script>
-async function saveProfile(){
+async function loadApplications(){
 
-  const name = document.getElementById('artistName').value.trim();
-  const bio = document.getElementById('artistBio').value.trim();
-  const servicesText = document.getElementById('artistServices').value.trim();
-  const instagram = document.getElementById('artistInstagram').value.trim();
+const loading =
+document.getElementById('loading');
 
-  if(!name){
-    alert('Please enter your artist name.');
-    return;
-  }
+const body =
+document.getElementById('applicationsBody');
 
-  const services = servicesText
-    ? servicesText.split(',').map(function(service){
-        return service.trim();
-      }).filter(Boolean)
-    : [];
+loading.textContent='Loading applications...';
 
-  try {
+try{
 
-    const response = await fetch(
-      SUPABASE_URL +
-      '/rest/v1/artist_applications?full_name=eq.' +
-      encodeURIComponent(name),
-      {
-        method: 'PATCH',
+const response = await fetch(
 
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': 'Bearer ' + SUPABASE_KEY,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=minimal'
-        },
+SUPABASE_URL +
+'/rest/v1/artist_applications?select=*&order=created_at.desc',
 
-        body: JSON.stringify({
-          notes: bio,
-          services: services,
-          portfolio: instagram
-        })
-      }
-    );
-
-    if(!response.ok){
-      throw new Error('Save failed');
-    }
-
-    alert('Profile saved successfully!');
-
-  } catch(error) {
-
-    console.error(error);
-    alert('Could not save profile. Please try again.');
-
-  }
+{
+headers:{
+'apikey':SUPABASE_KEY,
+'Authorization':'Bearer '+accessToken
 }
-</script>
+}
 
-    const data = await response.json();
+);
 
-    if(!response.ok){
-      throw new Error(data.message || 'Could not load applications');
-    }
+const data = await response.json();
 
-    body.innerHTML='';
+if(!response.ok){
 
-    if(data.length===0){
+throw new Error(
+data.message ||
+'Could not load applications'
+);
 
-      body.innerHTML=
-        '<tr><td colspan="6">No applications yet.</td></tr>';
+}
 
-    }else{
+body.innerHTML='';
 
-      data.forEach(app => {
+if(data.length===0){
 
-        const row=document.createElement('tr');
+body.innerHTML=
+'<tr><td colspan="6">No applications yet.</td></tr>';
 
-        row.innerHTML=`
+}else{
 
-          <td>
-            <strong>${escapeHtml(app.full_name || '')}</strong>
-          </td>
+data.forEach(app => {
 
-          <td>${escapeHtml(app.category || '')}</td>
+const row =
+document.createElement('tr');
 
-          <td>${escapeHtml(app.city || '')}</td>
+row.innerHTML=`
 
-          <td>${escapeHtml(app.whatsapp || '')}</td>
+<td>
+<strong>
+${escapeHtml(app.full_name || '')}
+</strong>
+</td>
 
-          <td class="status">
-            ${escapeHtml(app.status || 'pending')}
-          </td>
+<td>
+${escapeHtml(app.category || '')}
+</td>
 
-          <td class="actions">
+<td>
+${escapeHtml(app.city || '')}
+</td>
 
-            <button
-              class="green"
-              onclick="updateStatus(${app.id},'approved')">
-              Approve
-            </button>
+<td>
+${escapeHtml(app.whatsapp || '')}
+</td>
 
-            <button
-              class="red"
-              onclick="updateStatus(${app.id},'rejected')">
-              Reject
-            </button>
+<td class="status">
+${escapeHtml(app.status || 'pending')}
+</td>
 
-          </td>
+<td class="actions">
 
-        `;
+<button
+class="green"
+onclick="updateStatus(${app.id},'approved')">
+Approve
+</button>
 
-        body.appendChild(row);
+<button
+class="red"
+onclick="updateStatus(${app.id},'rejected')">
+Reject
+</button>
 
-      });
+</td>
 
-    }
+`;
 
-    loading.textContent='';
+body.appendChild(row);
 
-  }catch(error){
+});
 
-    loading.textContent='Error: '+error.message;
+}
 
-  }
+loading.textContent='';
+
+}catch(error){
+
+loading.textContent=
+'Error: '+error.message;
+
+}
 
 }
 
@@ -455,45 +525,51 @@ async function saveProfile(){
 
 async function updateStatus(id,status){
 
-  try{
+try{
 
-    const response = await fetch(
-      SUPABASE_URL +
-      '/rest/v1/artist_applications?id=eq.' +
-      id,
-      {
-        method:'PATCH',
+const response = await fetch(
 
-        headers:{
-          'apikey':SUPABASE_KEY,
-          'Authorization':'Bearer '+accessToken,
-          'Content-Type':'application/json',
-          'Prefer':'return=minimal'
-        },
+SUPABASE_URL +
+'/rest/v1/artist_applications?id=eq.' +
+id,
 
-        body:JSON.stringify({
-          status:status
-        })
-      }
-    );
+{
+method:'PATCH',
 
-    if(!response.ok){
+headers:{
+'apikey':SUPABASE_KEY,
+'Authorization':'Bearer '+accessToken,
+'Content-Type':'application/json',
+'Prefer':'return=minimal'
+},
 
-      const error=await response.json();
+body:JSON.stringify({
+status:status
+})
 
-      throw new Error(
-        error.message || 'Could not update status'
-      );
+}
 
-    }
+);
 
-    loadApplications();
+if(!response.ok){
 
-  }catch(error){
+const error =
+await response.json();
 
-    alert(error.message);
+throw new Error(
+error.message ||
+'Could not update status'
+);
 
-  }
+}
+
+loadApplications();
+
+}catch(error){
+
+alert(error.message);
+
+}
 
 }
 
@@ -502,12 +578,14 @@ async function updateStatus(id,status){
 
 function showAddArtist(){
 
-  document.getElementById('addArtist').style.display='block';
+document.getElementById('addArtist')
+.style.display='block';
 
-  window.scrollTo({
-    top:document.getElementById('addArtist').offsetTop,
-    behavior:'smooth'
-  });
+window.scrollTo({
+top:document.getElementById('addArtist')
+.offsetTop,
+behavior:'smooth'
+});
 
 }
 
@@ -516,236 +594,394 @@ function showAddArtist(){
 
 function hideAddArtist(){
 
-  document.getElementById('addArtist').style.display='none';
+document.getElementById('addArtist')
+.style.display='none';
 
 }
 
 
-/* ADD ARTIST MANUALLY */
+/* ADD ARTIST */
 
 async function addArtist(){
 
-  const message =
-    document.getElementById('addMessage');
+const message =
+document.getElementById('addMessage');
 
-  message.textContent='Adding artist...';
+message.textContent='Adding artist...';
 
-// Get selected photos
+
 const profilePhoto =
-  document.getElementById('artistProfilePhoto').files[0];
+document.getElementById(
+'artistProfilePhoto'
+).files[0];
+
 
 const portfolioPhotos =
-  document.getElementById('artistPortfolioPhotos').files;
+document.getElementById(
+'artistPortfolioPhotos'
+).files;
 
-// Maximum 6 portfolio photos
-if (portfolioPhotos.length > 6) {
-  message.textContent =
-    'Please select a maximum of 6 portfolio photos.';
-  return;
+
+if(portfolioPhotos.length > 6){
+
+message.textContent=
+'Please select a maximum of 6 portfolio photos.';
+
+return;
+
 }
-  const artist = {
-
-    full_name:
-      document.getElementById('artistName').value.trim(),
-
-    whatsapp:
-      document.getElementById('artistWhatsapp').value.trim(),
-
-    city:
-      document.getElementById('artistCity').value.trim(),
-
-    area:
-      document.getElementById('artistArea').value.trim(),
-
-    category:
-      document.getElementById('artistCategory').value,
-
-    specialties:
-      document.getElementById('artistSpecialties').value.trim(),
-
-    experience:
-      document.getElementById('artistExperience').value.trim(),
-
-    portfolio:
-      document.getElementById('artistPortfolio').value.trim(),
-
-    work_mode:
-      document.getElementById('artistWorkMode').value,
-
-    bookings:
-      document.getElementById('artistBookings').value.trim(),
-
-    team_size:
-      document.getElementById('artistTeamSize').value.trim(),
-
-    notes:
-      document.getElementById('artistNotes').value.trim(),
-
-    consent:true,
-
-    updates:false,
-
-    status:'approved'
-
-  };
 
 
-  if(!artist.full_name){
+const artist={
 
-    message.textContent='Please enter the artist name.';
+full_name:
+document.getElementById(
+'artistName'
+).value.trim(),
 
-    return;
+whatsapp:
+document.getElementById(
+'artistWhatsapp'
+).value.trim(),
 
-  }
+city:
+document.getElementById(
+'artistCity'
+).value.trim(),
 
+area:
+document.getElementById(
+'artistArea'
+).value.trim(),
 
- try{
+category:
+document.getElementById(
+'artistCategory'
+).value,
 
-  // Upload profile photo
-  let profilePhotoUrl = '';
-  let portfolioPhotoUrls = [];
+specialties:
+document.getElementById(
+'artistSpecialties'
+).value.trim(),
 
-  if(profilePhoto){
+experience:
+document.getElementById(
+'artistExperience'
+).value.trim(),
 
-    const profilePath =
-      'artists/' +
-      Date.now() +
-      '-profile-' +
-      profilePhoto.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+portfolio:
+document.getElementById(
+'artistPortfolio'
+).value.trim(),
 
-    const profileUpload = await fetch(
-      SUPABASE_URL +
-      '/storage/v1/object/artist-photos/' +
-      profilePath,
-      {
-        method:'POST',
-        headers:{
-          'apikey':SUPABASE_KEY,
-          'Authorization':'Bearer '+accessToken,
-          'Content-Type':profilePhoto.type
-        },
-        body:profilePhoto
-      }
-    );
+work_mode:
+document.getElementById(
+'artistWorkMode'
+).value,
 
-    if(!profileUpload.ok){
-      const error = await profileUpload.json();
-      throw new Error(error.message || 'Profile photo upload failed');
-    }
+bookings:
+document.getElementById(
+'artistBookings'
+).value.trim(),
 
-    profilePhotoUrl =
-      SUPABASE_URL +
-      '/storage/v1/object/public/artist-photos/' +
-      profilePath;
-  }
+team_size:
+document.getElementById(
+'artistTeamSize'
+).value.trim(),
 
+notes:
+document.getElementById(
+'artistNotes'
+).value.trim(),
 
-  // Upload portfolio photos
-  for(let i=0;i<portfolioPhotos.length;i++){
+consent:true,
 
-    const photo = portfolioPhotos[i];
+updates:false,
 
-    const photoPath =
-      'artists/' +
-      Date.now() +
-      '-portfolio-' +
-      i + '-' +
-      photo.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+status:'approved',
 
-    const upload = await fetch(
-      SUPABASE_URL +
-      '/storage/v1/object/artist-photos/' +
-      photoPath,
-      {
-        method:'POST',
-        headers:{
-          'apikey':SUPABASE_KEY,
-          'Authorization':'Bearer '+accessToken,
-          'Content-Type':photo.type
-        },
-        body:photo
-      }
-    );
+services:[]
 
-    if(!upload.ok){
-      const error = await upload.json();
-      throw new Error(error.message || 'Portfolio photo upload failed');
-    }
-
-    portfolioPhotoUrls.push(
-      SUPABASE_URL +
-      '/storage/v1/object/public/artist-photos/' +
-      photoPath
-    );
-  }
+};
 
 
-  // Add artist with photo URLs
-  artist.profile_photo = profilePhotoUrl;
-  artist.portfolio_photos = portfolioPhotoUrls;
+if(!artist.full_name){
+
+message.textContent=
+'Please enter the artist name.';
+
+return;
+
+}
 
 
-  const response = await fetch(
-    SUPABASE_URL +
-    '/rest/v1/artist_applications',
-    {
-      method:'POST',
+try{
 
-      headers:{
-        'apikey':SUPABASE_KEY,
-        'Authorization':'Bearer '+accessToken,
-        'Content-Type':'application/json',
-        'Prefer':'return=minimal'
-      },
+let profilePhotoUrl='';
 
-      body:JSON.stringify(artist)
-    }
-  );
+let portfolioPhotoUrls=[];
 
 
-  if(!response.ok){
+/* PROFILE PHOTO */
 
-    const error=await response.json();
+if(profilePhoto){
 
-    throw new Error(
-      error.message || 'Could not add artist'
-    );
+const profilePath=
+'artists/' +
+Date.now() +
+'-profile-' +
+profilePhoto.name.replace(
+/[^a-zA-Z0-9._-]/g,
+'_'
+);
 
-  }
+
+const upload =
+await fetch(
+
+SUPABASE_URL +
+'/storage/v1/object/artist-photos/' +
+profilePath,
+
+{
+method:'POST',
+
+headers:{
+'apikey':SUPABASE_KEY,
+'Authorization':
+'Bearer '+accessToken,
+'Content-Type':
+profilePhoto.type
+},
+
+body:profilePhoto
+
+}
+
+);
 
 
-  message.textContent='Artist added successfully!';
+if(!upload.ok){
 
-  clearArtistForm();
+const error =
+await upload.json();
 
-  loadApplications();
+throw new Error(
+error.message ||
+'Profile photo upload failed'
+);
+
+}
+
+
+profilePhotoUrl=
+
+SUPABASE_URL +
+'/storage/v1/object/public/artist-photos/' +
+profilePath;
+
+}
+
+
+/* PORTFOLIO PHOTOS */
+
+for(
+let i=0;
+i<portfolioPhotos.length;
+i++
+){
+
+const photo =
+portfolioPhotos[i];
+
+const photoPath=
+'artists/' +
+Date.now() +
+'-portfolio-' +
+i +
+'-' +
+photo.name.replace(
+/[^a-zA-Z0-9._-]/g,
+'_'
+);
+
+
+const upload =
+await fetch(
+
+SUPABASE_URL +
+'/storage/v1/object/artist-photos/' +
+photoPath,
+
+{
+method:'POST',
+
+headers:{
+'apikey':SUPABASE_KEY,
+'Authorization':
+'Bearer '+accessToken,
+'Content-Type':
+photo.type
+},
+
+body:photo
+
+}
+
+);
+
+
+if(!upload.ok){
+
+const error =
+await upload.json();
+
+throw new Error(
+error.message ||
+'Portfolio photo upload failed'
+);
+
+}
+
+
+portfolioPhotoUrls.push(
+
+SUPABASE_URL +
+'/storage/v1/object/public/artist-photos/' +
+photoPath
+
+);
+
+}
+
+
+/* PHOTO URLS */
+
+artist.profile_photo =
+profilePhotoUrl;
+
+artist.portfolio_photos =
+portfolioPhotoUrls;
+
+
+/* INSERT ARTIST */
+
+const response =
+await fetch(
+
+SUPABASE_URL +
+'/rest/v1/artist_applications',
+
+{
+method:'POST',
+
+headers:{
+'apikey':SUPABASE_KEY,
+'Authorization':
+'Bearer '+accessToken,
+'Content-Type':
+'application/json',
+'Prefer':'return=minimal'
+},
+
+body:JSON.stringify(artist)
+
+}
+
+);
+
+
+if(!response.ok){
+
+const error =
+await response.json();
+
+throw new Error(
+error.message ||
+'Could not add artist'
+);
+
+}
+
+
+message.textContent=
+'Artist added successfully!';
+
+
+clearArtistForm();
+
+loadApplications();
 
 
 }catch(error){
 
-  message.textContent='Error: '+error.message;
+message.textContent=
+'Error: '+error.message;
 
 }
 
-}  // ← ADD THIS
+}
 
-/* CLEAR FORM */
+
 /* CLEAR FORM */
 
 function clearArtistForm(){
 
-  document.getElementById('artistName').value='';
-  document.getElementById('artistWhatsapp').value='';
-  document.getElementById('artistCity').value='';
-  document.getElementById('artistArea').value='';
-  document.getElementById('artistCategory').value='';
-  document.getElementById('artistSpecialties').value='';
-  document.getElementById('artistExperience').value='';
-  document.getElementById('artistPortfolio').value='';
-  document.getElementById('artistWorkMode').value='';
-  document.getElementById('artistBookings').value='';
-  document.getElementById('artistTeamSize').value='';
-  document.getElementById('artistNotes').value='';
+document.getElementById(
+'artistName'
+).value='';
+
+document.getElementById(
+'artistWhatsapp'
+).value='';
+
+document.getElementById(
+'artistCity'
+).value='';
+
+document.getElementById(
+'artistArea'
+).value='';
+
+document.getElementById(
+'artistCategory'
+).value='';
+
+document.getElementById(
+'artistSpecialties'
+).value='';
+
+document.getElementById(
+'artistExperience'
+).value='';
+
+document.getElementById(
+'artistPortfolio'
+).value='';
+
+document.getElementById(
+'artistWorkMode'
+).value='';
+
+document.getElementById(
+'artistBookings'
+).value='';
+
+document.getElementById(
+'artistTeamSize'
+).value='';
+
+document.getElementById(
+'artistNotes'
+).value='';
+
+document.getElementById(
+'artistProfilePhoto'
+).value='';
+
+document.getElementById(
+'artistPortfolioPhotos'
+).value='';
 
 }
 
@@ -754,10 +990,15 @@ function clearArtistForm(){
 
 function logout(){
 
-  accessToken=null;
+accessToken=null;
 
-  document.getElementById('dashboard').style.display='none';
-  document.getElementById('loginBox').style.display='block';
+document.getElementById(
+'dashboard'
+).style.display='none';
+
+document.getElementById(
+'loginBox'
+).style.display='block';
 
 }
 
@@ -766,12 +1007,12 @@ function logout(){
 
 function escapeHtml(value){
 
-  return String(value)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#039;');
+return String(value)
+.replace(/&/g,'&amp;')
+.replace(/</g,'&lt;')
+.replace(/>/g,'&gt;')
+.replace(/"/g,'&quot;')
+.replace(/'/g,'&#039;');
 
 }
 
