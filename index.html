@@ -801,7 +801,7 @@ textarea.ai{min-height:92px;resize:vertical}
   <div class="ap-back" data-pclose></div>
   <div class="pr-card" id="prCard">
     <button type="button" class="ap-x" data-pclose aria-label="Close profile">&times;</button>
-    <div class="pr-top"><div class="pr-av"><i id="prIni">K</i></div><div><div class="pr-name" id="prName"></div><div class="pr-sub" id="prSub"></div></div><span class="pr-badge" id="prBadge"></span></div>
+   <div class="pr-top"><div class="pr-av"><i id="prIni">K</i><img id="prPhoto" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;" alt=""></div><div><div class="pr-name" id="prName"></div><div class="pr-sub" id="prSub"></div></div><span class="pr-badge" id="prBadge"></span></div>
     <p class="pr-bio" id="prBio"></p>
     <div class="pr-tags" id="prTags"></div>
     <div class="pr-grid" id="prGrid"></div>
@@ -1528,6 +1528,16 @@ function openProfile(slug){
   if(!a)return;
   curArtist=a;prLast=document.activeElement;
   $('prIni').textContent=(Array.from(a.name)[0]||'K').toUpperCase();
+  var pp=$('prPhoto');
+if(a.profilePhoto){
+  pp.src=a.profilePhoto;
+  pp.alt='Profile photo of '+a.name;
+  pp.style.display='block';
+  $('prIni').style.display='none';
+}else{
+  pp.style.display='none';
+  $('prIni').style.display='block';
+}
   $('prName').textContent=a.name;
   $('prSub').textContent=metaOf(a);
   $('prBadge').textContent=a.sample?'Sample profile':'Founding artist';
@@ -1735,7 +1745,8 @@ if(!PREVIEW){
         }).filter(Boolean).slice(0,3)
       : [CATL[c] || a.category || 'Artist'],
     insta: a.portfolio || '',
-    photos: a.portfolio_photos || [],
+    profilePhoto: a.profile_photo || '',
+photos: a.portfolio_photos || [],
     art: []
   };
 });
