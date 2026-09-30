@@ -241,6 +241,7 @@
   <script>
 
     let artistId = null;
+    let uploadToken = null;
 
 
     /*
@@ -250,17 +251,16 @@
       artist.html?id=123
     */
 
-    function getArtistId(){
+   function getUploadToken(){
 
-      const params =
-        new URLSearchParams(
-          window.location.search
-        );
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
 
-      return params.get('id');
+  return params.get('token');
 
-    }
-
+}
 
     /*
       Escape text before displaying it.
@@ -284,16 +284,18 @@
 
     async function loadArtist(){
 
-      artistId = getArtistId();
+      uploadToken = getUploadToken();
 
 
-      if(!artistId){
+if(!uploadToken){
 
-        document.getElementById('artistInfo').style.display='none';
+  alert(
+    'This artist upload link is invalid or incomplete.'
+  );
 
-        return;
+  return;
 
-      }
+}
 
 
       try{
