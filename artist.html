@@ -654,11 +654,10 @@ encodeURIComponent(uploadToken) +
         const existingResponse =
           await fetch(
 
-            SUPABASE_URL +
-            '/rest/v1/artist_applications?id=eq.' +
-            encodeURIComponent(artistId) +
-            '&select=portfolio_photos',
-
+           SUPABASE_URL +
+'/rest/v1/artist_applications?upload_token=eq.' +
+encodeURIComponent(uploadToken) +
+'&select=portfolio_photos',
             {
 
               headers:{
