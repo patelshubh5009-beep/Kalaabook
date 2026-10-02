@@ -958,9 +958,13 @@ async function updateStatus(id,status){
             'Prefer':'return=minimal'
           },
 
-          body:JSON.stringify({
-            status:status
-          })
+        body:JSON.stringify({
+  status: status,
+  upload_token:
+    status === 'approved'
+      ? crypto.randomUUID()
+      : null
+})
 
         }
 
