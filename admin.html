@@ -626,10 +626,13 @@ async function login(){
           'Content-Type':'application/json'
         },
 
-        body:JSON.stringify({
-          email:email,
-          password:password
-        })
+       body:JSON.stringify({
+  status: status,
+  upload_token:
+    status === 'approved'
+      ? crypto.randomUUID()
+      : null
+})
       }
     );
 
@@ -858,11 +861,11 @@ async function loadApplications(){
             Approve
           </button>
 
-          <button
-            class="red"
-            onclick="updateStatus(${app.id},'rejected')">
-            Reject
-          </button>
+        <button
+  class="primary"
+  onclick="copyUploadLink(${app.id}, '${app.upload_token || ''}')">
+  Copy Upload Link
+</button>
 
           <br>
 
@@ -1923,7 +1926,41 @@ function escapeHtml(value){
     .replace(/'/g,'&#039;');
 
 }
+function copyUploadLink(id, token){
 
+  if(!token){
+
+    alert(
+      'This artist does not have an upload token yet. Please approve the artist again.'
+    );
+
+    return;
+  }
+
+  const link =
+    window.location.origin +
+    '/artist?token=' +
+    encodeURIComponent(token);
+
+  navigator.clipboard.writeText(link)
+    .then(function(){
+
+      alert(
+        'Upload link copied!\n\n' +
+        link
+      );
+
+    })
+    .catch(function(){
+
+      prompt(
+        'Copy this artist upload link:',
+        link
+      );
+
+    });
+
+}
 </script>
 
 </body>
