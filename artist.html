@@ -343,6 +343,7 @@ encodeURIComponent(uploadToken) +
 
 
         const artist = artists[0];
+        artistId = artist.id;
 
 
         document.getElementById('artistName').value =
@@ -757,10 +758,8 @@ encodeURIComponent(uploadToken) +
           await fetch(
 
             SUPABASE_URL +
-            '/rest/v1/artist_applications?upload_token=eq.' +
-encodeURIComponent(uploadToken),
-            encodeURIComponent(artistId),
-
+'/rest/v1/artist_applications?upload_token=eq.' +
+encodeURIComponent(uploadToken)
             {
 
               method:'PATCH',
