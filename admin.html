@@ -336,6 +336,12 @@ th{
       Salon
     </option>
 
+  
+    <option value="Makeup">Makeup</option>
+    <option value="Hair">Hair</option>
+    <option value="Grooming">Grooming</option>
+    <option value="Kids">Kids</option>
+    <option value="Other">Other</option>
   </select>
 
   <label>Specialties</label>
@@ -465,6 +471,43 @@ th{
 
 </div>
 
+<!-- CLIENT SIGNUPS -->
+
+<div class="card">
+
+  <h2>Client Early-Access List</h2>
+
+  <button
+    class="primary"
+    onclick="loadClients()">
+    Refresh
+  </button>
+
+  <div class="table-wrap">
+
+    <table style="min-width:800px">
+
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Name</th>
+          <th>WhatsApp</th>
+          <th>City</th>
+          <th>Looking for</th>
+          <th>Heard from</th>
+        </tr>
+      </thead>
+
+      <tbody id="clientsBody">
+        <tr><td colspan="6">Loading...</td></tr>
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
 </div>
 
 
@@ -523,7 +566,13 @@ th{
         Salon
       </option>
 
-    </select>
+    
+    <option value="Makeup">Makeup</option>
+    <option value="Hair">Hair</option>
+    <option value="Grooming">Grooming</option>
+    <option value="Kids">Kids</option>
+    <option value="Other">Other</option>
+  </select>
 
     <label>Specialties</label>
 
@@ -594,6 +643,8 @@ const SUPABASE_KEY =
 let ACCESS_TOKEN = '';
 
 let CURRENT_ARTIST = null;
+
+const APPS = {};
 
 
 /* =========================
@@ -798,6 +849,8 @@ async function loadApplications(){
 
     apps.forEach(function(app){
 
+      APPS[app.id] = app;
+
       const tr =
         document.createElement('tr');
 
@@ -838,6 +891,7 @@ async function loadApplications(){
 
         <td>
           ${escapeHtml(app.specialties || '')}
+          ${applicationDetails(app)}
         </td>
 
         <td>
@@ -856,6 +910,18 @@ async function loadApplications(){
             class="green"
             onclick="updateStatus(${app.id},'approved')">
             Approve
+          </button>
+
+          <button
+            class="red"
+            onclick="updateStatus(${app.id},'rejected')">
+            Reject
+          </button>
+
+          <button
+            class="gray"
+            onclick="whatsappArtist(${app.id})">
+            WhatsApp
           </button>
 
         <button
@@ -1962,6 +2028,132 @@ function copyUploadLink(id, token){
     });
 
 }
+
+/* =========================
+   NEW FORM DETAILS, WHATSAPP, CLIENT LIST
+========================= */
+
+function safeUrl(u){
+  u = String(u || '');
+  return /^https:\/\//i.test(u) ? u : '';
+}
+
+function applicationDetails(app){
+
+  const lines = [];
+
+  if(app.salon_name) lines.push('Salon: ' + escapeHtml(app.salon_name));
+  if(app.portfolio) lines.push('Instagram/link: ' + escapeHtml(app.portfolio));
+  if(app.serves){
+    lines.push('Serves: ' + escapeHtml(app.serves) +
+      (app.kids_for ? ' (kids: ' + escapeHtml(app.kids_for) + ')' : ''));
+  }
+  if(app.work_at) lines.push('Works: ' + escapeHtml(app.work_at));
+  if(app.travel_distance) lines.push('Travel: ' + escapeHtml(app.travel_distance));
+  if(app.latitude != null && app.longitude != null){
+    lines.push('<a target="_blank" rel="noopener" href="https://www.google.com/maps?q=' +
+      encodeURIComponent(app.latitude + ',' + app.longitude) + '">Open map pin</a>');
+  }
+  if(app.show_public === true) lines.push('<b>OK to show on public list</b>');
+
+  let photos = '';
+  const all = [];
+  if(app.profile_photo) all.push(app.profile_photo);
+  if(Array.isArray(app.portfolio_photos)) app.portfolio_photos.forEach(function(p){ all.push(p); });
+  all.forEach(function(p){
+    const u = safeUrl(p);
+    if(u) photos += '<a target="_blank" rel="noopener" href="' + escapeHtml(u) + '"><img class="preview-img" loading="lazy" src="' + escapeHtml(u) + '" alt=""></a>';
+  });
+
+  if(!lines.length && !photos) return '';
+
+  return '<div class="small" style="margin-top:8px;line-height:1.6">' +
+    lines.join('<br>') + (photos ? '<br>' + photos : '') + '</div>';
+
+}
+
+function whatsappArtist(id){
+
+  const a = APPS[id];
+  if(!a) return;
+
+  let phone = String(a.whatsapp || '').replace(/\D/g,'');
+  if(phone.length === 10) phone = '91' + phone;
+  if(!phone){ alert('No WhatsApp number saved for this artist.'); return; }
+
+  let text;
+
+  if(a.status === 'approved'){
+    text = 'Hi ' + (a.full_name || '') + ', welcome to KalaaBook! Your profile has been approved.';
+    if(a.upload_token){
+      text += ' Please complete your profile and add your photos here: ' +
+        window.location.origin + '/artist?token=' + encodeURIComponent(a.upload_token);
+    }
+    text += ' Follow us on Instagram @kalaa.book';
+  }else{
+    text = 'Hi ' + (a.full_name || '') + ', thank you for registering with KalaaBook. We are reviewing your profile and will message you here once it is approved.';
+  }
+
+  window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(text), '_blank');
+
+}
+
+async function loadClients(){
+
+  const body = document.getElementById('clientsBody');
+  if(!body) return;
+
+  try{
+
+    const response = await fetch(
+      SUPABASE_URL + '/rest/v1/client_signups?select=*&order=created_at.desc&limit=500',
+      { headers: authHeaders() }
+    );
+
+    if(!response.ok){
+      body.innerHTML = '<tr><td colspan="6">Could not load the client list yet. Run the setup text in Supabase first.</td></tr>';
+      return;
+    }
+
+    const rows = await response.json();
+
+    if(!rows.length){
+      body.innerHTML = '<tr><td colspan="6">No clients yet.</td></tr>';
+      return;
+    }
+
+    body.innerHTML = '';
+
+    rows.forEach(function(c){
+
+      const tr = document.createElement('tr');
+      const d = c.created_at ? new Date(c.created_at).toLocaleString() : '';
+
+      tr.innerHTML =
+        '<td>' + escapeHtml(d) + '</td>' +
+        '<td><strong>' + escapeHtml(c.name || '') + '</strong></td>' +
+        '<td>' + escapeHtml(c.whatsapp || '') + '</td>' +
+        '<td>' + escapeHtml(c.city || '') + '</td>' +
+        '<td>' + escapeHtml(c.categories || '') + (c.kids_for ? ' (kids: ' + escapeHtml(c.kids_for) + ')' : '') + '</td>' +
+        '<td>' + escapeHtml(c.source || '') + '</td>';
+
+      body.appendChild(tr);
+
+    });
+
+  }catch(error){
+    body.innerHTML = '<tr><td colspan="6">Connection error.</td></tr>';
+  }
+
+}
+
+(function(){
+  const original = loadApplications;
+  loadApplications = function(){
+    loadClients();
+    return original.apply(this, arguments);
+  };
+})();
 </script>
 
 </body>
