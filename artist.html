@@ -184,7 +184,7 @@
       >
 
       <div class="upload-info">
-        Upload up to 6 of your best work photos.
+        Upload up to 10 of your best work photos.
       </div>
 
 
@@ -301,22 +301,16 @@ if(!uploadToken){
       try{
 
         const response = await fetch(
-
-          SUPABASE_URL +
-         '/rest/v1/artist_applications?upload_token=eq.' +
-encodeURIComponent(uploadToken) +
-'&select=*',
-
+          SUPABASE_URL + '/rest/v1/rpc/get_artist_by_token',
           {
-
+            method:'POST',
             headers:{
               'apikey':SUPABASE_KEY,
-              'Authorization':
-                'Bearer ' + SUPABASE_KEY
-            }
-
+              'Authorization':'Bearer ' + SUPABASE_KEY,
+              'Content-Type':'application/json'
+            },
+            body:JSON.stringify({p_token:uploadToken})
           }
-
         );
 
 
@@ -528,10 +522,10 @@ encodeURIComponent(uploadToken) +
         );
 
 
-      if(portfolioFiles.length > 6){
+      if(portfolioFiles.length > 10){
 
         alert(
-          'Please upload a maximum of 6 portfolio photos.'
+          'Please upload a maximum of 10 portfolio photos.'
         );
 
         return;
@@ -644,166 +638,45 @@ encodeURIComponent(uploadToken) +
         }
 
 
-        /*
-          Get existing portfolio photos.
-        */
-
-        let existingPhotos=[];
-
-
-        const existingResponse =
-          await fetch(
-
-           SUPABASE_URL +
-'/rest/v1/artist_applications?upload_token=eq.' +
-encodeURIComponent(uploadToken) +
-'&select=portfolio_photos',
-            {
-
-              headers:{
-                'apikey':SUPABASE_KEY,
-                'Authorization':
-                  'Bearer ' + SUPABASE_KEY
-              }
-
-            }
-
-          );
-
-
-        if(existingResponse.ok){
-
-          const existingData =
-            await existingResponse.json();
-
-
-          if(
-            existingData.length &&
-            Array.isArray(
-              existingData[0].portfolio_photos
-            )
-          ){
-
-            existingPhotos =
-              existingData[0].portfolio_photos;
-
-          }
-
-        }
-
-
-        /*
-          Combine old and new portfolio photos.
-        */
-
-        const combinedPhotos =
-          existingPhotos
-            .concat(portfolioUrls);
-
-
-        /*
-          Maximum 6 total portfolio photos.
-        */
-
-        if(combinedPhotos.length > 6){
-
-          throw new Error(
-            'You can have a maximum of 6 portfolio photos.'
-          );
-
-        }
-
-
-        /*
-          Prepare database update.
-        */
-
-        const updateData={
-
-          notes:bio,
-
-          services:services,
-
-          portfolio:instagram
-
-        };
-
-
-        if(profilePhotoUrl){
-
-          updateData.profile_photo =
-            profilePhotoUrl;
-
-        }
-
-
-        if(portfolioUrls.length){
-
-          updateData.portfolio_photos =
-            combinedPhotos;
-
-        }
-
-
         message.textContent =
           'Saving your profile...';
 
-
-        /*
-          Update Supabase.
-        */
-
         const response =
           await fetch(
-
-            SUPABASE_URL +
-'/rest/v1/artist_applications?upload_token=eq.' +
-encodeURIComponent(uploadToken),
-
-
+            SUPABASE_URL + '/rest/v1/rpc/save_artist_profile',
             {
-
-              method:'PATCH',
-
+              method:'POST',
               headers:{
-
                 'apikey':SUPABASE_KEY,
-
-                'Authorization':
-                  'Bearer ' + SUPABASE_KEY,
-
-                'Content-Type':
-                  'application/json',
-
-                'Prefer':
-                  'return=minimal'
-
+                'Authorization':'Bearer ' + SUPABASE_KEY,
+                'Content-Type':'application/json'
               },
-
-              body:
-                JSON.stringify(
-                  updateData
-                )
-
+              body:JSON.stringify({
+                p_token:uploadToken,
+                p_notes:bio,
+                p_services:services,
+                p_portfolio:instagram,
+                p_profile_photo:profilePhotoUrl || '',
+                p_new_photos:portfolioUrls
+              })
             }
-
           );
 
+        let ok = false;
+        let errorText = '';
+        if(response.ok){
+          ok = (await response.json()) === true;
+        }else{
+          errorText = await response.text();
+        }
 
-        if(!response.ok){
-
-          const errorText =
-            await response.text();
-
-          console.error(
-            'Supabase error:',
-            errorText
-          );
-
+        if(!ok){
+          console.error('Supabase error:', errorText);
           throw new Error(
-            'Profile could not be saved.'
+            errorText.indexOf('Too many photos') > -1
+              ? 'You can have a maximum of 10 portfolio photos.'
+              : 'Profile could not be saved.'
           );
-
         }
 
 
