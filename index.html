@@ -259,6 +259,8 @@ dialog::backdrop{background:rgba(27,18,32,.7)}
 .pf-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))!important}
 .pf-grid img{border-radius:14px!important;transition:transform .15s}
 .pf-grid img:hover{transform:scale(1.03)}
+.acol .more{width:100%;margin-top:4px;padding:10px;border:2px dashed rgba(45,21,54,.35);border-radius:12px;background:transparent;font:700 14px 'DM Sans',sans-serif;color:#2D1536;cursor:pointer}
+.acol .more:hover{background:rgba(255,255,255,.6)}
 .demo[hidden]{display:none}
 .acol .ar{cursor:pointer;transition:transform .15s,box-shadow .15s}
 .acol .ar:hover,.acol .ar:focus-visible{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.12);outline:none}
@@ -1096,7 +1098,7 @@ wire('artist','arForm','arDone','arErr','arGo');
     [['Her','her'],['Him','him'],['Kids','kids']].forEach(function(g){
       var col=el('div','acol '+g[1]);col.appendChild(el('h4',null,LAB[g[0]]));
       var list=ppl.filter(function(p){return (p.g||[]).indexOf(g[0])>-1;});
-      function add(par,l){l.forEach(function(p){var r=el('div','ar',p.n);if(p.fn&&p.fn.trim().toLowerCase()!==String(p.n).trim().toLowerCase())r.appendChild(el('i',null,'by '+p.fn));r.appendChild(el('i',null,p.c+(p.craft?' · '+p.craft:'')));r.appendChild(el('u',null,'View services and photos'));r.tabIndex=0;r.setAttribute('role','button');r.addEventListener('click',function(){openProfile(p);});r.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openProfile(p);}});par.appendChild(r);});}
+      function add(par,l){var LIM=5;function row(p){var r=el('div','ar',p.n);if(p.fn&&p.fn.trim().toLowerCase()!==String(p.n).trim().toLowerCase())r.appendChild(el('i',null,'by '+p.fn));r.appendChild(el('i',null,p.c+(p.craft?' · '+p.craft:'')));r.appendChild(el('u',null,'View services and photos'));r.tabIndex=0;r.setAttribute('role','button');r.addEventListener('click',function(){openProfile(p);});r.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openProfile(p);}});par.appendChild(r);}l.slice(0,LIM).forEach(row);if(l.length>LIM){var b=el('button','more','Show '+(l.length-LIM)+' more');b.type='button';b.addEventListener('click',function(){b.remove();l.slice(LIM).forEach(function(p){row(p);});});par.appendChild(b);}}
       if(g[0]==='Kids'){
         [['Boys','boys'],['Girls','girls']].forEach(function(s){
           col.appendChild(el('h5',null,s[0]));
