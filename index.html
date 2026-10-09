@@ -245,6 +245,20 @@ dialog::backdrop{background:rgba(27,18,32,.7)}
 .grp{margin-bottom:14px}.grp b{display:block;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#6b3f10;margin-bottom:6px}
 .grp span{display:inline-block;background:rgba(255,255,255,.7);border-radius:99px;padding:5px 12px;margin:0 6px 6px 0;font-size:15px;color:var(--ink)}
 .svc .kn{font-size:14px;margin-top:10px;color:#3A2B45}
+.pf-hero{display:flex;gap:16px;align-items:center;padding:4px 0 14px}
+.pf-hero img{width:96px;height:96px;border-radius:50%;object-fit:cover;background:#f1e6d6;flex:none;border:3px solid #fff;box-shadow:0 0 0 2px #E3B24E,0 6px 16px rgba(0,0,0,.15)}
+.pf-hero .pf-ph{width:96px;height:96px;border-radius:50%;flex:none;display:grid;place-items:center;background:#2D1536;color:#E3B24E;font-family:'Playfair Display',serif;font-size:38px;box-shadow:0 0 0 2px #E3B24E}
+.pf-hero h3{margin:0;font-size:26px;line-height:1.15}
+.pf-by{margin:3px 0 0;font-size:15px;color:#6b3f10}
+.pf-loc{margin:6px 0 0;font-size:15px}
+.pf-chips{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 16px}
+.pf-chips span{background:#fff;border:1px solid #e3d6c4;border-radius:99px;padding:6px 13px;font-size:14px}
+.pf-chips span.hi{background:#2D1536;color:#fff;border-color:#2D1536}
+.pf-sec{margin:18px 0 6px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#B3472B;font-family:'DM Sans',sans-serif;font-weight:700}
+.pf-ig{display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:11px 18px;border-radius:99px;background:linear-gradient(135deg,#F2A11A,#D6336C,#7B2FF7);color:#fff!important;font-weight:700;text-decoration:none}
+.pf-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))!important}
+.pf-grid img{border-radius:14px!important;transition:transform .15s}
+.pf-grid img:hover{transform:scale(1.03)}
 .demo[hidden]{display:none}
 .acol .ar{cursor:pointer;transition:transform .15s,box-shadow .15s}
 .acol .ar:hover,.acol .ar:focus-visible{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.12);outline:none}
@@ -500,7 +514,7 @@ window.KB_SB=window.KB_SB||{url:'https://pmerqsrmgmlqirznegeb.supabase.co',key:'
     return kind==='client'?sendClient(fd):sendArtist(fd);
   }
   function artists(){
-    return fetch(window.KB_SB.url+'/rest/v1/public_artists?select=n,c,craft,g,kf,s,ph,pp,ig,bio&order=n',{headers:hdr()})
+    return fetch(window.KB_SB.url+'/rest/v1/public_artists?select=n,c,craft,g,kf,s,ph,pp,ig,bio,fn,wk,td&order=n',{headers:hdr()})
       .then(function(r){if(!r.ok)throw new Error('read');return r.json();}).then(function(rows){return {people:rows};});
   }
   window.kbSb={on:on,send:send,artists:artists};
@@ -1049,21 +1063,29 @@ wire('artist','arForm','arDone','arErr','arGo');
       var e=el('div','rp',p.n+', '+p.c),i=el('i',null,(p.k||[]).map(function(k){return LAB[k]||k}).join(' + '));e.appendChild(i);wall.appendChild(e);});
   }
   function okImg(u){return typeof u==='string'&&/^https:\/\//.test(u);}
+  function autoNote(t){return /^(Salon|Serves|Works|Travel):\s/.test(String(t||'').trim());}
   function openProfile(p){
     var b=document.getElementById('pfBody');b.textContent='';
-    var top=el('div','pf-top');
-    if(okImg(p.ph)){var im=el('img');im.src=p.ph;im.alt=p.n;top.appendChild(im);}
-    var t=el('div');t.appendChild(el('h3',null,p.n));t.appendChild(el('p',null,p.c+(p.craft?' · '+p.craft:'')));
-    var gs=(p.g||[]).map(function(k){return LAB[k]||k}).join(' + ');if(gs)t.appendChild(el('p',null,'Serves: '+gs));
-    top.appendChild(t);b.appendChild(top);
-    var sv=Array.isArray(p.s)?p.s.filter(Boolean):[];
-    if(sv.length){b.appendChild(el('h4',null,'Services'));var tg=el('div','pf-tags');sv.forEach(function(x){tg.appendChild(el('span',null,x));});b.appendChild(tg);}
-    if(p.bio){b.appendChild(el('h4',null,'About'));b.appendChild(el('p',null,p.bio));}
+    var hero=el('div','pf-hero');
+    if(okImg(p.ph)){var im=el('img');im.src=p.ph;im.alt=p.n;hero.appendChild(im);}
+    else hero.appendChild(el('div','pf-ph',String(p.n||'?').charAt(0).toUpperCase()));
+    var t=el('div');t.appendChild(el('h3',null,p.n));
+    if(p.fn&&p.fn.trim().toLowerCase()!==String(p.n).trim().toLowerCase())t.appendChild(el('p','pf-by','by '+p.fn));
+    t.appendChild(el('p','pf-loc','\ud83d\udccd '+p.c+(p.craft&&p.craft!=='Other'?' \u00b7 '+p.craft:'')));
+    hero.appendChild(t);b.appendChild(hero);
+    var chips=el('div','pf-chips');
+    var gs=(p.g||[]).map(function(k){return LAB[k]||k});
+    gs.forEach(function(x){chips.appendChild(el('span','hi',x));});
+    if(p.wk)chips.appendChild(el('span',null,p.wk));
+    if(p.td)chips.appendChild(el('span',null,'Travels: '+String(p.td).replace(/^Up to /,'up to ')));
+    if(chips.childNodes.length)b.appendChild(chips);
+    var sv=(Array.isArray(p.s)?p.s:[]).filter(function(x){return x&&x!=='Other'&&x!==p.craft;});
+    if(sv.length){b.appendChild(el('div','pf-sec','Services'));var tg=el('div','pf-chips');sv.forEach(function(x){tg.appendChild(el('span',null,x));});b.appendChild(tg);}
+    if(p.bio&&!autoNote(p.bio)){b.appendChild(el('div','pf-sec','About'));b.appendChild(el('p',null,p.bio));}
     var ph=Array.isArray(p.pp)?p.pp.filter(okImg):[];
-    if(ph.length){b.appendChild(el('h4',null,'Work photos'));var g=el('div','pf-grid');ph.forEach(function(u){var i=el('img');i.src=u;i.loading='lazy';i.alt='Work by '+p.n;i.addEventListener('click',function(){window.open(u,'_blank','noopener');});g.appendChild(i);});b.appendChild(g);}
-    else if(!sv.length&&!p.bio){b.appendChild(el('p',null,'This artist has not added photos or services yet.'));}
+    if(ph.length){b.appendChild(el('div','pf-sec','Work photos'));var g=el('div','pf-grid');ph.forEach(function(u){var i=el('img');i.src=u;i.loading='lazy';i.alt='Work by '+p.n;i.addEventListener('click',function(){window.open(u,'_blank','noopener');});g.appendChild(i);});b.appendChild(g);}
     var h=String(p.ig||'').replace(/^.*instagram\.com\//i,'').replace(/^@+/,'').replace(/[@\/?].*$/,'').replace(/[^A-Za-z0-9._]/g,'');
-    if(h){var a=el('a','pf-ig','Instagram @'+h);a.href='https://instagram.com/'+h;a.target='_blank';a.rel='noopener';b.appendChild(a);}
+    if(h){var a=el('a','pf-ig','See more on Instagram @'+h);a.href='https://instagram.com/'+h;a.target='_blank';a.rel='noopener';b.appendChild(a);}
     var d=document.getElementById('dlg-profile');if(d.showModal)d.showModal();else d.setAttribute('open','');
   }
   function drawA(d){
@@ -1074,7 +1096,7 @@ wire('artist','arForm','arDone','arErr','arGo');
     [['Her','her'],['Him','him'],['Kids','kids']].forEach(function(g){
       var col=el('div','acol '+g[1]);col.appendChild(el('h4',null,LAB[g[0]]));
       var list=ppl.filter(function(p){return (p.g||[]).indexOf(g[0])>-1;});
-      function add(par,l){l.forEach(function(p){var r=el('div','ar',p.n);r.appendChild(el('i',null,p.c+(p.craft?' · '+p.craft:'')));r.appendChild(el('u',null,'View services and photos'));r.tabIndex=0;r.setAttribute('role','button');r.addEventListener('click',function(){openProfile(p);});r.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openProfile(p);}});par.appendChild(r);});}
+      function add(par,l){l.forEach(function(p){var r=el('div','ar',p.n);if(p.fn&&p.fn.trim().toLowerCase()!==String(p.n).trim().toLowerCase())r.appendChild(el('i',null,'by '+p.fn));r.appendChild(el('i',null,p.c+(p.craft?' · '+p.craft:'')));r.appendChild(el('u',null,'View services and photos'));r.tabIndex=0;r.setAttribute('role','button');r.addEventListener('click',function(){openProfile(p);});r.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openProfile(p);}});par.appendChild(r);});}
       if(g[0]==='Kids'){
         [['Boys','boys'],['Girls','girls']].forEach(function(s){
           col.appendChild(el('h5',null,s[0]));
