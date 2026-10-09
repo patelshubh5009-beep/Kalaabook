@@ -9,12 +9,12 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="KalaaBook | Style Apna, Artist Apna">
 <meta property="og:description" content="See the artist's real work before you book. Launching soon all over India. Join the free early-access list today.">
-<meta property="og:image" content="https://kalaabook.com/assets/og-image.png">
+<meta property="og:image" content="https://kalaabook.com/og-image.png">
 <meta property="og:url" content="https://kalaabook.com/">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,600;0,700;1,500&display=swap" rel="stylesheet">
@@ -245,6 +245,19 @@ dialog::backdrop{background:rgba(27,18,32,.7)}
 .grp{margin-bottom:14px}.grp b{display:block;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#6b3f10;margin-bottom:6px}
 .grp span{display:inline-block;background:rgba(255,255,255,.7);border-radius:99px;padding:5px 12px;margin:0 6px 6px 0;font-size:15px;color:var(--ink)}
 .svc .kn{font-size:14px;margin-top:10px;color:#3A2B45}
+.demo[hidden]{display:none}
+.acol .ar{cursor:pointer;transition:transform .15s,box-shadow .15s}
+.acol .ar:hover,.acol .ar:focus-visible{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.12);outline:none}
+.acol .ar u{display:block;text-decoration:none;font-size:12px;color:#B3472B;font-weight:700;margin-top:3px}
+.pf-top{display:flex;gap:14px;align-items:center;margin-bottom:12px}
+.pf-top img{width:84px;height:84px;border-radius:50%;object-fit:cover;background:#eee;flex:none}
+.pf-top h3{margin:0;font-size:22px}
+.pf-top p{margin:2px 0 0}
+.pf-tags{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 14px}
+.pf-tags span{background:#fff;border:1px solid #e3d6c4;border-radius:99px;padding:4px 11px;font-size:13px}
+.pf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:8px}
+.pf-grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;background:#eee;cursor:zoom-in}
+.pf-ig{display:inline-block;margin-top:10px;font-weight:700;color:#B3472B}
 .demo{display:inline-block;background:#F2A11A;color:#1B1220;font-weight:700;border-radius:8px;padding:8px 14px;margin:18px 0 0}
 .regtotals{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:26px 0 8px}
 .regtotals div{background:#2A1633;color:#FBF5EA;border-radius:16px;padding:16px 26px;min-width:130px}
@@ -487,7 +500,7 @@ window.KB_SB=window.KB_SB||{url:'https://pmerqsrmgmlqirznegeb.supabase.co',key:'
     return kind==='client'?sendClient(fd):sendArtist(fd);
   }
   function artists(){
-    return fetch(window.KB_SB.url+'/rest/v1/public_artists?select=n,c,craft,g,kf&order=n',{headers:hdr()})
+    return fetch(window.KB_SB.url+'/rest/v1/public_artists?select=n,c,craft,g,kf,s,ph,pp,ig,bio&order=n',{headers:hdr()})
       .then(function(r){if(!r.ok)throw new Error('read');return r.json();}).then(function(rows){return {people:rows};});
   }
   window.kbSb={on:on,send:send,artists:artists};
@@ -495,7 +508,7 @@ window.KB_SB=window.KB_SB||{url:'https://pmerqsrmgmlqirznegeb.supabase.co',key:'
 </script>
 </head>
 <body>
-<div class="veil show in nt boot" id="veil" aria-hidden="true"><div class="vp"></div><div class="vp"></div><div class="vp"></div><div class="vp"></div><div class="vp"></div><img class="vl" src="assets/kalaabook-logo-on-dark-transparent.png" alt=""></div>
+<div class="veil show in nt boot" id="veil" aria-hidden="true"><div class="vp"></div><div class="vp"></div><div class="vp"></div><div class="vp"></div><div class="vp"></div><img class="vl" src="kalaabook-logo-on-dark-transparent.png" alt=""></div>
 <script>document.documentElement.className+=' js';</script>
 <noscript><style>.rv{opacity:1!important;transform:none!important}</style></noscript>
 
@@ -519,8 +532,8 @@ window.KB_SB=window.KB_SB||{url:'https://pmerqsrmgmlqirznegeb.supabase.co',key:'
 <header class="nav" id="nav">
   <div class="wrap in">
     <a class="logo" href="#top" aria-label="KalaaBook home">
-      <img class="l-dark" src="assets/kalaabook-logo-on-dark-transparent.png" alt="KalaaBook" width="86" height="44">
-      <img class="l-cream" src="assets/kalaabook-logo-transparent.png" alt="" width="86" height="44">
+      <img class="l-dark" src="kalaabook-logo-on-dark-transparent.png" alt="KalaaBook" width="86" height="44">
+      <img class="l-cream" src="kalaabook-logo-transparent.png" alt="" width="86" height="44">
     </a>
     <ul class="links">
       <li><a href="#categories">Categories</a></li>
@@ -730,7 +743,7 @@ window.KB_SB=window.KB_SB||{url:'https://pmerqsrmgmlqirznegeb.supabase.co',key:'
   <div class="wrap">
     <div class="fgrid">
       <div>
-        <img src="assets/kalaabook-logo-on-dark-transparent.png" alt="KalaaBook" width="102" height="52">
+        <img src="kalaabook-logo-on-dark-transparent.png" alt="KalaaBook" width="102" height="52">
         <div class="tag">Style Apna, Artist Apna</div>
         <p style="margin-top:12px;max-width:42ch">Launching soon all over India. See the artist's real work before you book.</p>
       </div>
@@ -835,6 +848,11 @@ window.KB_SB=window.KB_SB||{url:'https://pmerqsrmgmlqirznegeb.supabase.co',key:'
   </div>
 </dialog>
 
+<dialog id="dlg-profile" aria-labelledby="pfT">
+  <div class="dhead"><div><h2 id="pfT">Artist profile</h2></div><button class="x" type="button" data-close aria-label="Close">&times;</button></div>
+  <div class="dbody" id="pfBody"></div>
+</dialog>
+
 <datalist id="cities"><option value="Mumbai"><option value="Delhi"><option value="Bengaluru"><option value="Ahmedabad"><option value="Pune"><option value="Hyderabad"><option value="Kolkata"><option value="Surat"><option value="Chennai"><option value="Jaipur"><option value="Lucknow"><option value="Indore"><option value="Bhopal"><option value="Chandigarh"><option value="Nagpur"><option value="Vadodara"><option value="Rajkot"><option value="Gandhinagar"><option value="Nadiad"><option value="Anand"><option value="Kheda"><option value="Mahudha"></datalist>
 
 <script>
@@ -887,7 +905,7 @@ if('IntersectionObserver' in window&&!reduce){
 
 /* ---------- 3D ring ---------- */
 (function(){
-  var PHOTOS=[]; /* add image paths here, for example 'assets/p1.jpg'. Use only photos the artist gave written permission for. */
+  var PHOTOS=[]; /* add image paths here, for example 'p1.jpg'. Use only photos the artist gave written permission for. */
   var base=[['Nails','her','nail'],['Fade','him','scissors'],['Kids haircut','kids','smile'],['Mehendi','her','leaf'],['Beard','him','comb'],['Makeup','her','lip'],['Kids styling','kids','spark'],['Hair','her','scissors'],['Grooming','him','comb'],['Kids mehendi','kids','leaf'],['Salon','her','spark'],['Haircut','him','scissors']];
   var N=24,step=360/N,zone=$('#zone'),ring=$('#ring');if(!zone||!ring)return;
   var filter='all',snap=null,cards=[],cw=150,ch=195,R=500,phase=0,vel=-.14,tv=reduce?0:-.14,drag=false,lastX=0,visible=true;
@@ -1030,6 +1048,24 @@ wire('artist','arForm','arDone','arErr','arGo');
     (d.people||[]).forEach(function(p){
       var e=el('div','rp',p.n+', '+p.c),i=el('i',null,(p.k||[]).map(function(k){return LAB[k]||k}).join(' + '));e.appendChild(i);wall.appendChild(e);});
   }
+  function okImg(u){return typeof u==='string'&&/^https:\/\//.test(u);}
+  function openProfile(p){
+    var b=document.getElementById('pfBody');b.textContent='';
+    var top=el('div','pf-top');
+    if(okImg(p.ph)){var im=el('img');im.src=p.ph;im.alt=p.n;top.appendChild(im);}
+    var t=el('div');t.appendChild(el('h3',null,p.n));t.appendChild(el('p',null,p.c+(p.craft?' · '+p.craft:'')));
+    var gs=(p.g||[]).map(function(k){return LAB[k]||k}).join(' + ');if(gs)t.appendChild(el('p',null,'Serves: '+gs));
+    top.appendChild(t);b.appendChild(top);
+    var sv=Array.isArray(p.s)?p.s.filter(Boolean):[];
+    if(sv.length){b.appendChild(el('h4',null,'Services'));var tg=el('div','pf-tags');sv.forEach(function(x){tg.appendChild(el('span',null,x));});b.appendChild(tg);}
+    if(p.bio){b.appendChild(el('h4',null,'About'));b.appendChild(el('p',null,p.bio));}
+    var ph=Array.isArray(p.pp)?p.pp.filter(okImg):[];
+    if(ph.length){b.appendChild(el('h4',null,'Work photos'));var g=el('div','pf-grid');ph.forEach(function(u){var i=el('img');i.src=u;i.loading='lazy';i.alt='Work by '+p.n;i.addEventListener('click',function(){window.open(u,'_blank','noopener');});g.appendChild(i);});b.appendChild(g);}
+    else if(!sv.length&&!p.bio){b.appendChild(el('p',null,'This artist has not added photos or services yet.'));}
+    var h=String(p.ig||'').replace(/^.*instagram\.com\//i,'').replace(/^@+/,'').replace(/[@\/?].*$/,'').replace(/[^A-Za-z0-9._]/g,'');
+    if(h){var a=el('a','pf-ig','Instagram @'+h);a.href='https://instagram.com/'+h;a.target='_blank';a.rel='noopener';b.appendChild(a);}
+    var d=document.getElementById('dlg-profile');if(d.showModal)d.showModal();else d.setAttribute('open','');
+  }
   function drawA(d){
     var box=document.getElementById('artCols'),em=document.getElementById('artEmpty');box.textContent='';
     var ppl=(d&&d.people)||[];
@@ -1038,7 +1074,7 @@ wire('artist','arForm','arDone','arErr','arGo');
     [['Her','her'],['Him','him'],['Kids','kids']].forEach(function(g){
       var col=el('div','acol '+g[1]);col.appendChild(el('h4',null,LAB[g[0]]));
       var list=ppl.filter(function(p){return (p.g||[]).indexOf(g[0])>-1;});
-      function add(par,l){l.forEach(function(p){var r=el('div','ar',p.n);r.appendChild(el('i',null,p.c+(p.craft?' · '+p.craft:'')));par.appendChild(r);});}
+      function add(par,l){l.forEach(function(p){var r=el('div','ar',p.n);r.appendChild(el('i',null,p.c+(p.craft?' · '+p.craft:'')));r.appendChild(el('u',null,'View services and photos'));r.tabIndex=0;r.setAttribute('role','button');r.addEventListener('click',function(){openProfile(p);});r.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openProfile(p);}});par.appendChild(r);});}
       if(g[0]==='Kids'){
         [['Boys','boys'],['Girls','girls']].forEach(function(s){
           col.appendChild(el('h5',null,s[0]));
