@@ -2155,6 +2155,86 @@ async function loadClients(){
   };
 })();
 </script>
+  
+
+<!-- KalaaBook dashboard layout upgrade: insert immediately before </body> -->
+<style>
+:root{--nav:#242a34;--blue:#2563eb;--line:#e5e9f0;--muted:#64748b}
+body{background:#f1f4f9;color:#172033;font-family:Arial,Helvetica,sans-serif}
+button{transition:filter .15s}button:hover{filter:brightness(.94)}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #93b4ff;outline-offset:3px}
+.hidden{display:none!important}
+#adminPage{padding-left:230px;min-height:100vh}
+#kbSidebar{position:fixed;inset:0 auto 0 0;width:230px;background:var(--nav);color:white;padding:28px 18px;z-index:50;overflow:auto}
+.kb-brand{font-size:25px;font-weight:800;padding:0 10px 7px}.kb-caption{color:#b6c2d3;font-size:12px;padding:0 10px 28px}
+#kbSidebar button{display:block;width:100%;text-align:left;background:transparent;color:#d7dfec;margin:7px 0;padding:14px;border-radius:9px}#kbSidebar button:hover,#kbSidebar button.active{background:#384456;color:white}
+#adminPage header{background:white;color:#172033;border-bottom:1px solid var(--line);padding:20px 28px;gap:16px}#adminPage header h1{font-size:20px}
+#adminPage>.card{margin:22px 26px;max-width:none;padding:24px;border:1px solid var(--line);box-shadow:0 4px 16px #17203305;border-radius:12px}
+#adminPage h2{font-size:20px;margin-top:0}
+#kbOverview{margin:26px;scroll-margin-top:20px}.kb-intro{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:18px}.kb-intro h2{margin:0 0 8px!important;font-size:26px!important}.kb-intro p{margin:0;color:var(--muted);font-size:14px}
+.kb-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.kb-stat{color:white;border-radius:12px;padding:21px;min-height:120px;background:#2563eb}.kb-stat:nth-child(2){background:#b66a08}.kb-stat:nth-child(3){background:#13815b}.kb-stat:nth-child(4){background:#b83b55}.kb-stat strong{display:block;font-size:32px;margin:12px 0 6px}.kb-stat small{opacity:.9}
+.kb-toolbar{display:grid;grid-template-columns:minmax(180px,2fr) repeat(2,minmax(130px,1fr));gap:12px;margin:20px 0 6px}.kb-toolbar input,.kb-toolbar select{margin:0;background:#f8fafc;border-color:#dce3ed}.kb-result{color:var(--muted);font-size:13px;margin:12px 0}
+.table-wrap{border:1px solid var(--line);border-radius:9px;overflow-x:auto}table{min-width:760px;font-size:14px}th{background:#f7f9fc;color:#536177;font-size:12px;text-transform:uppercase;letter-spacing:.04em}th,td{padding:15px 12px;border-color:var(--line)}tbody tr:hover{background:#fbfcff}.status{display:inline-block;padding:6px 9px;border-radius:30px;background:#edf1f6;font-size:12px}.status.pending{background:#fff4dc}.status.approved{background:#def6e9}.status.rejected{background:#ffe6ec}
+#applicationsBody tr:not(.kb-expanded)>td:nth-child(2),#applicationsBody tr:not(.kb-expanded)>td:nth-child(4),#applicationsBody tr:not(.kb-expanded)>td:nth-child(7),#applicationsBody tr:not(.kb-expanded)>td:nth-child(8),#kbApplications thead th:nth-child(2),#kbApplications thead th:nth-child(4),#kbApplications thead th:nth-child(7),#kbApplications thead th:nth-child(8){display:none}
+#applicationsBody tr.kb-expanded{background:#f5f8ff}#applicationsBody tr.kb-expanded>td{max-width:300px;overflow-wrap:anywhere}
+#applicationsBody tr:not(.kb-expanded) .actions>*:not(.kb-detail-toggle){display:none!important}.actions{min-width:150px;max-width:300px}.actions button{font-size:12px;padding:9px 11px}.photo-input{max-width:100%}
+#addArtistBox input,#addArtistBox textarea,#addArtistBox select,.modal input,.modal select,.modal textarea{background:#fafbfd;border-color:#dce3ed}label{font-size:13px;color:#475569}.login{margin:10vh auto;padding:32px;border:1px solid var(--line);box-shadow:0 12px 45px #17203310}.login h2{font-size:26px}.login button{width:100%;margin:10px 0}.modal-box{border-radius:16px}.card{scroll-margin-top:20px}
+@media(min-width:1500px){#adminPage>.card,#kbOverview{margin-left:38px;margin-right:38px}}
+@media(max-width:1000px){#adminPage{padding-left:185px}#kbSidebar{width:185px;padding:24px 12px}.kb-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.kb-toolbar{grid-template-columns:1fr 1fr}.kb-toolbar input{grid-column:1/-1}}
+@media(max-width:700px){#adminPage{padding-left:0}#kbSidebar{position:relative;width:100%;padding:16px;display:flex;flex-wrap:wrap;gap:4px}.kb-brand{width:100%;font-size:22px}.kb-caption{display:none}#kbSidebar button{width:auto;font-size:12px;padding:10px;margin:0}#adminPage header{padding:15px}#adminPage header h1{font-size:16px}#adminPage>.card,#kbOverview{margin:16px;padding:17px}.kb-grid{gap:10px}.kb-stat{padding:15px}.kb-stat strong{font-size:27px}.kb-intro{align-items:flex-start;flex-direction:column}.kb-intro h2{font-size:23px!important}.login{margin:40px 16px}}
+</style>
+<script>
+(function(){
+  const admin=document.getElementById('adminPage');
+  if(!admin || document.getElementById('kbSidebar')) return;
+  const cards=Array.from(admin.children).filter(el=>el.classList.contains('card'));
+  const addIntro=cards.find(el=>el.querySelector('button[onclick="showAddArtist()"]'));
+  const applications=document.getElementById('applicationsBody').closest('.card');
+  const clients=document.getElementById('clientsBody').closest('.card');
+  applications.id='kbApplications'; clients.id='kbClients';
+  if(addIntro) addIntro.classList.add('hidden');
+  const nav=document.createElement('aside');nav.id='kbSidebar';nav.setAttribute('aria-label','Admin navigation');
+  nav.innerHTML='<div class="kb-brand">KalaaBook</div><div class="kb-caption">ADMIN WORKSPACE</div><button type="button" data-section="overview" class="active">Overview</button><button type="button" data-section="applications">Artist Applications</button><button type="button" data-section="approved">Approved Artists</button><button type="button" data-section="clients">Client Early Access</button><button type="button" data-section="add">+ Add Artist</button>';
+  admin.prepend(nav);
+  const overview=document.createElement('section');overview.id='kbOverview';
+  overview.innerHTML='<div class="kb-intro"><div><h2>Your workspace</h2><p>Review applications, manage artists, and follow client signups.</p></div><button class="primary" type="button" onclick="showAddArtist();document.getElementById(\'addArtistBox\').scrollIntoView({behavior:\'smooth\'});">+ Add Artist</button></div><div class="kb-grid"><div class="kb-stat">Applications loaded<strong id="kbTotal">—</strong><small>Current fetched records</small></div><div class="kb-stat">Pending review<strong id="kbPending">—</strong><small>Awaiting your decision</small></div><div class="kb-stat">Approved artists<strong id="kbApproved">—</strong><small>Approved applications</small></div><div class="kb-stat">Clients loaded<strong id="kbClientCount">—</strong><small>Up to 500 latest signups</small></div></div>';
+  admin.querySelector('header').after(overview);
+  const tools=document.createElement('div');tools.className='kb-toolbar';
+  tools.innerHTML='<input id="kbSearch" type="search" aria-label="Search applications" placeholder="Search name, phone, city, category…"><select id="kbStatus" aria-label="Filter by status"><option value="">All statuses</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select><select id="kbCategory" aria-label="Filter by category"><option value="">All categories</option></select>';
+  applications.querySelector('.table-wrap').before(tools);
+  const result=document.createElement('p');result.className='kb-result';result.setAttribute('aria-live','polite');tools.after(result);
+  const $=id=>document.getElementById(id);
+  function rows(){return Array.from($('applicationsBody').rows).filter(r=>r.cells.length===10);}
+  function filter(){
+    const q=$('kbSearch').value.trim().toLowerCase(),status=$('kbStatus').value,category=$('kbCategory').value;let shown=0;
+    rows().forEach(row=>{const s=row.querySelector('.status')?.textContent.trim().toLowerCase()||'pending';const match=(!q||row.textContent.toLowerCase().includes(q))&&(!status||status===s)&&(!category||row.cells[5].textContent.trim()===category);row.hidden=!match;if(match)shown++;});
+    result.textContent=shown+' of '+rows().length+' loaded applications shown. Use “View details” to reveal contact information and management actions.';
+  }
+  function decorate(){
+    const list=rows();
+    if(!list.length){['kbTotal','kbPending','kbApproved'].forEach(id=>$(id).textContent='—');result.textContent='';return;}
+    let pending=0,approved=0;const categories=new Set();
+    list.forEach(row=>{
+      const status=row.querySelector('.status')?.textContent.trim().toLowerCase();if(status==='pending')pending++;if(status==='approved')approved++;categories.add(row.cells[5].textContent.trim());
+      const actions=row.cells[9];if(!actions.querySelector('.kb-detail-toggle')){
+        const toggle=document.createElement('button');toggle.type='button';toggle.className='primary kb-detail-toggle';toggle.textContent='View details';toggle.setAttribute('aria-expanded','false');
+        toggle.addEventListener('click',()=>{const open=row.classList.toggle('kb-expanded');toggle.textContent=open?'Close details':'View details';toggle.setAttribute('aria-expanded',String(open));});actions.prepend(toggle);
+      }
+    });
+    $('kbTotal').textContent=list.length;$('kbPending').textContent=pending;$('kbApproved').textContent=approved;
+    const selected=$('kbCategory').value;$('kbCategory').replaceChildren(new Option('All categories',''));Array.from(categories).filter(Boolean).sort().forEach(c=>$('kbCategory').add(new Option(c,c)));$('kbCategory').value=selected;filter();
+  }
+  ['kbSearch','kbStatus','kbCategory'].forEach(id=>$(id).addEventListener('input',filter));
+  new MutationObserver(decorate).observe($('applicationsBody'),{childList:true});
+  function clientCount(){const list=Array.from($('clientsBody').rows);$('kbClientCount').textContent=list[0]?.cells.length===6?list.length:(/No clients yet/i.test($('clientsBody').textContent)?'0':'—');}
+  new MutationObserver(clientCount).observe($('clientsBody'),{childList:true});
+  nav.addEventListener('click',event=>{const button=event.target.closest('[data-section]');if(!button)return;nav.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b===button));const section=button.dataset.section;let target=overview;
+    if(section==='applications'||section==='approved'){$('kbStatus').value=section==='approved'?'approved':'';filter();target=applications;}
+    if(section==='clients')target=clients;if(section==='add'){showAddArtist();target=$('addArtistBox');}target.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+  decorate();clientCount();
+})();
+</script>
+
 
 </body>
 </html>
