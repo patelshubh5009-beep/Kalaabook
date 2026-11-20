@@ -1,633 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="robots" content="noindex, nofollow">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta charset="utf-8"/>
+<meta content="noindex, nofollow" name="robots"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>KalaaBook Admin</title>
 
 <style>
-
-*{
-  box-sizing:border-box;
-}
-
-body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:#f5f5f5;
-  color:#222;
-}
-
-header{
-  background:#111;
-  color:white;
-  padding:18px 24px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-header h1{
-  margin:0;
-  font-size:22px;
-}
-
-button{
-  border:0;
-  border-radius:7px;
-  padding:10px 14px;
-  cursor:pointer;
-  font-weight:600;
-  margin:3px;
-}
-
-.green{
-  background:#198754;
-  color:white;
-}
-
-.red{
-  background:#dc3545;
-  color:white;
-}
-
-.primary{
-  background:#2563eb;
-  color:white;
-}
-
-.gray{
-  background:#777;
-  color:white;
-}
-
-.card{
-  background:white;
-  margin:20px auto;
-  padding:20px;
-  border-radius:12px;
-  max-width:1400px;
-  box-shadow:0 2px 10px rgba(0,0,0,.08);
-}
-
-.login{
-  max-width:420px;
-  margin:80px auto;
-}
-
-input,
-textarea,
-select{
-  width:100%;
-  padding:11px;
-  margin:6px 0 12px;
-  border:1px solid #ccc;
-  border-radius:7px;
-  font-size:14px;
-}
-
-textarea{
-  min-height:100px;
-  resize:vertical;
-}
-
-label{
-  font-weight:600;
-  display:block;
-  margin-top:8px;
-}
-
-.message{
-  margin-top:10px;
-  font-weight:600;
-}
-
-.hidden{
-  display:none;
-}
-
-.table-wrap{
-  overflow-x:auto;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:1100px;
-}
-
-th,
-td{
-  padding:12px 10px;
-  border-bottom:1px solid #ddd;
-  text-align:left;
-  vertical-align:top;
-}
-
-th{
-  background:#f1f1f1;
-}
-
-.status{
-  font-weight:bold;
-}
-
-.status.approved{
-  color:#198754;
-}
-
-.status.rejected{
-  color:#dc3545;
-}
-
-.status.pending{
-  color:#d97706;
-}
-
-.actions{
-  min-width:260px;
-}
-
-.small{
-  font-size:12px;
-  color:#666;
-}
-
-.photo-input{
-  margin-top:8px;
-  width:220px;
-}
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  z-index:1000;
-}
-
-.modal.open{
-  display:flex;
-}
-
-.modal-box{
-  background:white;
-  width:100%;
-  max-width:650px;
-  max-height:90vh;
-  overflow:auto;
-  border-radius:12px;
-  padding:24px;
-}
-
-.modal-box h2{
-  margin-top:0;
-}
-
-.preview-img{
-  width:80px;
-  height:80px;
-  object-fit:cover;
-  border-radius:8px;
-  margin:4px;
-}
-
-</style>
-
-</head>
-
+*{box-sizing:border-box} :root{color-scheme:dark;--bg:#090b15;--panel:#131625;--border:#2a2f43;--ink:#eef0f8;--muted:#a7b0c6;--accent:#9874f3}body{margin:0;font:14px Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid transparent;background:#30374d;color:#fff;border-radius:8px;padding:11px 15px;font-weight:600}button:hover{filter:brightness(1.15)}button:disabled{opacity:.55;cursor:wait}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid #c4afff;outline-offset:3px}.primary{background:#7953d5}.green{background:#20664d}.red{background:#a63654}.gray{background:#404b63}.hidden,[hidden]{display:none!important}a{color:#8cd6ff}input,select,textarea{width:100%;background:#0c1020;border:1px solid #38425a;border-radius:8px;padding:12px;color:#f1f3fc;margin:7px 0 16px}input::placeholder,textarea::placeholder{color:#9aa7bf}textarea{min-height:100px;resize:vertical}label{display:block;font-size:12px;font-weight:600;color:#bdc6da;margin-top:10px}.muted,.small{color:var(--muted);line-height:1.6}.small{font-size:12px}.eyebrow{font-size:10px;letter-spacing:2px;color:#c8ad8e;font-weight:600}.brand-logo{width:185px;height:93px;object-fit:contain;border-radius:9px;background:#f1e8da}.message{line-height:1.6;color:#f5c796}.text-button{background:none;color:#d8b18d;padding:0;margin:0 0 15px;font-size:12px}.card,.panel{background:var(--panel);border:1px solid var(--border);border-radius:11px;padding:23px}.panel h3{font-size:14px;margin:0 0 8px}.panel>.muted{font-size:12px}.section-heading,.panel-heading{display:flex;align-items:center;justify-content:space-between;gap:15px}.panel-heading select{width:auto;margin:0;font-size:12px;padding:8px}.section-heading h2{font-size:25px;margin:10px 0}.section-heading>button{white-space:nowrap}#sidebar{position:fixed;inset:0 auto 0 0;width:222px;background:#0e1220;border-right:1px solid var(--border);padding:22px 15px;z-index:30;overflow:auto}#sidebar .brand-logo{width:100%;height:94px}#sidebar>.eyebrow{text-align:center;font-size:9px;margin:20px 0 30px;color:#a1acc3}#sidebar button{display:block;width:100%;text-align:left;background:none;color:#b6c0d4;margin:6px 0;padding:14px 12px;font-size:13px}#sidebar button.active{background:#29233e;color:#dbcafa;border:1px solid #493c68}.sidebar-note{margin-top:50px;padding:15px;color:#d9bd9f;border-top:1px solid var(--border);line-height:1.8}.sidebar-note small{font-size:10px;color:var(--muted)}#adminPage{padding-left:222px;min-height:100vh}header{padding:20px 27px;display:flex;justify-content:space-between;align-items:center;background:#101321;border-bottom:1px solid var(--border)}header h1{margin:0;font-size:19px}#overview,#adminPage>.card{margin:25px 27px}#adminPage>.card{max-width:none}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin:23px 0}.stat{background:var(--panel);padding:21px;border:1px solid var(--border);border-top:2px solid #a986f5;border-radius:10px}.stat>span{color:#bbc4d8;font-size:12px}.stat strong{display:block;font-size:34px;margin:15px 0 10px;color:#c6acff;font-variant-numeric:tabular-nums}.stat small{color:var(--muted);font-size:11px}.stat.amber{border-top-color:#edbb55}.stat.amber strong{color:#edbb55}.stat.green-stat{border-top-color:#3bd5a1}.stat.green-stat strong{color:#3bd5a1}.stat.blue{border-top-color:#54bde8}.stat.blue strong{color:#54bde8}.analytics-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}.panel{min-width:0}.trend-chart{height:210px}.trend-chart svg{width:100%;height:100%;display:block}.status-layout{display:flex;gap:25px;align-items:center;flex-wrap:wrap;min-height:185px}.ring{width:145px;height:145px;flex-shrink:0;display:grid;place-items:center;border-radius:50%}.ring>div{width:113px;height:113px;border-radius:50%;background:var(--panel);display:grid;place-content:center;text-align:center}.ring strong{font-size:29px}.ring small{font-size:10px;color:var(--muted)}.legend{flex:1;min-width:120px}.legend-line{display:flex;justify-content:space-between;gap:15px;font-size:12px;margin:14px 0}.legend-line i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:9px}.metric-row{margin:16px 0}.metric-row>div:first-child{display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px;gap:10px}.track{height:7px;background:#252d42;border-radius:5px;overflow:hidden}.track i{height:100%;display:block;background:linear-gradient(90deg,#409fd4,#9e71e8);border-radius:5px}.recent-panel{margin-top:17px}.recent-item{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);gap:15px;padding:13px 0}.recent-item small{display:block;margin-top:5px;color:var(--muted)}.recent-item>button{font-size:12px;padding:8px 12px}.tools{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin-top:18px}.table-wrap{width:100%;overflow:auto;border:1px solid var(--border);border-radius:9px}table{border-collapse:collapse;width:100%;min-width:740px}th{text-transform:uppercase;letter-spacing:.05em;font-size:10px;background:#191e30;color:#aebbd3}td,th{padding:15px 12px;text-align:left;border-bottom:1px solid var(--border);vertical-align:middle}td{font-size:12px}td small{display:block;margin-top:5px;color:var(--muted)}tbody tr:hover{background:#1a2032}.status{display:inline-block;padding:6px 9px;border-radius:30px;font-size:11px;white-space:nowrap;background:#30354b;color:#d3d8e9}.status.pending{background:#44371d;color:#f4cb75}.status.approved{background:#173f33;color:#7ae3b9}.status.rejected{background:#452534;color:#ffacc5}#addArtistBox{max-width:800px!important}.photo-input{max-width:100%}.preview-img{width:85px;height:85px;object-fit:cover;border-radius:8px;margin:5px}dialog{padding:25px;border:1px solid #3c4562;background:#121727;color:var(--ink);margin:0 0 0 auto;height:100dvh;max-height:100dvh;width:min(630px,100%);max-width:100%;overflow:auto;box-shadow:-20px 0 90px #0006}dialog::backdrop{background:#020613aa}.drawer-heading{display:flex;justify-content:space-between;align-items:center;gap:15px;position:sticky;top:-25px;background:#121727;padding:15px 0;z-index:1}.drawer-heading h2{margin:8px 0;font-size:21px}.facts{display:grid;grid-template-columns:1fr 1fr;gap:17px;margin:20px 0}.facts>div{overflow-wrap:anywhere;line-height:1.6}.facts label{margin:0 0 5px;color:#93a0ba}.drawer-actions{margin-top:24px;padding-top:20px;border-top:1px solid var(--border)}.drawer-actions button{margin:4px}.drawer-actions input{display:block;width:100%;margin-top:14px}.drawer-actions .small{margin-top:15px}.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:20px;background:#030512bb;z-index:1000}.modal.open{display:flex}.modal-box{width:100%;max-width:650px;max-height:90dvh;overflow:auto;background:#171d30;border:1px solid #424c69;border-radius:13px;padding:25px}.modal-box h2{margin-top:0}#loginPage{min-height:100vh;display:grid;grid-template-columns:1.2fr 1fr;align-items:center;gap:6vw;padding:6vh 7vw;background:radial-gradient(ellipse at 10% 20%,#37284999,transparent 50%),radial-gradient(ellipse at 90% 90%,#12394a77,transparent 45%),#090b15}.login-brand{max-width:650px}.login-brand h1{font-size:clamp(35px,4.3vw,66px);letter-spacing:-2px;line-height:1.09;margin:25px 0}.login-brand h1 span{color:#d2aa87}.login-brand>p{max-width:460px;color:#adb8cf;line-height:1.9;font-size:16px}.brand-art{height:190px;max-width:470px;position:relative;margin:30px 0;border:1px solid #50405d;border-radius:20px;background:linear-gradient(130deg,#34233f77,#123b4677);overflow:hidden}.art-orbit{position:absolute;width:230px;height:230px;right:10px;top:-100px;border:1px solid #ae83bd66;border-radius:50%;box-shadow:0 0 0 30px #bb8bca0a,0 0 0 65px #bb8bca08}.art-sun{position:absolute;width:105px;height:105px;border-radius:50%;background:linear-gradient(135deg,#edb78e,#af725f);bottom:-30px;left:45px;box-shadow:0 0 80px #d3966333}.art-caption{position:absolute;bottom:24px;right:25px;font-size:12px;color:#dbd0df}.brand-tags{display:flex;gap:10px;flex-wrap:wrap}.brand-tags span{border:1px solid #443b52;background:#211b2d;padding:9px 13px;border-radius:30px;font-size:12px;color:#d7c2b3}.login{width:100%;max-width:460px;justify-self:center;background:#141a2a;border:1px solid #3b405a;padding:35px;border-radius:20px;box-shadow:0 30px 100px #0005}.login .brand-logo{display:block;width:210px;height:105px;margin:0 auto 25px}.login h2{font-size:27px;margin:0 0 12px}.login p{color:#aab5cc;font-size:13px;line-height:1.7}.login input{padding:14px}.login>button.primary{width:100%;margin-top:8px;padding:15px;background:linear-gradient(100deg,#ac7a59,#d4a37e);color:#211821}.login label{margin-top:20px}.login .message{color:#f5c796}.login .text-button{margin-top:0}.login-note{font-size:11px!important;border-top:1px solid var(--border);padding-top:15px;margin-top:22px}
+@media(max-width:1100px){.stats{grid-template-columns:repeat(2,1fr)}.analytics-grid{grid-template-columns:1fr}#loginPage{gap:30px;padding:40px 5vw}.login-brand h1{font-size:42px}}
+@media(max-width:760px){#adminPage{padding-left:0}#sidebar{position:relative;width:100%;padding:15px;display:flex;flex-wrap:wrap;gap:5px}#sidebar .brand-logo{width:130px;height:62px}#sidebar>.eyebrow,.sidebar-note{display:none}#sidebar button{width:auto;font-size:11px;padding:10px;margin:0}header{padding:17px}header h1{font-size:16px}#overview,#adminPage>.card{margin:16px}.section-heading{align-items:flex-start;flex-direction:column}.section-heading h2{font-size:22px}.stat{padding:16px}.stat strong{font-size:28px}.stats{gap:10px}.tools{grid-template-columns:1fr 1fr}.tools input{grid-column:1/-1}.panel,.card{padding:18px}.facts{grid-template-columns:1fr}#loginPage{grid-template-columns:1fr;padding:30px 18px;gap:25px}.login-brand h1{font-size:34px;margin:17px 0}.login-brand>p{font-size:14px;margin-bottom:0}.brand-art,.brand-tags{display:none}.login{padding:26px}.drawer-heading{align-items:flex-start}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style></head>
 <body>
-
 <!-- LOGIN -->
-
-<div id="loginPage">
-
-  <div class="card login">
-
-    <h2>KalaaBook Admin</h2>
-
-    <p>Admin Login</p>
-
-    <label>Email</label>
-
-    <input
-      type="email"
-      id="loginEmail"
-      placeholder="Admin email"
-    >
-
-    <label>Password</label>
-
-    <input
-      type="password"
-      id="loginPassword"
-      placeholder="Password"
-    >
-
-    <button
-      class="primary"
-      onclick="login()">
+<div id="loginPage"><section class="login-brand"><div class="eyebrow">KALAABOOK / ADMIN WORKSPACE</div><h1>Creativity, connected.<br/><span>Everything in view.</span></h1><p>Your space to welcome artists, review applications, and build a creative community.</p><div aria-hidden="true" class="brand-art"><div class="art-orbit"></div><div class="art-sun"></div><div class="art-caption">Artistry meets opportunity.</div></div><div class="brand-tags"><span>Artists</span><span>Applications</span><span>Community</span></div></section>
+<div aria-label="Administrator sign in" class="card login" role="region"><img alt="KalaaBook" class="brand-logo" src="img/kalaabook-logo.png"/>
+<h2>Welcome back</h2>
+<p>Sign in to manage your KalaaBook workspace.</p>
+<label for="loginEmail">Email</label>
+<input autocomplete="username" id="loginEmail" placeholder="Admin email" required="" type="email"/>
+<label for="loginPassword">Password</label>
+<input autocomplete="current-password" id="loginPassword" placeholder="Password" required="" type="password"/><button aria-pressed="false" class="text-button" id="togglePassword" type="button">Show password</button>
+<button class="primary" onclick="login()">
       Login
     </button>
-
-    <p
-      id="loginMessage"
-      class="message">
-    </p>
-
-  </div>
-
+<p aria-live="polite" class="message" id="loginMessage" role="status">
+</p>
+<p class="login-note">Administrator access. Your account permissions are enforced by your database policies.</p></div>
 </div>
-
-
 <!-- ADMIN -->
-
-<div id="adminPage" class="hidden">
-
+<div class="hidden" id="adminPage"><nav aria-label="Admin navigation" id="sidebar"><img alt="KalaaBook" class="brand-logo" src="img/kalaabook-logo.png"/><p class="eyebrow">ADMIN WORKSPACE</p><button class="active" data-page="overview">Overview</button><button data-page="applications">Artist Applications</button><button data-page="approved">Approved Artists</button><button data-page="clients">Client Early Access</button><button data-page="add">+ Add Artist</button><div class="sidebar-note">KalaaBook<br/><small>Creative community workspace</small></div></nav>
 <header>
-
-  <h1>KalaaBook Admin Dashboard</h1>
-
-  <button
-    class="red"
-    onclick="logout()">
+<h1>Workspace overview</h1>
+<button class="red" onclick="logout()">
     Logout
   </button>
-
-</header>
-
-
+</header><section id="overview"><div class="section-heading"><div><div class="eyebrow">COMMUNITY INSIGHTS</div><h2>A clearer view of your community.</h2><p class="muted">Metrics reflect fetched records, not necessarily all database records.</p></div><button class="primary" onclick="loadApplications()">Refresh data</button></div><div class="stats"><article class="stat"><span>Applications loaded</span><strong id="totalCount">—</strong><small>Fetched artist records</small></article><article class="stat amber"><span>Pending review</span><strong id="pendingCount">—</strong><small>Awaiting a decision</small></article><article class="stat green-stat"><span>Approved artists</span><strong id="approvedCount">—</strong><small>Approved applications</small></article><article class="stat blue"><span>Clients loaded</span><strong id="clientCount">—</strong><small>Up to 500 latest signups</small></article></div><div class="analytics-grid"><article class="panel trend-panel"><div class="panel-heading"><h3>Application trend</h3><select aria-label="Trend period" id="trendPeriod"><option value="14">Last 14 days</option><option value="30">Last 30 days</option><option value="7">Last 7 days</option></select></div><p class="muted">Daily applications · local calendar dates · loaded records</p><div class="trend-chart" id="trendChart">Awaiting data.</div></article><article class="panel"><h3>Application status</h3><p class="muted">Distribution of loaded records</p><div class="status-layout" id="statusChart">Awaiting data.</div></article><article class="panel"><h3>Artist categories</h3><p class="muted">Top six categories · loaded records</p><div id="categoryChart">Awaiting data.</div></article><article class="panel"><h3>Top cities</h3><p class="muted">Top five cities · loaded records</p><div id="cityChart">Awaiting data.</div></article></div><article class="panel recent-panel"><h3>Latest applications</h3><div id="recentList">Awaiting data.</div></article></section>
 <!-- ADD ARTIST -->
 
-<div class="card">
-
-  <h2>Add Artist</h2>
-
-  <p class="small">
-    Add an artist manually and approve them immediately.
-  </p>
-
-  <button
-    class="green"
-    onclick="showAddArtist()">
-    Add & Approve Artist
-  </button>
-
-</div>
-
-
 <!-- ADD ARTIST FORM -->
-
-<div
-  id="addArtistBox"
-  class="card hidden">
-
-  <h2>Add & Approve Artist</h2>
-
-  <label>Full Name</label>
-
-  <input
-    id="addName"
-    placeholder="Artist name"
-  >
-
-  <label>WhatsApp</label>
-
-  <input
-    id="addWhatsapp"
-    placeholder="+91..."
-  >
-
-  <label>City</label>
-
-  <input
-    id="addCity"
-    placeholder="City"
-  >
-
-  <label>Area</label>
-
-  <input
-    id="addArea"
-    placeholder="Area"
-  >
-
-  <label>Category</label>
-
-  <select id="addCategory">
-
-    <option value="Nail Art">
+<div class="card hidden" id="addArtistBox">
+<h2>Add &amp; Approve Artist</h2>
+<label for="addName">Full Name</label>
+<input id="addName" placeholder="Artist name"/>
+<label for="addWhatsapp">WhatsApp</label>
+<input id="addWhatsapp" placeholder="+91..."/>
+<label for="addCity">City</label>
+<input id="addCity" placeholder="City"/>
+<label for="addArea">Area</label>
+<input id="addArea" placeholder="Area"/>
+<label for="addCategory">Category</label>
+<select id="addCategory">
+<option value="Nail Art">
       Nail Art
     </option>
-
-    <option value="Mehendi">
+<option value="Mehendi">
       Mehendi
     </option>
-
-    <option value="Salon">
+<option value="Salon">
       Salon
     </option>
-
-  
-    <option value="Makeup">Makeup</option>
-    <option value="Hair">Hair</option>
-    <option value="Grooming">Grooming</option>
-    <option value="Kids">Kids</option>
-    <option value="Other">Other</option>
-  </select>
-
-  <label>Specialties</label>
-
-  <input
-    id="addSpecialties"
-    placeholder="Nail Extension, Gel Nails, Nail Art"
-  >
-
-  <label>Experience</label>
-
-  <input
-    id="addExperience"
-    placeholder="Example: 3 years"
-  >
-
-  <label>Bio / Notes</label>
-
-  <textarea
-    id="addNotes"
-    placeholder="Artist bio">
+<option value="Makeup">Makeup</option>
+<option value="Hair">Hair</option>
+<option value="Grooming">Grooming</option>
+<option value="Kids">Kids</option>
+<option value="Other">Other</option>
+</select>
+<label for="addSpecialties">Specialties</label>
+<input id="addSpecialties" placeholder="Nail Extension, Gel Nails, Nail Art"/>
+<label for="addExperience">Experience</label>
+<input id="addExperience" placeholder="Example: 3 years"/>
+<label for="addNotes">Bio / Notes</label>
+<textarea id="addNotes" placeholder="Artist bio">
   </textarea>
-
-  <label>Instagram</label>
-
-  <input
-    id="addInstagram"
-    placeholder="@username or Instagram URL"
-  >
-
-  <label>Services</label>
-
-  <input
-    id="addServices"
-    placeholder="Nail Extension, Gel Nails, Nail Art"
-  >
-
-  <label>Profile Photo</label>
-
-  <input
-    type="file"
-    id="addProfilePhoto"
-    accept="image/*"
-  >
-
-  <label>Portfolio Photos — maximum 6</label>
-
-  <input
-    type="file"
-    id="addPortfolioPhotos"
-    accept="image/*"
-    multiple
-  >
-
-  <br>
-
-  <button
-    class="green"
-    onclick="addArtist()">
-    Add & Approve Artist
+<label for="addInstagram">Instagram</label>
+<input id="addInstagram" placeholder="@username or Instagram URL"/>
+<label for="addServices">Services</label>
+<input id="addServices" placeholder="Nail Extension, Gel Nails, Nail Art"/>
+<label for="addProfilePhoto">Profile Photo</label>
+<input accept="image/*" id="addProfilePhoto" type="file"/>
+<label for="addPortfolioPhotos">Portfolio Photos — maximum 6</label>
+<input accept="image/*" id="addPortfolioPhotos" multiple="" type="file"/>
+<br/>
+<button class="green" onclick="addArtist()">
+    Add &amp; Approve Artist
   </button>
-
-  <button
-    class="gray"
-    onclick="hideAddArtist()">
+<button class="gray" onclick="hideAddArtist()">
     Cancel
   </button>
-
-  <p
-    id="addMessage"
-    class="message">
-  </p>
-
+<p class="message" id="addMessage">
+</p>
 </div>
-
-
 <!-- APPLICATIONS -->
-
-<div class="card">
-
-  <h2>Artist Applications</h2>
-
-  <button
-    class="primary"
-    onclick="loadApplications()">
+<div class="card" hidden="" id="applicationsSection">
+<h2>Artist Applications</h2>
+<button class="primary" onclick="loadApplications()">
     Refresh
   </button>
-
-  <div class="table-wrap">
-
-    <table>
-
-      <thead>
-
-        <tr>
-
-          <th>ID</th>
-          <th>Date</th>
-          <th>Name</th>
-          <th>WhatsApp</th>
-          <th>Location</th>
-          <th>Category</th>
-          <th>Specialties</th>
-          <th>Experience</th>
-          <th>Status</th>
-          <th>Actions</th>
-
-        </tr>
-
-      </thead>
-
-      <tbody id="applicationsBody">
-
-        <tr>
-
-          <td colspan="10">
-            Loading...
-          </td>
-
-        </tr>
-
-      </tbody>
-
-    </table>
-
-  </div>
-
+<div class="tools"><input aria-label="Search applications" id="appSearch" placeholder="Search name, phone, city…" type="search"/><select aria-label="Filter status" id="appStatus"><option value="">All statuses</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select><select aria-label="Filter category" id="appCategory"><option value="">All categories</option></select></div><p class="muted" id="appResult" role="status"></p><div class="table-wrap">
+<table>
+<thead>
+<tr><th>Artist</th><th>Location</th><th>Category</th><th>Submitted</th><th>Status</th><th>Actions</th></tr>
+</thead>
+<tbody id="applicationsBody"></tbody>
+</table>
 </div>
-
+</div>
 <!-- CLIENT SIGNUPS -->
-
-<div class="card">
-
-  <h2>Client Early-Access List</h2>
-
-  <button
-    class="primary"
-    onclick="loadClients()">
+<div class="card" hidden="" id="clientsSection">
+<h2>Client Early-Access List</h2>
+<button class="primary" onclick="loadClients()">
     Refresh
   </button>
-
-  <div class="table-wrap">
-
-    <table style="min-width:800px">
-
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Name</th>
-          <th>WhatsApp</th>
-          <th>City</th>
-          <th>Looking for</th>
-          <th>Heard from</th>
-        </tr>
-      </thead>
-
-      <tbody id="clientsBody">
-        <tr><td colspan="6">Loading...</td></tr>
-      </tbody>
-
-    </table>
-
-  </div>
-
+<input aria-label="Search clients" id="clientSearch" placeholder="Search client list…" type="search"/><p class="muted" id="clientResult" role="status"></p><div class="table-wrap">
+<table style="min-width:800px">
+<thead>
+<tr>
+<th>Date</th>
+<th>Name</th>
+<th>WhatsApp</th>
+<th>City</th>
+<th>Looking for</th>
+<th>Heard from</th>
+</tr>
+</thead>
+<tbody id="clientsBody">
+<tr><td colspan="6">Loading...</td></tr>
+</tbody>
+</table>
 </div>
-
 </div>
-
-
+</div>
 <!-- EDIT MODAL -->
-
-<div
-  id="editModal"
-  class="modal">
-
-  <div class="modal-box">
-
-    <h2>Edit Artist</h2>
-
-    <input
-      type="hidden"
-      id="editId"
-    >
-
-    <label>Full Name</label>
-
-    <input
-      id="editName"
-    >
-
-    <label>WhatsApp</label>
-
-    <input
-      id="editWhatsapp"
-    >
-
-    <label>City</label>
-
-    <input
-      id="editCity"
-    >
-
-    <label>Area</label>
-
-    <input
-      id="editArea"
-    >
-
-    <label>Category</label>
-
-    <select id="editCategory">
-
-      <option value="Nail Art">
+<div class="modal" id="editModal">
+<div class="modal-box">
+<h2>Edit Artist</h2>
+<input id="editId" type="hidden"/>
+<label for="editName">Full Name</label>
+<input id="editName"/>
+<label for="editWhatsapp">WhatsApp</label>
+<input id="editWhatsapp"/>
+<label for="editCity">City</label>
+<input id="editCity"/>
+<label for="editArea">Area</label>
+<input id="editArea"/>
+<label for="editCategory">Category</label>
+<select id="editCategory">
+<option value="Nail Art">
         Nail Art
       </option>
-
-      <option value="Mehendi">
+<option value="Mehendi">
         Mehendi
       </option>
-
-      <option value="Salon">
+<option value="Salon">
         Salon
       </option>
-
-    
-    <option value="Makeup">Makeup</option>
-    <option value="Hair">Hair</option>
-    <option value="Grooming">Grooming</option>
-    <option value="Kids">Kids</option>
-    <option value="Other">Other</option>
-  </select>
-
-    <label>Specialties</label>
-
-    <input
-      id="editSpecialties"
-    >
-
-    <label>Experience</label>
-
-    <input
-      id="editExperience"
-    >
-
-    <label>Bio / Notes</label>
-
-    <textarea
-      id="editNotes">
+<option value="Makeup">Makeup</option>
+<option value="Hair">Hair</option>
+<option value="Grooming">Grooming</option>
+<option value="Kids">Kids</option>
+<option value="Other">Other</option>
+</select>
+<label for="editSpecialties">Specialties</label>
+<input id="editSpecialties"/>
+<label for="editExperience">Experience</label>
+<input id="editExperience"/>
+<label for="editNotes">Bio / Notes</label>
+<textarea id="editNotes">
     </textarea>
-
-    <label>Instagram</label>
-
-    <input
-      id="editInstagram"
-    >
-
-    <label>Services</label>
-
-    <input
-      id="editServices"
-      placeholder="Nail Extension, Gel Nails, Nail Art"
-    >
-
-    <p
-      id="editMessage"
-      class="message">
-    </p>
-
-    <button
-      class="green"
-      onclick="saveEdit()">
+<label for="editInstagram">Instagram</label>
+<input id="editInstagram"/>
+<label for="editServices">Services</label>
+<input id="editServices" placeholder="Nail Extension, Gel Nails, Nail Art"/>
+<p class="message" id="editMessage">
+</p>
+<button class="green" onclick="saveEdit()">
       Save Changes
     </button>
-
-    <button
-      class="gray"
-      onclick="closeEdit()">
+<button class="gray" onclick="closeEdit()">
       Cancel
     </button>
-
-  </div>
-
+</div>
 </div>
 
-
-<script>
+<dialog aria-labelledby="detailsTitle" id="detailsDialog"><div class="drawer-heading"><div><div class="eyebrow">ARTIST PROFILE</div><h2 id="detailsTitle">Artist details</h2></div><button id="closeDetails" type="button">Close</button></div><div id="detailsContent"></div></dialog><script>
 
 /* =========================
    SUPABASE
@@ -728,31 +285,14 @@ async function login(){
    AUTO LOGIN
 ========================= */
 
-window.addEventListener('load',function(){
-
-  const saved =
-    sessionStorage.getItem(
-      'kalaa_admin_token'
-    );
-
-  if(saved){
-
-    ACCESS_TOKEN = saved;
-
-    document
-      .getElementById('loginPage')
-      .classList.add('hidden');
-
-    document
-      .getElementById('adminPage')
-      .classList.remove('hidden');
-
-    loadApplications();
-
-  }
-
+window.addEventListener('load',async function(){
+ const saved=sessionStorage.getItem('kalaa_admin_token');
+ if(!saved)return;
+ try{const r=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+saved}});
+ if(!r.ok){sessionStorage.removeItem('kalaa_admin_token');return;}
+ ACCESS_TOKEN=saved;document.getElementById('loginPage').classList.add('hidden');document.getElementById('adminPage').classList.remove('hidden');loadApplications();
+ }catch(e){document.getElementById('loginMessage').textContent='Could not verify your saved session. Sign in again.';}
 });
-
 
 /* =========================
    LOGOUT
@@ -796,204 +336,6 @@ function authHeaders(){
    LOAD APPLICATIONS
 ========================= */
 
-async function loadApplications(){
-
-  const body =
-    document.getElementById(
-      'applicationsBody'
-    );
-
-  body.innerHTML =
-    '<tr><td colspan="10">Loading...</td></tr>';
-
-  try{
-
-    const response = await fetch(
-
-      SUPABASE_URL +
-      '/rest/v1/artist_applications' +
-      '?select=*' +
-      '&order=created_at.desc',
-
-      {
-        headers:authHeaders()
-      }
-
-    );
-
-    if(!response.ok){
-
-      const error =
-        await response.text();
-
-      body.innerHTML =
-        '<tr><td colspan="10">Error loading applications.</td></tr>';
-
-      console.error(error);
-
-      return;
-    }
-
-    const apps =
-      await response.json();
-
-    if(!apps.length){
-
-      body.innerHTML =
-        '<tr><td colspan="10">No applications yet.</td></tr>';
-
-      return;
-    }
-
-    body.innerHTML = '';
-
-    apps.forEach(function(app){
-
-      APPS[app.id] = app;
-
-      const tr =
-        document.createElement('tr');
-
-      const date =
-        app.created_at
-          ? new Date(
-              app.created_at
-            ).toLocaleString()
-          : '';
-
-      const status =
-        app.status || 'pending';
-
-      tr.innerHTML = `
-
-        <td>${escapeHtml(app.id)}</td>
-
-        <td>${escapeHtml(date)}</td>
-
-        <td>
-          <strong>
-            ${escapeHtml(app.full_name || '')}
-          </strong>
-        </td>
-
-        <td>
-          ${escapeHtml(app.whatsapp || '')}
-        </td>
-
-        <td>
-          ${escapeHtml(app.city || '')}
-          ${app.area ? '<br>' + escapeHtml(app.area) : ''}
-        </td>
-
-        <td>
-          ${escapeHtml(app.category || '')}
-        </td>
-
-        <td>
-          ${escapeHtml(app.specialties || '')}
-          ${applicationDetails(app)}
-        </td>
-
-        <td>
-          ${escapeHtml(app.experience || '')}
-        </td>
-
-        <td>
-          <span class="status ${status}">
-            ${escapeHtml(status)}
-          </span>
-        </td>
-
-        <td class="actions">
-
-          <button
-            class="green"
-            onclick="updateStatus(${app.id},'approved')">
-            Approve
-          </button>
-
-          <button
-            class="red"
-            onclick="updateStatus(${app.id},'rejected')">
-            Reject
-          </button>
-
-          <button
-            class="gray"
-            onclick="whatsappArtist(${app.id})">
-            WhatsApp
-          </button>
-
-        <button
-  class="primary"
-  onclick="copyUploadLink(${app.id}, '${app.upload_token || ''}')">
-  Copy Upload Link
-</button>
-
-          <br>
-
-          <button
-            class="primary"
-            onclick="openEdit(${app.id})">
-            Edit Artist
-          </button>
-
-          <br>
-
-          <input
-            type="file"
-            id="profile-${app.id}"
-            accept="image/*"
-            class="photo-input"
-          >
-
-          <button
-            class="primary"
-            onclick="uploadProfilePhoto(${app.id})">
-            Upload Profile Photo
-          </button>
-
-          <br>
-
-          <input
-            type="file"
-            id="portfolio-${app.id}"
-            accept="image/*"
-            multiple
-            class="photo-input"
-          >
-
-          <button
-            class="primary"
-            onclick="uploadPortfolioPhotos(${app.id})">
-            Upload Portfolio Photos
-          </button>
-
-          <p class="small">
-            Profile: 1 photo<br>
-            Portfolio: maximum 6 photos
-          </p>
-
-        </td>
-
-      `;
-
-      body.appendChild(tr);
-
-    });
-
-  }catch(error){
-
-    console.error(error);
-
-    body.innerHTML =
-      '<tr><td colspan="10">Connection error.</td></tr>';
-
-  }
-
-}
-
-
 /* =========================
    UPDATE STATUS
 ========================= */
@@ -1028,7 +370,7 @@ async function updateStatus(id,status){
   status: status,
   upload_token:
     status === 'approved'
-      ? crypto.randomUUID()
+      ? (APPS[id]?.upload_token || crypto.randomUUID())
       : null
 })
 
@@ -1195,6 +537,7 @@ async function addArtist(){
             services:services,
 
             status:'approved',
+            upload_token:crypto.randomUUID(),
 
             consent:true
 
@@ -1237,11 +580,9 @@ async function addArtist(){
       profileInput.files.length
     ){
 
-      await uploadFileToArtist(
-        id,
-        profileInput.files[0],
-        'profile'
-      );
+      const profileUrl = await uploadFileToArtist(id, profileInput.files[0], 'profile', 0);
+      const savedProfile = await fetch(SUPABASE_URL + '/rest/v1/artist_applications?id=eq.' + encodeURIComponent(id), {method:'PATCH',headers:authHeaders(),body:JSON.stringify({profile_photo:profileUrl})});
+      if(!savedProfile.ok) throw new Error('Artist created, but profile photo could not be saved. Refresh and edit that artist; do not add them again.');
 
     }
 
@@ -1318,7 +659,7 @@ async function addArtist(){
   }catch(error){
 
     msg.textContent =
-      'Error: ' + error.message;
+      'Operation did not finish: ' + error.message + ' If an artist was already created, refresh before trying again.';
 
   }
 
@@ -2111,7 +1452,7 @@ async function loadClients(){
     );
 
     if(!response.ok){
-      body.innerHTML = '<tr><td colspan="6">Could not load the client list yet. Run the setup text in Supabase first.</td></tr>';
+      body.innerHTML = '<tr><td colspan="6">Could not load clients. Check your session and database permissions.</td></tr>';
       return;
     }
 
@@ -2147,14 +1488,140 @@ async function loadClients(){
 
 }
 
-(function(){
-  const original = loadApplications;
-  loadApplications = function(){
-    loadClients();
-    return original.apply(this, arguments);
-  };
-})();
-</script>
 
-</body>
-</html>
+
+
+let DASH_APPS=[],DASH_LOADED=false,DASH_REQUEST=0;
+const $=id=>document.getElementById(id);
+const statusOf=a=>String(a.status||'pending').toLowerCase();
+function badge(a){const s=statusOf(a);return '<span class="status '+(['pending','approved','rejected'].includes(s)?s:'other')+'">'+escapeHtml(s)+'</span>';}
+function closeDetails(){if($('detailsDialog').open)$('detailsDialog').close();$('detailsContent').replaceChildren();}
+$('closeDetails').onclick=closeDetails;
+$('detailsDialog').addEventListener('click',e=>{if(e.target===$('detailsDialog')){const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeDetails();}});
+$('detailsDialog').addEventListener('cancel',()=>{$('detailsContent').replaceChildren();});
+function openDetails(id){
+const app=APPS[id];if(!app)return;if(!Number.isSafeInteger(Number(app.id))){alert("Unsupported artist ID format.");return;}closeDetails();
+app.id=Number(app.id);
+const fields=[['Full name',app.full_name],['WhatsApp',app.whatsapp],['City',app.city],['Area',app.area],['Category',app.category],['Specialties',app.specialties],['Experience',app.experience],['Services',Array.isArray(app.services)?app.services.join(', '):app.services],['Status',statusOf(app)],['Submitted',app.created_at?new Date(app.created_at).toLocaleString():''],['Bio / notes',app.notes]];
+$('detailsTitle').textContent=app.full_name||'Artist details';
+$('detailsContent').innerHTML='<div class="facts">'+fields.map(([label,value])=>'<div><label>'+escapeHtml(label)+'</label>'+escapeHtml(value??'—')+'</div>').join('')+'</div>'+applicationDetails(app)+'<div class="drawer-actions"><h3>Manage artist</h3><p class="small">These controls change real records. Use a designated test artist when testing.</p></div>';
+$('detailsContent').querySelector('.drawer-actions').insertAdjacentHTML('beforeend',`
+
+          <button
+            class="green"
+            onclick="updateStatus(${app.id},'approved')">
+            Approve
+          </button>
+
+          <button
+            class="red"
+            onclick="updateStatus(${app.id},'rejected')">
+            Reject
+          </button>
+
+          <button
+            class="gray"
+            onclick="whatsappArtist(${app.id})">
+            WhatsApp
+          </button>
+
+        <button
+  class="primary"
+  data-copy-upload="true">
+  Copy Upload Link
+</button>
+
+          <br>
+
+          <button
+            class="primary"
+            onclick="openEdit(${app.id})">
+            Edit Artist
+          </button>
+
+          <br>
+
+          <input
+            type="file"
+            id="profile-${app.id}"
+            accept="image/*"
+            class="photo-input"
+          >
+
+          <button
+            class="primary"
+            onclick="uploadProfilePhoto(${app.id})">
+            Upload Profile Photo
+          </button>
+
+          <br>
+
+          <input
+            type="file"
+            id="portfolio-${app.id}"
+            accept="image/*"
+            multiple
+            class="photo-input"
+          >
+
+          <button
+            class="primary"
+            onclick="uploadPortfolioPhotos(${app.id})">
+            Upload Portfolio Photos
+          </button>
+
+          <p class="small">
+            Profile: 1 photo<br>
+            Portfolio: maximum 6 photos
+          </p>
+
+        `);
+$('detailsContent').querySelector('[data-copy-upload]').onclick=()=>copyUploadLink(app.id,app.upload_token);
+$('detailsDialog').showModal();
+}
+// Close the native details dialog before opening the existing edit modal.
+const existingOpenEdit=openEdit;
+openEdit=async function(id){closeDetails();return existingOpenEdit(id);};
+function navigate(page){
+closeDetails();$('overview').hidden=page!=='overview';$('applicationsSection').hidden=!['applications','approved'].includes(page);$('clientsSection').hidden=page!=='clients';$('addArtistBox').classList.toggle('hidden',page!=='add');
+document.querySelectorAll('#sidebar button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));document.querySelector('#adminPage header h1').textContent=({overview:'Workspace overview',applications:'Artist applications',approved:'Approved artists',clients:'Client early access',add:'Add & approve artist'})[page];
+if(page==='applications'||page==='approved'){$('appSearch').value='';$('appCategory').value='';$('appStatus').value=page==='approved'?'approved':'';renderApplications();}window.scrollTo(0,0);
+}
+showAddArtist=function(){navigate('add');};hideAddArtist=function(){navigate('applications');};
+$('sidebar').addEventListener('click',e=>{const b=e.target.closest('[data-page]');if(b)navigate(b.dataset.page);});
+function renderApplications(){
+closeDetails();const q=$('appSearch').value.trim().toLowerCase(),st=$('appStatus').value,cat=$('appCategory').value;
+const rows=DASH_APPS.filter(a=>(!st||statusOf(a)===st)&&(!cat||a.category===cat)&&(!q||[a.full_name,a.whatsapp,a.city,a.area,a.category].join(' ').toLowerCase().includes(q)));
+const body=$('applicationsBody');body.replaceChildren();
+rows.forEach(a=>{const tr=document.createElement('tr');tr.innerHTML='<td><strong>'+escapeHtml(a.full_name||'Unnamed')+'</strong><small>#'+escapeHtml(a.id)+'</small></td><td>'+escapeHtml(a.city||'—')+'<small>'+escapeHtml(a.area||'')+'</small></td><td>'+escapeHtml(a.category||'—')+'</td><td>'+escapeHtml(a.created_at?new Date(a.created_at).toLocaleDateString():'—')+'</td><td>'+badge(a)+'</td><td><button type="button" class="primary">View details</button></td>';tr.querySelector('button').onclick=()=>openDetails(a.id);body.append(tr);});
+if(!rows.length)body.innerHTML='<tr><td colspan="6">'+(DASH_LOADED?'No matching applications.':'Applications not loaded.')+'</td></tr>';
+$('appResult').textContent=rows.length+' of '+DASH_APPS.length+' loaded applications shown.';
+}
+function renderCharts(){
+if(!DASH_LOADED)return;const apps=DASH_APPS,n=apps.length,counts={pending:0,approved:0,rejected:0,other:0};apps.forEach(a=>{const s=statusOf(a);counts[s in counts?s:'other']++;});
+$('totalCount').textContent=n;$('pendingCount').textContent=counts.pending;$('approvedCount').textContent=counts.approved;
+const colors={pending:'#edbb55',approved:'#3bd5a1',rejected:'#ef6b8b',other:'#99a1ba'};let start=0;const stops=Object.entries(counts).map(([s,c])=>{const end=start+c/Math.max(1,n)*100;const result=colors[s]+' '+start+'% '+end+'%';start=end;return result;});
+$('statusChart').innerHTML=n?'<div class="ring" role="img" aria-label="'+escapeHtml(Object.entries(counts).map(([s,c])=>s+': '+c).join(', '))+'" style="background:conic-gradient('+stops.join(',')+')"><div><strong>'+n+'</strong><small>loaded records</small></div></div><div class="legend">'+Object.entries(counts).map(([s,c])=>'<div class="legend-line"><span><i style="background:'+colors[s]+'"></i>'+s+'</span><strong>'+c+'</strong></div>').join('')+'</div>':'No applications in loaded records.';
+function breakdown(field,target,limit){const map=new Map();apps.forEach(a=>{const key=String(a[field]||'Unspecified').trim()||'Unspecified';map.set(key,(map.get(key)||0)+1);});const rows=Array.from(map).sort((a,b)=>b[1]-a[1]).slice(0,limit),max=Math.max(1,...rows.map(x=>x[1]));$(target).innerHTML=rows.map(([label,count])=>'<div class="metric-row"><div><span>'+escapeHtml(label)+'</span><strong>'+count+'</strong></div><div class="track"><i style="width:'+count/max*100+'%"></i></div></div>').join('')||'No applications in loaded records.';}
+breakdown('category','categoryChart',6);breakdown('city','cityChart',5);
+const period=Number($('trendPeriod').value),days=Array.from({length:period},(_,i)=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-period+1+i);return {d,n:0};});apps.forEach(a=>{if(!a.created_at)return;const d=new Date(a.created_at);d.setHours(0,0,0,0);const bin=days.find(x=>+x.d===+d);if(bin)bin.n++;});
+const max=Math.max(1,...days.map(x=>x.n)),x=i=>40+i/(period-1)*600,y=v=>165-v/max*135;
+const points=days.map((d,i)=>x(i)+','+y(d.n)).join(' '),labels=days.filter((d,i)=>i===0||i===period-1||i===Math.floor(period/2));
+let svg='<svg viewBox="0 0 665 210" role="img" aria-label="'+escapeHtml(days.map(d=>d.d.toLocaleDateString()+': '+d.n).join('; '))+'"><defs><linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8b74ed" stop-opacity=".35"/><stop offset="100%" stop-color="#8b74ed" stop-opacity="0"/></linearGradient></defs>';
+[0,.5,1].forEach(f=>{svg+='<line x1="40" x2="640" y1="'+y(max*f)+'" y2="'+y(max*f)+'" stroke="#30384e" stroke-dasharray="3 5"/><text x="28" y="'+(y(max*f)+4)+'" text-anchor="end" fill="#a7b0c6" font-size="10">'+(max*f).toFixed(max%2&&f===.5?1:0)+'</text>';});svg+='<polygon points="40,165 '+points+' 640,165" fill="url(#areaFill)"/><polyline points="'+points+'" fill="none" stroke="#ae96ff" stroke-width="2.5"/>';
+days.forEach((d,i)=>{svg+='<circle cx="'+x(i)+'" cy="'+y(d.n)+'" r="3" fill="#c4b2ff"><title>'+escapeHtml(d.d.toLocaleDateString()+': '+d.n+' applications')+'</title></circle>';});labels.forEach(d=>{const i=days.indexOf(d);svg+='<text x="'+x(i)+'" y="195" text-anchor="middle" fill="#a7b0c6" font-size="10">'+escapeHtml(d.d.toLocaleDateString(undefined,{month:'short',day:'numeric'}))+'</text>';});$('trendChart').innerHTML=svg+'</svg>';
+$('recentList').replaceChildren();apps.slice(0,5).forEach(a=>{const div=document.createElement('div');div.className='recent-item';div.innerHTML='<div><strong>'+escapeHtml(a.full_name||'Unnamed')+'</strong><small>'+escapeHtml([a.category,a.city].filter(Boolean).join(' · '))+'</small></div>'+badge(a)+'<button type="button">View artist</button>';div.querySelector('button').onclick=()=>openDetails(a.id);$('recentList').append(div);});if(!apps.length)$('recentList').textContent='No applications yet.';
+}
+async function loadApplications(){
+const request=++DASH_REQUEST;closeDetails();$('applicationsBody').innerHTML='<tr><td colspan="6">Loading applications…</td></tr>';loadClients();
+try{const r=await fetch(SUPABASE_URL+'/rest/v1/artist_applications?select=*&order=created_at.desc',{headers:authHeaders()});if(!r.ok)throw Error('Unable to load applications (HTTP '+r.status+'). Check your session and permissions.');const rows=await r.json();if(request!==DASH_REQUEST)return;if(!Array.isArray(rows))throw Error('Unexpected application response.');DASH_APPS=rows;DASH_LOADED=true;Object.keys(APPS).forEach(k=>delete APPS[k]);rows.forEach(a=>APPS[a.id]=a);const selected=$('appCategory').value;$('appCategory').replaceChildren(new Option('All categories',''));Array.from(new Set(rows.map(a=>a.category).filter(Boolean))).sort().forEach(c=>$('appCategory').add(new Option(c,c)));$('appCategory').value=selected;renderApplications();renderCharts();}
+catch(e){if(request!==DASH_REQUEST)return;DASH_LOADED=false;DASH_APPS=[];Object.keys(APPS).forEach(k=>delete APPS[k]);$('applicationsBody').innerHTML='<tr><td colspan="6">'+escapeHtml(e.message)+'</td></tr>';$('appResult').textContent=e.message;['totalCount','pendingCount','approvedCount'].forEach(id=>$(id).textContent='—');['trendChart','statusChart','categoryChart','cityChart','recentList'].forEach(id=>$(id).textContent='Data unavailable. Refresh or sign in again.');}
+}
+['appSearch','appStatus','appCategory'].forEach(id=>$(id).addEventListener('input',renderApplications));$('trendPeriod').addEventListener('change',renderCharts);
+function filterClients(){const q=$('clientSearch').value.toLowerCase().trim();let count=0,total=0;Array.from($('clientsBody').rows).forEach(row=>{if(row.cells.length!==6)return;total++;row.hidden=!!q&&!row.textContent.toLowerCase().includes(q);if(!row.hidden)count++;});$('clientResult').textContent=total?count+' of '+total+' loaded clients shown.':'';}
+$('clientSearch').addEventListener('input',filterClients);
+new MutationObserver(()=>{const rows=Array.from($('clientsBody').rows);$('clientCount').textContent=rows[0]?.cells.length===6?rows.length:(/No clients yet/.test($('clientsBody').textContent)?'0':'—');filterClients();}).observe($('clientsBody'),{childList:true});
+$('togglePassword').onclick=function(){const show=$('loginPassword').type==='password';$('loginPassword').type=show?'text':'password';this.textContent=show?'Hide password':'Show password';this.setAttribute('aria-pressed',String(show));};
+const originalLogin=login;let signingIn=false;login=async function(){if(signingIn)return;if(!$('loginEmail').reportValidity()||!$('loginPassword').reportValidity())return;signingIn=true;const button=document.querySelector('.login .primary');button.disabled=true;try{await originalLogin();}finally{signingIn=false;button.disabled=false;}};
+$('loginPassword').addEventListener('keydown',e=>{if(e.key==='Enter')login();});
+</script></body></html>
