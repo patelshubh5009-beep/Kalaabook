@@ -2234,6 +2234,37 @@ button{transition:filter .15s}button:hover{filter:brightness(.94)}button:focus-v
   decorate();clientCount();
 })();
 </script>
+  <style>
+/* Keep headers and cells aligned when details are expanded. */
+#kbApplications:has(tr.kb-expanded) table {
+  min-width: 1800px;
+}
+
+#kbApplications:has(tr.kb-expanded) thead th,
+#kbApplications:has(tr.kb-expanded) #applicationsBody tr > td {
+  display: table-cell !important;
+}
+
+/* Prevent status labels and buttons from breaking into letters. */
+#kbApplications .status {
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+#kbApplications .actions {
+  min-width: 290px;
+  max-width: none;
+}
+
+#kbApplications .actions button {
+  white-space: nowrap;
+}
+
+#kbApplications .table-wrap {
+  overflow-x: auto;
+}
+</style>
 
 
 </body>
