@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -339,6 +342,38 @@ function authHeaders(){
 /* =========================
    UPDATE STATUS
 ========================= */
+
+
+async function setPublicVisibility(id, publish, button){
+  const app = APPS[id];
+  if(!app) return;
+  if(publish && String(app.status).toLowerCase() !== 'approved'){
+    alert('Approve this application before publishing.'); return;
+  }
+  const name = app.salon_name || app.full_name || 'this artist';
+  const question = publish
+    ? 'Publish ' + name + ' on the public website? Confirm that the profile is ready and you have appropriate permission to display it.'
+    : 'Hide ' + name + ' from the public website? Approval status will not change.';
+  if(!confirm(question)) return;
+  button.disabled = true;
+  try{
+    const endpoint = SUPABASE_URL + '/rest/v1/artist_applications?id=eq.' + encodeURIComponent(id)
+      + (publish ? '&status=eq.approved' : '') + '&select=id,show_public';
+    const response = await fetch(endpoint, {
+      method:'PATCH',
+      headers:{...authHeaders(), Prefer:'return=representation'},
+      body:JSON.stringify({show_public:publish})
+    });
+    if(!response.ok) throw Error('Visibility update failed (HTTP ' + response.status + '). Check your session and admin permissions.');
+    const rows = await response.json();
+    if(!Array.isArray(rows) || rows.length !== 1 || rows[0].show_public !== publish){
+      throw Error('The visibility change was not confirmed. Refresh and check the record before retrying.');
+    }
+    alert(publish ? 'Profile published. Refresh the public website to check it.' : 'Profile hidden from public discovery.');
+    await loadApplications();
+  }catch(error){ alert(error.message || 'Could not change visibility.'); }
+  finally{ button.disabled = false; }
+}
 
 async function updateStatus(id,status){
 
@@ -1577,6 +1612,24 @@ $('detailsContent').querySelector('.drawer-actions').insertAdjacentHTML('beforee
 
         `);
 $('detailsContent').querySelector('[data-copy-upload]').onclick=()=>copyUploadLink(app.id,app.upload_token);
+const visibilityBox = document.createElement('div');
+visibilityBox.className = 'drawer-actions';
+const visibilityTitle = document.createElement('h3');
+visibilityTitle.textContent = 'Public visibility';
+const visibilityNote = document.createElement('p');
+visibilityNote.className = 'small';
+visibilityNote.textContent = statusOf(app) === 'approved'
+  ? (app.show_public === true ? 'Published: this approved profile is eligible for public discovery.' : 'Not published: approved, but hidden from public discovery.')
+  : 'Not publicly listed: only approved applications can appear in discovery.';
+const visibilityButton = document.createElement('button');
+visibilityButton.type = 'button';
+const hide = app.show_public === true;
+visibilityButton.className = hide ? 'gray' : 'green';
+visibilityButton.textContent = hide ? 'Hide from website' : 'Publish profile';
+visibilityButton.disabled = !hide && statusOf(app) !== 'approved';
+visibilityButton.addEventListener('click', () => setPublicVisibility(app.id, !hide, visibilityButton));
+visibilityBox.append(visibilityTitle, visibilityNote, visibilityButton);
+$('detailsContent').append(visibilityBox);
 $('detailsDialog').showModal();
 }
 // Close the native details dialog before opening the existing edit modal.
