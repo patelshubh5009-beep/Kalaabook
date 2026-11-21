@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +11,7 @@
 @media(max-width:1100px){.stats{grid-template-columns:repeat(2,1fr)}.analytics-grid{grid-template-columns:1fr}#loginPage{gap:30px;padding:40px 5vw}.login-brand h1{font-size:42px}}
 @media(max-width:760px){#adminPage{padding-left:0}#sidebar{position:relative;width:100%;padding:15px;display:flex;flex-wrap:wrap;gap:5px}#sidebar .brand-logo{width:130px;height:62px}#sidebar>.eyebrow,.sidebar-note{display:none}#sidebar button{width:auto;font-size:11px;padding:10px;margin:0}header{padding:17px}header h1{font-size:16px}#overview,#adminPage>.card{margin:16px}.section-heading{align-items:flex-start;flex-direction:column}.section-heading h2{font-size:22px}.stat{padding:16px}.stat strong{font-size:28px}.stats{gap:10px}.tools{grid-template-columns:1fr 1fr}.tools input{grid-column:1/-1}.panel,.card{padding:18px}.facts{grid-template-columns:1fr}#loginPage{grid-template-columns:1fr;padding:30px 18px;gap:25px}.login-brand h1{font-size:34px;margin:17px 0}.login-brand>p{font-size:14px;margin-bottom:0}.brand-art,.brand-tags{display:none}.login{padding:26px}.drawer-heading{align-items:flex-start}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
-</style></head>
+</style><style>.review-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:12px;margin:20px 0}.review-summary button{text-align:left;padding:16px;border:1px solid #69718a66;border-radius:14px;background:transparent;color:inherit;cursor:pointer}.review-summary button:hover{border-color:#ae96ff}.review-summary small{display:block;opacity:.8}.review-summary strong{display:block;font-size:26px;margin-top:6px}.photo-label{display:inline-block;padding:5px 9px;border-radius:8px;background:#8191b322;font-size:12px}.photo-warning{background:#edbb5522;color:#b88624}.tools{flex-wrap:wrap}</style></head>
 <body>
 <!-- LOGIN -->
 <div id="loginPage"><section class="login-brand"><div class="eyebrow">KALAABOOK / ADMIN WORKSPACE</div><h1>Creativity, connected.<br/><span>Everything in view.</span></h1><p>Your space to welcome artists, review applications, and build a creative community.</p><div aria-hidden="true" class="brand-art"><div class="art-orbit"></div><div class="art-sun"></div><div class="art-caption">Artistry meets opportunity.</div></div><div class="brand-tags"><span>Artists</span><span>Applications</span><span>Community</span></div></section>
@@ -101,10 +98,10 @@
 <button class="primary" onclick="loadApplications()">
     Refresh
   </button>
-<div class="tools"><input aria-label="Search applications" id="appSearch" placeholder="Search name, phone, city…" type="search"/><select aria-label="Filter status" id="appStatus"><option value="">All statuses</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select><select aria-label="Filter category" id="appCategory"><option value="">All categories</option></select></div><p class="muted" id="appResult" role="status"></p><div class="table-wrap">
+<div class="tools"><input aria-label="Search applications" id="appSearch" placeholder="Search name, phone, city…" type="search"/><select aria-label="Filter status" id="appStatus"><option value="">All statuses</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select><select aria-label="Filter category" id="appCategory"><option value="">All categories</option></select><select id="photoFilter" aria-label="Filter photo completeness"><option value="">All photo statuses</option><option value="none">No photos</option><option value="missingProfile">Missing profile photo</option><option value="missingPortfolio">Missing portfolio</option><option value="complete">Profile + portfolio</option></select><select id="publicFilter" aria-label="Filter publication"><option value="">All publication states</option><option value="public">Public (approved)</option><option value="hidden">Not public</option></select><button type="button" id="clearReviewFilters">Reset filters</button></div><div id="reviewSummary" class="review-summary" aria-label="Loaded application summary"></div><p class="muted" id="appResult" role="status"></p><div class="table-wrap">
 <table>
 <thead>
-<tr><th>Artist</th><th>Location</th><th>Category</th><th>Submitted</th><th>Status</th><th>Actions</th></tr>
+<tr><th>Artist</th><th>Location</th><th>Category</th><th>Submitted</th><th>Photos</th><th>Approval</th><th>Publication</th><th>Actions</th></tr>
 </thead>
 <tbody id="applicationsBody"></tbody>
 </table>
@@ -342,38 +339,6 @@ function authHeaders(){
 /* =========================
    UPDATE STATUS
 ========================= */
-
-
-async function setPublicVisibility(id, publish, button){
-  const app = APPS[id];
-  if(!app) return;
-  if(publish && String(app.status).toLowerCase() !== 'approved'){
-    alert('Approve this application before publishing.'); return;
-  }
-  const name = app.salon_name || app.full_name || 'this artist';
-  const question = publish
-    ? 'Publish ' + name + ' on the public website? Confirm that the profile is ready and you have appropriate permission to display it.'
-    : 'Hide ' + name + ' from the public website? Approval status will not change.';
-  if(!confirm(question)) return;
-  button.disabled = true;
-  try{
-    const endpoint = SUPABASE_URL + '/rest/v1/artist_applications?id=eq.' + encodeURIComponent(id)
-      + (publish ? '&status=eq.approved' : '') + '&select=id,show_public';
-    const response = await fetch(endpoint, {
-      method:'PATCH',
-      headers:{...authHeaders(), Prefer:'return=representation'},
-      body:JSON.stringify({show_public:publish})
-    });
-    if(!response.ok) throw Error('Visibility update failed (HTTP ' + response.status + '). Check your session and admin permissions.');
-    const rows = await response.json();
-    if(!Array.isArray(rows) || rows.length !== 1 || rows[0].show_public !== publish){
-      throw Error('The visibility change was not confirmed. Refresh and check the record before retrying.');
-    }
-    alert(publish ? 'Profile published. Refresh the public website to check it.' : 'Profile hidden from public discovery.');
-    await loadApplications();
-  }catch(error){ alert(error.message || 'Could not change visibility.'); }
-  finally{ button.disabled = false; }
-}
 
 async function updateStatus(id,status){
 
@@ -1537,7 +1502,7 @@ $('detailsDialog').addEventListener('cancel',()=>{$('detailsContent').replaceChi
 function openDetails(id){
 const app=APPS[id];if(!app)return;if(!Number.isSafeInteger(Number(app.id))){alert("Unsupported artist ID format.");return;}closeDetails();
 app.id=Number(app.id);
-const fields=[['Full name',app.full_name],['WhatsApp',app.whatsapp],['City',app.city],['Area',app.area],['Category',app.category],['Specialties',app.specialties],['Experience',app.experience],['Services',Array.isArray(app.services)?app.services.join(', '):app.services],['Status',statusOf(app)],['Submitted',app.created_at?new Date(app.created_at).toLocaleString():''],['Bio / notes',app.notes]];
+const fields=[['Full name',app.full_name],['WhatsApp',app.whatsapp],['City',app.city],['Area',app.area],['Category',app.category],['Specialties',app.specialties],['Experience',app.experience],['Services',Array.isArray(app.services)?app.services.join(', '):app.services],['Photo completeness',photoInfo(app).label],['Public visibility',isListed(app)?'Public':'Not public'],['Status',statusOf(app)],['Submitted',app.created_at?new Date(app.created_at).toLocaleString():''],['Bio / notes',app.notes]];
 $('detailsTitle').textContent=app.full_name||'Artist details';
 $('detailsContent').innerHTML='<div class="facts">'+fields.map(([label,value])=>'<div><label>'+escapeHtml(label)+'</label>'+escapeHtml(value??'—')+'</div>').join('')+'</div>'+applicationDetails(app)+'<div class="drawer-actions"><h3>Manage artist</h3><p class="small">These controls change real records. Use a designated test artist when testing.</p></div>';
 $('detailsContent').querySelector('.drawer-actions').insertAdjacentHTML('beforeend',`
@@ -1612,24 +1577,6 @@ $('detailsContent').querySelector('.drawer-actions').insertAdjacentHTML('beforee
 
         `);
 $('detailsContent').querySelector('[data-copy-upload]').onclick=()=>copyUploadLink(app.id,app.upload_token);
-const visibilityBox = document.createElement('div');
-visibilityBox.className = 'drawer-actions';
-const visibilityTitle = document.createElement('h3');
-visibilityTitle.textContent = 'Public visibility';
-const visibilityNote = document.createElement('p');
-visibilityNote.className = 'small';
-visibilityNote.textContent = statusOf(app) === 'approved'
-  ? (app.show_public === true ? 'Published: this approved profile is eligible for public discovery.' : 'Not published: approved, but hidden from public discovery.')
-  : 'Not publicly listed: only approved applications can appear in discovery.';
-const visibilityButton = document.createElement('button');
-visibilityButton.type = 'button';
-const hide = app.show_public === true;
-visibilityButton.className = hide ? 'gray' : 'green';
-visibilityButton.textContent = hide ? 'Hide from website' : 'Publish profile';
-visibilityButton.disabled = !hide && statusOf(app) !== 'approved';
-visibilityButton.addEventListener('click', () => setPublicVisibility(app.id, !hide, visibilityButton));
-visibilityBox.append(visibilityTitle, visibilityNote, visibilityButton);
-$('detailsContent').append(visibilityBox);
 $('detailsDialog').showModal();
 }
 // Close the native details dialog before opening the existing edit modal.
@@ -1642,14 +1589,29 @@ if(page==='applications'||page==='approved'){$('appSearch').value='';$('appCateg
 }
 showAddArtist=function(){navigate('add');};hideAddArtist=function(){navigate('applications');};
 $('sidebar').addEventListener('click',e=>{const b=e.target.closest('[data-page]');if(b)navigate(b.dataset.page);});
-function renderApplications(){
-closeDetails();const q=$('appSearch').value.trim().toLowerCase(),st=$('appStatus').value,cat=$('appCategory').value;
-const rows=DASH_APPS.filter(a=>(!st||statusOf(a)===st)&&(!cat||a.category===cat)&&(!q||[a.full_name,a.whatsapp,a.city,a.area,a.category].join(' ').toLowerCase().includes(q)));
-const body=$('applicationsBody');body.replaceChildren();
-rows.forEach(a=>{const tr=document.createElement('tr');tr.innerHTML='<td><strong>'+escapeHtml(a.full_name||'Unnamed')+'</strong><small>#'+escapeHtml(a.id)+'</small></td><td>'+escapeHtml(a.city||'—')+'<small>'+escapeHtml(a.area||'')+'</small></td><td>'+escapeHtml(a.category||'—')+'</td><td>'+escapeHtml(a.created_at?new Date(a.created_at).toLocaleDateString():'—')+'</td><td>'+badge(a)+'</td><td><button type="button" class="primary">View details</button></td>';tr.querySelector('button').onclick=()=>openDetails(a.id);body.append(tr);});
-if(!rows.length)body.innerHTML='<tr><td colspan="6">'+(DASH_LOADED?'No matching applications.':'Applications not loaded.')+'</td></tr>';
-$('appResult').textContent=rows.length+' of '+DASH_APPS.length+' loaded applications shown.';
+function photoInfo(a){
+const valid=v=>typeof v==='string'&&v.trim()!==''&&v.trim()!=='null';
+const profile=valid(a.profile_photo);
+let list=a.portfolio_photos;
+if(typeof list==='string'){try{list=JSON.parse(list);}catch(e){list=valid(list)?[list]:[];}}
+const count=Array.isArray(list)?list.filter(valid).length:0;
+return {profile,count,label:profile?(count?'Profile + '+count+' portfolio':'Profile only'):(count?'Portfolio only · '+count+' photos':'No photos')};
 }
+function isListed(a){return statusOf(a)==='approved'&&a.show_public===true;}
+function renderApplications(){
+closeDetails();
+const q=$('appSearch').value.trim().toLowerCase(),st=$('appStatus').value,cat=$('appCategory').value,photo=$('photoFilter').value,pub=$('publicFilter').value;
+const rows=DASH_APPS.filter(a=>{const p=photoInfo(a);return (!st||statusOf(a)===st)&&(!cat||a.category===cat)&&(!q||[a.full_name,a.salon_name,a.whatsapp,a.city,a.area,a.category].join(' ').toLowerCase().includes(q))&&(!pub||(pub==='public'?isListed(a):!isListed(a)))&&(!photo||(photo==='none'?!p.profile&&!p.count:photo==='missingProfile'?!p.profile:photo==='missingPortfolio'?!p.count:p.profile&&p.count>0));});
+const body=$('applicationsBody');body.replaceChildren();
+rows.forEach(a=>{const tr=document.createElement('tr'),p=photoInfo(a);tr.innerHTML='<td><strong>'+escapeHtml(a.salon_name||a.full_name||'Unnamed')+'</strong><small>'+escapeHtml(a.full_name||'')+' · #'+escapeHtml(a.id)+'</small></td><td>'+escapeHtml(a.city||'—')+'<small>'+escapeHtml(a.area||'')+'</small></td><td>'+escapeHtml(a.category||'—')+'</td><td>'+escapeHtml(a.created_at?new Date(a.created_at).toLocaleDateString():'—')+'</td><td><span class="photo-label '+(!p.profile&&!p.count?'photo-warning':'')+'">'+escapeHtml(p.label)+'</span></td><td>'+badge(a)+'</td><td>'+(isListed(a)?'Public':'Not public')+'</td><td><button type="button" class="primary">View details</button></td>';tr.querySelector('button').onclick=()=>openDetails(a.id);body.append(tr);});
+if(!rows.length)body.innerHTML='<tr><td colspan="8">'+(DASH_LOADED?'No matching applications. Try resetting the filters.':'Applications not loaded.')+'</td></tr>';
+$('appResult').textContent=rows.length+' of '+DASH_APPS.length+' loaded applications shown. Photo labels indicate supplied references, not image availability.';
+const metrics=[['Applications',DASH_APPS.length,'all'],['Pending',DASH_APPS.filter(a=>statusOf(a)==='pending').length,'pending'],['Approved',DASH_APPS.filter(a=>statusOf(a)==='approved').length,'approved'],['Public',DASH_APPS.filter(isListed).length,'public'],['No photos',DASH_APPS.filter(a=>{const p=photoInfo(a);return !p.profile&&!p.count;}).length,'none']];
+$('reviewSummary').innerHTML=metrics.map(([label,n,key])=>'<button type="button" data-review="'+key+'"><small>'+label+'</small><strong>'+(DASH_LOADED?n:'—')+'</strong></button>').join('');
+$('reviewSummary').querySelectorAll('button').forEach(b=>b.onclick=()=>{resetReviewFilters();const k=b.dataset.review;if(k==='pending'||k==='approved')$('appStatus').value=k;if(k==='public')$('publicFilter').value='public';if(k==='none')$('photoFilter').value='none';renderApplications();});
+}
+function resetReviewFilters(){['appSearch','appStatus','appCategory','photoFilter','publicFilter'].forEach(id=>$(id).value='');}
+$('clearReviewFilters').onclick=()=>{resetReviewFilters();renderApplications();};
 function renderCharts(){
 if(!DASH_LOADED)return;const apps=DASH_APPS,n=apps.length,counts={pending:0,approved:0,rejected:0,other:0};apps.forEach(a=>{const s=statusOf(a);counts[s in counts?s:'other']++;});
 $('totalCount').textContent=n;$('pendingCount').textContent=counts.pending;$('approvedCount').textContent=counts.approved;
@@ -1670,7 +1632,7 @@ const request=++DASH_REQUEST;closeDetails();$('applicationsBody').innerHTML='<tr
 try{const r=await fetch(SUPABASE_URL+'/rest/v1/artist_applications?select=*&order=created_at.desc',{headers:authHeaders()});if(!r.ok)throw Error('Unable to load applications (HTTP '+r.status+'). Check your session and permissions.');const rows=await r.json();if(request!==DASH_REQUEST)return;if(!Array.isArray(rows))throw Error('Unexpected application response.');DASH_APPS=rows;DASH_LOADED=true;Object.keys(APPS).forEach(k=>delete APPS[k]);rows.forEach(a=>APPS[a.id]=a);const selected=$('appCategory').value;$('appCategory').replaceChildren(new Option('All categories',''));Array.from(new Set(rows.map(a=>a.category).filter(Boolean))).sort().forEach(c=>$('appCategory').add(new Option(c,c)));$('appCategory').value=selected;renderApplications();renderCharts();}
 catch(e){if(request!==DASH_REQUEST)return;DASH_LOADED=false;DASH_APPS=[];Object.keys(APPS).forEach(k=>delete APPS[k]);$('applicationsBody').innerHTML='<tr><td colspan="6">'+escapeHtml(e.message)+'</td></tr>';$('appResult').textContent=e.message;['totalCount','pendingCount','approvedCount'].forEach(id=>$(id).textContent='—');['trendChart','statusChart','categoryChart','cityChart','recentList'].forEach(id=>$(id).textContent='Data unavailable. Refresh or sign in again.');}
 }
-['appSearch','appStatus','appCategory'].forEach(id=>$(id).addEventListener('input',renderApplications));$('trendPeriod').addEventListener('change',renderCharts);
+['appSearch','appStatus','appCategory','photoFilter','publicFilter'].forEach(id=>$(id).addEventListener('input',renderApplications));$('trendPeriod').addEventListener('change',renderCharts);
 function filterClients(){const q=$('clientSearch').value.toLowerCase().trim();let count=0,total=0;Array.from($('clientsBody').rows).forEach(row=>{if(row.cells.length!==6)return;total++;row.hidden=!!q&&!row.textContent.toLowerCase().includes(q);if(!row.hidden)count++;});$('clientResult').textContent=total?count+' of '+total+' loaded clients shown.':'';}
 $('clientSearch').addEventListener('input',filterClients);
 new MutationObserver(()=>{const rows=Array.from($('clientsBody').rows);$('clientCount').textContent=rows[0]?.cells.length===6?rows.length:(/No clients yet/.test($('clientsBody').textContent)?'0':'—');filterClients();}).observe($('clientsBody'),{childList:true});
